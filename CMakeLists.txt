@@ -25,11 +25,26 @@ FetchContent_MakeAvailable(glfw glm)
 add_library(glad STATIC third_party/glad/glad.c)
 target_include_directories(glad PUBLIC include)
 
+
+
+
 find_package(OpenGL REQUIRED)
 
 add_executable(Vocksel
         src/main.cpp
+        src/cube.cpp
+        src/cube.h
+        src/shader.cpp
+        src/shader.h
 )
+
+add_custom_command(TARGET Vocksel POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${CMAKE_SOURCE_DIR}/assets
+        ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/assets
+)
+
+
 target_link_libraries(Vocksel
         PRIVATE
         OpenGL::GL
