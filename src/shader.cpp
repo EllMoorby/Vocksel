@@ -1,9 +1,9 @@
-#include "shader.h"
+#include "Vocksel/shader.h"
 
 #include <filesystem>
 
 
-Shader::Shader(const char *vertexPath, const char *fragmentPath) {
+Vocksel::Shader::Shader(const char *vertexPath, const char *fragmentPath) {
     std::string vertexCode, fragmentCode;
     std::ifstream vShaderFile(vertexPath), fShaderFile(fragmentPath);
 
@@ -41,15 +41,15 @@ Shader::Shader(const char *vertexPath, const char *fragmentPath) {
     glDeleteShader(fragment);
 }
 
-void Shader::use() {
+void Vocksel::Shader::use() {
     glUseProgram(ID);
 }
 
-void Shader::setMat4(const std::string& name, const glm::mat4& matrix) const {
+void Vocksel::Shader::setMat4(const std::string& name, const glm::mat4& matrix) const {
     glUniformMatrix4fv(glGetUniformLocation(ID, name.c_str()), 1, GL_FALSE, glm::value_ptr(matrix));
 }
 
-void Shader::checkCompileErrors(GLuint object, std::string type) {
+void Vocksel::Shader::checkCompileErrors(GLuint object, std::string type) {
     int  success;
     char infoLog[512];
 
@@ -70,7 +70,7 @@ void Shader::checkCompileErrors(GLuint object, std::string type) {
     }
 }
 
-Shader::~Shader() {
+Vocksel::Shader::~Shader() {
     glDeleteProgram(ID);
 
 }

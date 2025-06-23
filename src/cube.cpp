@@ -1,9 +1,11 @@
-#include "cube.h"
+#include "Vocksel/cube.h"
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 #include "glm/gtc/type_ptr.hpp"
+#include "Vocksel/camera.h"
+#include "Vocksel/constants.h"
 
-const float Cube::vertices[24] = {
+const float Vocksel::Cube::vertices[24] = {
     -0.5f, -0.5f, -0.5f,
      0.5f, -0.5f, -0.5f,
      0.5f,  0.5f, -0.5f,
@@ -15,7 +17,7 @@ const float Cube::vertices[24] = {
     -0.5f,  0.5f,  0.5f
 };
 
-const unsigned int Cube::indices[36] = {
+const unsigned int Vocksel::Cube::indices[36] = {
     0, 1, 2, 2, 3, 0,    // back face
     4, 5, 6, 6, 7, 4,    // front face
     3, 2, 6, 6, 7, 3,    // top face
@@ -24,7 +26,7 @@ const unsigned int Cube::indices[36] = {
     1, 2, 6, 6, 5, 1     // right face
 };
 
-Cube::Cube(glm::vec3 pos) {
+Vocksel::Cube::Cube(glm::vec3 pos) {
     glGenVertexArrays(1, &VAO_);
     glGenBuffers(1, &VBO_);
     glGenBuffers(1, &EBO_);
@@ -43,31 +45,26 @@ Cube::Cube(glm::vec3 pos) {
     glBindVertexArray(0);
 }
 
-void Cube::render(unsigned int shaderProgram) {
-    // Create transformations
+void Vocksel::Cube::render(unsigned int shaderProgram, const Camera& camera) {
     glm::mat4 model = glm::mat4(1.0f);
-    glm::mat4 view = glm::mat4(1.0f);
-    glm::mat4 projection = glm::mat4(1.0f);
+    model = glm::translate(model, glm::vec3(position_));
+    model = glm::rotate(model, static_cast<float>(glfwGetTime()), glm::vec3(.3f, 1.0f, .5f));
 
-    // Rotate cube over time
-    model = glm::rotate(model, (float)glfwGetTime(), glm::vec3(0.5f, 1.0f, 0.0f));
-    view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
-    projection = glm::perspective(glm::radians(45.0f), 800.f/600.f, 0.1f, 100.0f);
+    glm::mat4 view = camera.getViewMatrix();
+    glm::mat4 projection = camera.getProjectionMatrix(
+        static_cast<float>(Constants::SCREEN_WIDTH) /
+        static_cast<float>(Constants::SCREEN_HEIGHT)
+    );
 
-    // Pass matrices to shader
-    unsigned int modelLoc = glGetUniformLocation(shaderProgram, "model");
-    unsigned int viewLoc = glGetUniformLocation(shaderProgram, "view");
-    unsigned int projectionLoc = glGetUniformLocation(shaderProgram, "projection");
-
-    glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-    glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
-    glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
+    glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "model"), 1, GL_FALSE, glm::value_ptr(model));
+    glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "view"), 1, GL_FALSE, glm::value_ptr(view));
+    glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 
     glBindVertexArray(VAO_);
     glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 }
 
-Cube::~Cube() {
+Vocksel::Cube::~Cube() {
     glDeleteVertexArrays(1, &VAO_);
     glDeleteBuffers(1, &VBO_);
     glDeleteBuffers(1, &EBO_);

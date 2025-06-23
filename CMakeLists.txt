@@ -13,7 +13,6 @@ FetchContent_Declare(
         GIT_TAG        3.3.8
 )
 
-
 # Fetch and configure GLM (OpenGL Mathematics)
 FetchContent_Declare(
         glm
@@ -26,18 +25,20 @@ add_library(glad STATIC third_party/glad/glad.c)
 target_include_directories(glad PUBLIC include)
 
 
-
-
 find_package(OpenGL REQUIRED)
 
 add_executable(Vocksel
         src/main.cpp
         src/cube.cpp
-        src/cube.h
+        include/Vocksel/cube.h
         src/shader.cpp
-        src/shader.h
+        include/Vocksel/shader.h
+        include/Vocksel/constants.h
+        include/Vocksel/camera.h
+        src/camera.cpp
 )
 
+# Copy assets directory to build
 add_custom_command(TARGET Vocksel POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_directory
         ${CMAKE_SOURCE_DIR}/assets
@@ -54,7 +55,7 @@ target_link_libraries(Vocksel
 # Include directories
 target_include_directories(Vocksel
         PRIVATE
-        ${glm_SOURCE_DIR}                # GLM headers
-        ${glfw_SOURCE_DIR}/include       # GLFW headers (optional, already green)
+        ${glm_SOURCE_DIR}
+        ${glfw_SOURCE_DIR}/include
         include
 )
