@@ -6,6 +6,8 @@
 #include "Vocksel/constants.h"
 #include "Vocksel/shader.h"
 
+std::unique_ptr<Vocksel::StaticMesh> Vocksel::Cube::mesh_ = nullptr;
+
 const float Vocksel::Cube::vertices[24] = {
     -0.5f, -0.5f, -0.5f,
      0.5f, -0.5f, -0.5f,
@@ -28,9 +30,6 @@ const unsigned int Vocksel::Cube::indices[36] = {
 };
 
 
-unsigned int Vocksel::Cube::VAO_ = 0;
-unsigned int Vocksel::Cube::VBO_ = 0;
-unsigned int Vocksel::Cube::EBO_ = 0;
 
 
 Vocksel::Cube::Cube()
@@ -42,47 +41,22 @@ Vocksel::Cube Vocksel::Cube::create(const glm::vec3 &pos, const glm::vec3 &col) 
     return cube;
 }
 
-
-void Vocksel::Cube::initStaticBuffers() {
-    if (VAO_ != 0) return; // already initialized
-
-    glGenVertexArrays(1, &VAO_);
-    glGenBuffers(1, &VBO_);
-    glGenBuffers(1, &EBO_);
-
-    glBindVertexArray(VAO_);
-
-    glBindBuffer(GL_ARRAY_BUFFER, VBO_);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO_);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArray(0);
-}
-
-void Vocksel::Cube::cleanUpStaticBuffers() {
-    if (VAO_ != 0) {
-        glDeleteVertexArrays(1, &VAO_);
-        glDeleteBuffers(1, &VBO_);
-        glDeleteBuffers(1, &EBO_);
-        VAO_ = 0;
-        VBO_ = 0;
-        EBO_ = 0;
-    }
-}
-
-
-
 void Vocksel::Cube::init(glm::vec3 pos, glm::vec3 col) {
     color_ = col;
     position_ = pos;
     initialized_ = true;
 }
+
+
+void Vocksel::Cube::initMesh() {
+    if (mesh_) return;
+    mesh_ = std::make_unique<StaticMesh>(vertices, 24, indices,36, 3);
+}
+
+void Vocksel::Cube::cleanUpMesh() {
+    mesh_.reset();
+}
+
 
 
 void Vocksel::Cube::render(Shader& shader, const Camera& camera) {
@@ -93,23 +67,11 @@ void Vocksel::Cube::render(Shader& shader, const Camera& camera) {
     shader.setMat4("model", model);
     shader.setVec3("color", color_);
 
-    glBindVertexArray(VAO_);
+    mesh_->bind();
     glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+    mesh_->unbind();
 }
 
-Vocksel::Cube::Cube(Cube&& other) noexcept
-    : position_(other.position_), color_(other.color_), rotation_angle_(other.rotation_angle_),  initialized_(other.initialized_) {
-
-}
-
-Vocksel::Cube& Vocksel::Cube::operator=(Cube&& other) noexcept {
-    if (this != &other) {
-        position_ = other.position_;
-        color_ = other.color_;
-        initialized_ = other.initialized_;
-    }
-    return *this;
-}
 
 
 

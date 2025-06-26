@@ -1,12 +1,14 @@
 #include "Vocksel/application.h"
 
+#include <format>
+
 Vocksel::Application::Application() {
     srand(static_cast<unsigned int>(time(nullptr)));
     initWindow();
     initGL();
 
     shader_.init("assets/shaders/core/basic.vs.glsl", "assets/shaders/core/basic.fs.glsl");
-    Cube::initStaticBuffers();
+    Cube::initMesh();
     const int chunkSize = 16;
     const float spacing = 1.0f;
     for (int x = 0; x < chunkSize; ++x) {
@@ -67,12 +69,19 @@ void Vocksel::Application::initGL() {
 }
 
 void Vocksel::Application::run() {
+    float second_count = 0.0f;
     while (!glfwWindowShouldClose(window_)) {
-        float currentFrame = glfwGetTime();
-        deltaTime = currentFrame - lastFrame;
-        lastFrame = currentFrame;
-        processInput();
+        float current_frame = glfwGetTime();
+        delta_time = current_frame - last_frame;
+        last_frame = current_frame;
+        second_count += delta_time;
 
+        // Work out FPS
+        if (second_count >= 1.0f) {
+            glfwSetWindowTitle(window_, std::format("Vocksel | {}", 1.0f/delta_time).c_str());
+            second_count = 0;
+        }
+        processInput();
 
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -149,7 +158,7 @@ void Vocksel::Application::mouseCallback(GLFWwindow *window_, double xpos, doubl
 }
 
 void Vocksel::Application::processInput() {
-    const float kSpeed = Constants::CAMERA_SPEED * deltaTime;
+    const float kSpeed = Constants::CAMERA_SPEED * delta_time;
     if (glfwGetKey(window_, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window_, true);
     if (glfwGetKey(window_, GLFW_KEY_W) == GLFW_PRESS) {
@@ -173,7 +182,7 @@ void Vocksel::Application::processInput() {
 }
 
 void Vocksel::Application::cleanUp() {
-    Cube::cleanUpStaticBuffers();
+    Cube::cleanUpMesh();
     glfwTerminate();
 }
 

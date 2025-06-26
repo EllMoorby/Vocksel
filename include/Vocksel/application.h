@@ -33,9 +33,9 @@ class Application {
     double lastx_mouse_ = Constants::SCREEN_WIDTH/2, lasty_mouse_ = Constants::SCREEN_HEIGHT/2;
     float yaw_camera_ = 90.0f, pitch_camera_;
 
-    float currentFrame;
-    float deltaTime;
-    float lastFrame;
+    float current_frame;
+    float delta_time;
+    float last_frame;
 
     GLFWwindow* window_;
     Camera camera_;

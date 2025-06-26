@@ -1,0 +1,23 @@
+#ifndef STATIC_MESH_H
+#define STATIC_MESH_H
+#include "glad/glad.h"
+#include <vector>
+
+namespace Vocksel {
+    class StaticMesh {
+        public:
+        StaticMesh(const float* vertices, int vertex_count, const unsigned int* indices, int index_count, int vertexStride);
+        ~StaticMesh();
+
+        void bind();
+        void unbind();
+
+        int getIndexCount() const;
+
+        private:
+        static GLuint VAO_, VBO_, EBO_;
+        int index_count_;
+
+    };
+}
+#endif //STATIC_MESH_H
