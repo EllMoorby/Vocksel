@@ -13,8 +13,11 @@ namespace Vocksel {
     class Shader {
     public:
         Shader(const char* vertexPath, const char* fragmentPath);
+        Shader();
+
         ~Shader();
         void use();
+        void init(const char* vertexPath, const char* fragmentPath);
         void setMat4(const std::string& name, const glm::mat4& matrix) const;
         GLuint ID;
     private:

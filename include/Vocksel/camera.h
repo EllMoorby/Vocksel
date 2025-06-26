@@ -25,6 +25,7 @@ namespace Vocksel {
         glm::vec3 front_ = glm::normalize(glm::vec3(0.0f, 0.0f, 1.0f));
         glm::vec3 up_ = Constants::WORLD_UP;
         glm::vec3 right_ = glm::normalize(glm::cross(front_, up_));
+        glm::vec3 flatfront_ = glm::normalize(glm::vec3(front_.x, 0.0f, front_.z));
 
     private:
         float fov_ = glm::radians(45.0f);

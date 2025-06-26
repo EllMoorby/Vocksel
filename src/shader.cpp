@@ -2,8 +2,20 @@
 
 #include <filesystem>
 
+Vocksel::Shader::Shader(): ID(0) {}
 
 Vocksel::Shader::Shader(const char *vertexPath, const char *fragmentPath) {
+    init(vertexPath, fragmentPath);
+}
+
+void Vocksel::Shader::init(const char *vertexPath, const char *fragmentPath) {
+    // If the shader has already initialised
+    if (ID != 0) {
+        std::cerr << "Shader already initialized. Ignoring init() call." << std::endl;
+        return;
+    }
+
+    // Otherwise initialise
     std::string vertexCode, fragmentCode;
     std::ifstream vShaderFile(vertexPath), fShaderFile(fragmentPath);
 
@@ -40,6 +52,7 @@ Vocksel::Shader::Shader(const char *vertexPath, const char *fragmentPath) {
     glDeleteShader(vertex);
     glDeleteShader(fragment);
 }
+
 
 void Vocksel::Shader::use() {
     glUseProgram(ID);

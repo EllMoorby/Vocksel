@@ -21,7 +21,8 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(glfw glm)
 
-add_library(glad STATIC third_party/glad/glad.c)
+add_library(glad STATIC third_party/glad/glad.c
+        include/Vocksel/application.h)
 target_include_directories(glad PUBLIC include)
 
 
@@ -36,6 +37,7 @@ add_executable(Vocksel
         include/Vocksel/constants.h
         include/Vocksel/camera.h
         src/camera.cpp
+        src/application.cpp
 )
 
 # Copy assets directory to build
