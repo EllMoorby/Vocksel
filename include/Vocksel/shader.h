@@ -19,6 +19,7 @@ namespace Vocksel {
         void use();
         void init(const char* vertexPath, const char* fragmentPath);
         void setMat4(const std::string& name, const glm::mat4& matrix) const;
+        void setVec3(const std::string& name, const glm::vec3& vector) const;
         GLuint ID;
     private:
         void checkCompileErrors(GLuint object, std::string type);

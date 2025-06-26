@@ -27,19 +27,31 @@ const unsigned int Vocksel::Cube::indices[36] = {
     1, 2, 6, 6, 5, 1     // right face
 };
 
-Vocksel::Cube::Cube(): VAO_(0), VBO_(0), EBO_(0), initialized_(false) {}
 
-Vocksel::Cube::Cube(glm::vec3 pos) {
-    init(pos);
+unsigned int Vocksel::Cube::VAO_ = 0;
+unsigned int Vocksel::Cube::VBO_ = 0;
+unsigned int Vocksel::Cube::EBO_ = 0;
+
+
+Vocksel::Cube::Cube()
+    : position_(0.0f), color_(1.0f), rotation_angle_(0.0f), initialized_(false) {}
+
+Vocksel::Cube Vocksel::Cube::create(const glm::vec3 &pos, const glm::vec3 &col) {
+    Cube cube;
+    cube.init(pos, col);
+    return cube;
 }
 
-void Vocksel::Cube::init(glm::vec3 pos) {
-    position_ = pos;
+
+void Vocksel::Cube::initStaticBuffers() {
+    if (VAO_ != 0) return; // already initialized
+
     glGenVertexArrays(1, &VAO_);
     glGenBuffers(1, &VBO_);
     glGenBuffers(1, &EBO_);
 
     glBindVertexArray(VAO_);
+
     glBindBuffer(GL_ARRAY_BUFFER, VBO_);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
@@ -53,51 +65,52 @@ void Vocksel::Cube::init(glm::vec3 pos) {
     glBindVertexArray(0);
 }
 
+void Vocksel::Cube::cleanUpStaticBuffers() {
+    if (VAO_ != 0) {
+        glDeleteVertexArrays(1, &VAO_);
+        glDeleteBuffers(1, &VBO_);
+        glDeleteBuffers(1, &EBO_);
+        VAO_ = 0;
+        VBO_ = 0;
+        EBO_ = 0;
+    }
+}
+
+
+
+void Vocksel::Cube::init(glm::vec3 pos, glm::vec3 col) {
+    color_ = col;
+    position_ = pos;
+    initialized_ = true;
+}
+
 
 void Vocksel::Cube::render(Shader& shader, const Camera& camera) {
     glm::mat4 model = glm::mat4(1.0f);
     model = glm::translate(model, glm::vec3(position_));
-    //model = glm::rotate(model, static_cast<float>(glfwGetTime()), glm::vec3(.3f, 1.0f, .5f));
+    model = glm::rotate(model, static_cast<float>(glfwGetTime()), glm::vec3(.3f, 1.0f, .5f));
 
     shader.setMat4("model", model);
+    shader.setVec3("color", color_);
 
     glBindVertexArray(VAO_);
     glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 }
 
-
 Vocksel::Cube::Cube(Cube&& other) noexcept
-    : VAO_(other.VAO_), VBO_(other.VBO_), EBO_(other.EBO_), position_(other.position_), initialized_(other.initialized_) {
-    other.VAO_ = 0;
-    other.VBO_ = 0;
-    other.EBO_ = 0;
-    other.initialized_ = false;
+    : position_(other.position_), color_(other.color_), rotation_angle_(other.rotation_angle_),  initialized_(other.initialized_) {
+
 }
 
 Vocksel::Cube& Vocksel::Cube::operator=(Cube&& other) noexcept {
     if (this != &other) {
-        glDeleteVertexArrays(1, &VAO_);
-        glDeleteBuffers(1, &VBO_);
-        glDeleteBuffers(1, &EBO_);
-
-        VAO_ = other.VAO_;
-        VBO_ = other.VBO_;
-        EBO_ = other.EBO_;
         position_ = other.position_;
+        color_ = other.color_;
         initialized_ = other.initialized_;
-
-        other.VAO_ = 0;
-        other.VBO_ = 0;
-        other.EBO_ = 0;
-        other.initialized_ = false;
     }
     return *this;
 }
 
-Vocksel::Cube::~Cube() {
-    glDeleteVertexArrays(1, &VAO_);
-    glDeleteBuffers(1, &VBO_);
-    glDeleteBuffers(1, &EBO_);
-}
+
 
 

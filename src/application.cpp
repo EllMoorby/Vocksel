@@ -1,12 +1,27 @@
 #include "Vocksel/application.h"
 
 Vocksel::Application::Application() {
+    srand(static_cast<unsigned int>(time(nullptr)));
     initWindow();
     initGL();
 
     shader_.init("assets/shaders/core/basic.vs.glsl", "assets/shaders/core/basic.fs.glsl");
-    cubes_.emplace_back(glm::vec3(0.0f, 0.0f, 0.0f));
-    cubes_.emplace_back(glm::vec3(1.0f, 0.0f, 0.0f));
+    Cube::initStaticBuffers();
+    const int chunkSize = 16;
+    const float spacing = 1.0f;
+    for (int x = 0; x < chunkSize; ++x) {
+        for (int y = 0; y < chunkSize; ++y) {
+            for (int z = 0; z < chunkSize; ++z) {
+                glm::vec3 pos = glm::vec3(x * spacing, y * spacing, z * spacing);
+                glm::vec3 color = glm::vec3(
+                    static_cast<float>(rand()) / RAND_MAX,
+                    static_cast<float>(rand()) / RAND_MAX,
+                    static_cast<float>(rand()) / RAND_MAX
+                );
+                cubes_.push_back(Cube::create(pos, color));
+            }
+        }
+    }
 
 
 }
@@ -80,12 +95,12 @@ void Vocksel::Application::run() {
         glfwSwapBuffers(window_);
         glfwPollEvents();
 
-        #ifdef DEBUG
+
         GLenum err;
         while ((err = glGetError()) != GL_NO_ERROR) {
             std::cerr << "OpenGL error: " << err << std::endl;
         }
-        #endif
+
     }
 }
 
@@ -158,6 +173,7 @@ void Vocksel::Application::processInput() {
 }
 
 void Vocksel::Application::cleanUp() {
+    Cube::cleanUpStaticBuffers();
     glfwTerminate();
 }
 

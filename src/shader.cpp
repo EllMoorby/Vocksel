@@ -62,6 +62,10 @@ void Vocksel::Shader::setMat4(const std::string& name, const glm::mat4& matrix) 
     glUniformMatrix4fv(glGetUniformLocation(ID, name.c_str()), 1, GL_FALSE, glm::value_ptr(matrix));
 }
 
+void Vocksel::Shader::setVec3(const std::string& name, const glm::vec3& vec) const {
+    glUniform3fv(glGetUniformLocation(ID, name.c_str()), 1, glm::value_ptr(vec));
+}
+
 void Vocksel::Shader::checkCompileErrors(GLuint object, std::string type) {
     int  success;
     char infoLog[512];
