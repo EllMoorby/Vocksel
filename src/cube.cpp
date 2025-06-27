@@ -4,7 +4,6 @@
 #include "glm/gtc/type_ptr.hpp"
 #include "stb/stb_image.h"
 #include "Vocksel/camera.h"
-#include "Vocksel/constants.h"
 #include "Vocksel/shader.h"
 
 std::unique_ptr<Vocksel::StaticMesh> Vocksel::Cube::mesh_ = nullptr;
@@ -124,6 +123,7 @@ void Vocksel::Cube::cleanUpMesh() {
 
 
 void Vocksel::Cube::render(Shader& shader) {
+    glDisable(GL_CULL_FACE);
     glm::mat4 model = glm::mat4(1.0f);
     model = glm::translate(model, glm::vec3(position_));
     model = glm::rotate(model, static_cast<float>(glfwGetTime()), glm::vec3(.3f, 1.0f, .5f));
@@ -138,6 +138,8 @@ void Vocksel::Cube::render(Shader& shader) {
     mesh_->bind();
     glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
     mesh_->unbind();
+    glEnable(GL_CULL_FACE);
+
 }
 
 
