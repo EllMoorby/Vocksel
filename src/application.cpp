@@ -1,5 +1,6 @@
 #include "Vocksel/application.h"
-
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb/stb_image.h"
 #include <format>
 
 Vocksel::Application::Application() {
@@ -7,11 +8,15 @@ Vocksel::Application::Application() {
     initGL();
 
     shader_.init("assets/shaders/core/basic.vs.glsl", "assets/shaders/core/basic.fs.glsl");
-    const int worldSize = 2;
+    const int worldSize = 3;
     for (int x = 0; x < worldSize; ++x)
         for (int y = 0; y < worldSize; ++y)
             for (int z = 0; z < worldSize; ++z)
                 chunks_.emplace_back(glm::vec3(x, y, z) * (float)Chunk::kSize);
+
+
+    cubes_.emplace_back(Cube::create(glm::vec3(-3.0f,.0f,0.f), glm::vec3(1.f,1.f,1.f)));
+
 
 
 }
@@ -150,26 +155,28 @@ void Vocksel::Application::mouseCallback(GLFWwindow *window_, double xpos, doubl
 }
 
 void Vocksel::Application::processInput() {
-    const float kSpeed = Constants::CAMERA_SPEED * delta_time;
+    float speed = Constants::CAMERA_SPEED * delta_time;
+    if (glfwGetKey(window_, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
+        speed = Constants::CAMERA_SPEED * delta_time * 2;
     if (glfwGetKey(window_, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window_, true);
     if (glfwGetKey(window_, GLFW_KEY_W) == GLFW_PRESS) {
-        camera_.moveForward(kSpeed);
+        camera_.moveForward(speed);
     }
     if (glfwGetKey(window_, GLFW_KEY_S) == GLFW_PRESS) {
-        camera_.moveBackward(kSpeed);
+        camera_.moveBackward(speed);
     }
     if (glfwGetKey(window_, GLFW_KEY_A) == GLFW_PRESS) {
-        camera_.moveLeft(kSpeed);
+        camera_.moveLeft(speed);
     }
     if (glfwGetKey(window_, GLFW_KEY_D) == GLFW_PRESS) {
-        camera_.moveRight(kSpeed);
+        camera_.moveRight(speed);
     }
     if (glfwGetKey(window_, GLFW_KEY_SPACE) == GLFW_PRESS) {
-        camera_.moveUp(kSpeed);
+        camera_.moveUp(speed);
     }
     if (glfwGetKey(window_, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) {
-        camera_.moveDown(kSpeed);
+        camera_.moveDown(speed);
     }
 }
 

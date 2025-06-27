@@ -70,12 +70,22 @@ void Vocksel::Chunk::generateMesh() {
 
                     glm::vec3 blockPos = glm::vec3(x, y, z);
 
+                    const glm::vec2 uvCoords[4] = {
+                        {0.0f, 0.0f},
+                        {1.0f, 0.0f},
+                        {1.0f, 1.0f},
+                        {0.0f, 1.0f}
+                    };
+
                     // Add 4 vertices for this face
                     for (int i = 0; i < 4; ++i) {
                         glm::vec3 v = blockPos + faceVertices[dir][i];
                         vertices.push_back(v.x);
                         vertices.push_back(v.y);
                         vertices.push_back(v.z);
+
+                        vertices.push_back(uvCoords[i].x);
+                        vertices.push_back(uvCoords[i].y);
                     }
 
                     // Add 2 triangles (6 indices)
@@ -93,7 +103,7 @@ void Vocksel::Chunk::generateMesh() {
         }
     }
 
-    mesh_ = std::make_unique<StaticMesh>(vertices.data(), vertices.size() / 3, indices.data(), indices.size(), 3);
+    mesh_ = std::make_unique<StaticMesh>(vertices.data(), vertices.size(), indices.data(), indices.size(), 5);
 
 }
 

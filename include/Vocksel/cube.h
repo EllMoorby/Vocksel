@@ -15,14 +15,13 @@ namespace Vocksel {
         Cube();
         static Cube create(const glm::vec3& pos, const glm::vec3& col);
 
+        static GLuint texture_id;
+
         void init(glm::vec3 pos, glm::vec3 col);
+        void initTexture(const char* texture);
         void render(Shader& shader, const Camera& camera);
 
-        static void initMesh();
         static void cleanUpMesh();
-
-
-
     private:
         glm::vec3 position_ = glm::vec3(0.f, .0f, .0f);
         glm::vec3 color_ = glm::vec3(0.0f, 0.0f, 0.0f);
@@ -31,8 +30,10 @@ namespace Vocksel {
 
         static std::unique_ptr<StaticMesh> mesh_;
 
+        static void initMesh();
+
         // Cube vertices
-        static const float vertices[24];
+        static const float vertices[];
         static const unsigned int indices[36];
 
     };

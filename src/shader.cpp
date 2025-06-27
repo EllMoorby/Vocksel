@@ -66,6 +66,11 @@ void Vocksel::Shader::setVec3(const std::string& name, const glm::vec3& vec) con
     glUniform3fv(glGetUniformLocation(ID, name.c_str()), 1, glm::value_ptr(vec));
 }
 
+void Vocksel::Shader::setInt(const std::string &name, int value) const {
+    glUniform1i(glGetUniformLocation(ID, name.c_str()), value);
+}
+
+
 void Vocksel::Shader::checkCompileErrors(GLuint object, std::string type) {
     int  success;
     char infoLog[512];

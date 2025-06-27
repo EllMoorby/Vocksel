@@ -6,7 +6,7 @@
 namespace Vocksel {
     class StaticMesh {
         public:
-        StaticMesh(const float* vertices, int vertex_count, const unsigned int* indices, int index_count, int vertexStride);
+        StaticMesh(const float* vertices, int float_count, const unsigned int* indices, int index_count, int vertexStride);
         ~StaticMesh();
 
         void bind();
