@@ -15,11 +15,11 @@ namespace Vocksel {
         Cube();
         static Cube create(const glm::vec3& pos, const glm::vec3& col);
 
-        static GLuint texture_id;
+        static GLuint texture_id_;
 
         void init(glm::vec3 pos, glm::vec3 col);
         void initTexture(const char* texture);
-        void render(Shader& shader, const Camera& camera);
+        void render(Shader& shader);
 
         static void cleanUpMesh();
     private:
@@ -33,8 +33,8 @@ namespace Vocksel {
         static void initMesh();
 
         // Cube vertices
-        static const float vertices[];
-        static const unsigned int indices[36];
+        static const float vertices_[];
+        static const unsigned int indices_[36];
 
     };
 }

@@ -1,7 +1,5 @@
 #include "Vocksel/application.h"
 
-
-
 int main() {
 
     Vocksel::Application app;

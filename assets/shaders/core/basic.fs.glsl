@@ -2,9 +2,8 @@
 in vec2 TexCoord;
 out vec4 FragColor;
 
-uniform vec3 color;
-uniform sampler2D texture_diffuse;
+uniform sampler2D textureAtlas;
 
 void main() {
-    FragColor = texture(texture_diffuse, TexCoord) * vec4(color, 1.0);
+    FragColor = texture(textureAtlas, TexCoord);
 }

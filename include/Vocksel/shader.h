@@ -21,7 +21,7 @@ namespace Vocksel {
         void setMat4(const std::string& name, const glm::mat4& matrix) const;
         void setVec3(const std::string& name, const glm::vec3& vector) const;
         void setInt(const std::string& name, int value) const;
-        GLuint ID;
+        GLuint ID_;
     private:
         void checkCompileErrors(GLuint object, std::string type);
 

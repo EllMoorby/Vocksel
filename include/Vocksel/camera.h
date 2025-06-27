@@ -28,7 +28,7 @@ namespace Vocksel {
         glm::vec3 flatfront_ = glm::normalize(glm::vec3(front_.x, 0.0f, front_.z));
 
     private:
-        float fov_ = glm::radians(45.0f);
+        float fov_ = glm::radians(90.0f);
         float nearplane_ = 0.1f;
         float farplane_ = 100.0f;
     };

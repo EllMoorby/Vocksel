@@ -42,6 +42,8 @@ add_executable(Vocksel
         src/static_mesh.cpp
         include/Vocksel/chunk.h
         src/chunk.cpp
+        include/Vocksel/texture_atlas.h
+        src/texture_atlas.cpp
 )
 
 # Copy assets directory to build

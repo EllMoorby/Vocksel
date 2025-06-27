@@ -1,14 +1,15 @@
 #include "Vocksel/chunk.h"
 
 
-// Face directions (order: +X, -X, +Y, -Y, +Z, -Z)
+Vocksel::TextureAtlas* Vocksel::Chunk::texture_atlas_ = nullptr;
+
+// Face directions (order: +X, -X, +Y, -Y, +Z, -Z) [UNUSED]
 const glm::ivec3 faceNormals[6] = {
     {1, 0, 0}, {-1, 0, 0},
     {0, 1, 0}, {0, -1, 0},
     {0, 0, 1}, {0, 0, -1}
 };
 
-// 6 faces with 4 corners each (quad)
 const glm::vec3 faceVertices[6][4] = {
     // +X (right)
     {{0.5f, -0.5f, -0.5f}, {0.5f,  0.5f, -0.5f}, {0.5f,  0.5f,  0.5f}, {0.5f, -0.5f,  0.5f}},
@@ -25,6 +26,11 @@ const glm::vec3 faceVertices[6][4] = {
 };
 
 
+void Vocksel::Chunk::initAtlas(const std::string &atlasPath) {
+    texture_atlas_ = new TextureAtlas(160);
+    texture_atlas_->loadFromFolder(atlasPath);
+}
+
 
 
 Vocksel::Chunk::Chunk(glm::vec3 position): position_(position) {
@@ -32,11 +38,9 @@ Vocksel::Chunk::Chunk(glm::vec3 position): position_(position) {
     for (int x = 0; x < kSize; ++x)
         for (int y = 0; y < kSize; ++y)
             for (int z = 0; z < kSize; ++z)
-                voxels_[x][y][z] = rand() % 2;
+                voxels_[x][y][z] = rand() % 5;
 
     generateMesh();
-
-
 }
 
 void Vocksel::Chunk::generateMesh() {
@@ -44,11 +48,16 @@ void Vocksel::Chunk::generateMesh() {
     std::vector<unsigned int> indices;
     unsigned int idx_offset = 0;
 
+    // For each voxel
     for (int x = 0; x < kSize; ++x) {
         for (int y = 0; y < kSize; ++y) {
             for (int z = 0; z < kSize; ++z) {
                 if (voxels_[x][y][z] == 0) continue;
 
+                // Skip on air
+                int block_type = voxels_[x][y][z];
+
+                // Check for each face
                 for (int dir = 0; dir < 6; ++dir) {
                     static const glm::ivec3 directions[] = {
                         {1, 0, 0}, {-1, 0, 0},  // +X, -X
@@ -59,6 +68,7 @@ void Vocksel::Chunk::generateMesh() {
 
                     glm::ivec3 neighbor = glm::ivec3(x,y,z) + directions[dir];
 
+                    // Is this face blocked?
                     bool visible = (neighbor.x < 0 || neighbor.y < 0 || neighbor.z < 0 ||
                         neighbor.x >= kSize || neighbor.y >= kSize || neighbor.z >= kSize) ||
                        (neighbor.x >= 0 && neighbor.y >= 0 && neighbor.z >= 0 &&
@@ -67,25 +77,26 @@ void Vocksel::Chunk::generateMesh() {
 
                     if (not visible) continue;
 
-
                     glm::vec3 blockPos = glm::vec3(x, y, z);
 
-                    const glm::vec2 uvCoords[4] = {
-                        {0.0f, 0.0f},
-                        {1.0f, 0.0f},
-                        {1.0f, 1.0f},
-                        {0.0f, 1.0f}
+                    // Get the texture coordinate of the texture
+                    glm::vec2 uv_offset = texture_atlas_->getUVOffset(getBlockType(block_type));
+                    float tile_scale = texture_atlas_->getTileScale();
+
+                    const glm::vec2 baseUVs[4] = {
+                        {0.0f, 0.0f}, {tile_scale, 0.0f},
+                        {tile_scale, tile_scale}, {0.0f, tile_scale}
                     };
 
-                    // Add 4 vertices for this face
                     for (int i = 0; i < 4; ++i) {
                         glm::vec3 v = blockPos + faceVertices[dir][i];
                         vertices.push_back(v.x);
                         vertices.push_back(v.y);
                         vertices.push_back(v.z);
 
-                        vertices.push_back(uvCoords[i].x);
-                        vertices.push_back(uvCoords[i].y);
+                        // Apply atlas offset and scaling
+                        vertices.push_back(uv_offset.x + baseUVs[i].x);
+                        vertices.push_back(uv_offset.y + baseUVs[i].y);
                     }
 
                     // Add 2 triangles (6 indices)
@@ -103,16 +114,37 @@ void Vocksel::Chunk::generateMesh() {
         }
     }
 
+    // Create the mesh
     mesh_ = std::make_unique<StaticMesh>(vertices.data(), vertices.size(), indices.data(), indices.size(), 5);
 
 }
 
-void Vocksel::Chunk::render(Shader &shader, const Camera &camera) {
+std::string Vocksel::Chunk::getBlockType(int block_type) {
+    switch (block_type) {
+        case 0:
+        return "air";
+        case 1:
+        return "grass";
+        case 2:
+        return "stone";
+        case 3:
+        return "plank";
+        case 4:
+        return "wool";
+    }
+}
+
+
+void Vocksel::Chunk::render(Shader &shader) {
     glm::mat4 model = glm::mat4(1.0f);
     model = glm::translate(model, glm::vec3(position_));
 
     shader.setMat4("model", model);
     shader.setVec3("color", glm::vec3(0.0f, 1.0f, 0.0f));
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, texture_atlas_->getAtlasTexture());
+    shader.setInt("textureAtlas", 0);
 
     mesh_->bind();
     glDrawElements(GL_TRIANGLES, mesh_->getIndexCount(), GL_UNSIGNED_INT, 0);

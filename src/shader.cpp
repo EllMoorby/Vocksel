@@ -2,7 +2,7 @@
 
 #include <filesystem>
 
-Vocksel::Shader::Shader(): ID(0) {}
+Vocksel::Shader::Shader(): ID_(0) {}
 
 Vocksel::Shader::Shader(const char *vertexPath, const char *fragmentPath) {
     init(vertexPath, fragmentPath);
@@ -10,7 +10,7 @@ Vocksel::Shader::Shader(const char *vertexPath, const char *fragmentPath) {
 
 void Vocksel::Shader::init(const char *vertexPath, const char *fragmentPath) {
     // If the shader has already initialised
-    if (ID != 0) {
+    if (ID_ != 0) {
         std::cerr << "Shader already initialized. Ignoring init() call." << std::endl;
         return;
     }
@@ -43,11 +43,11 @@ void Vocksel::Shader::init(const char *vertexPath, const char *fragmentPath) {
     glCompileShader(fragment);
     checkCompileErrors(fragment, "FRAGMENT");
 
-    ID = glCreateProgram();
-    glAttachShader(ID, vertex);
-    glAttachShader(ID, fragment);
-    glLinkProgram(ID);
-    checkCompileErrors(ID, "PROGRAM");
+    ID_ = glCreateProgram();
+    glAttachShader(ID_, vertex);
+    glAttachShader(ID_, fragment);
+    glLinkProgram(ID_);
+    checkCompileErrors(ID_, "PROGRAM");
 
     glDeleteShader(vertex);
     glDeleteShader(fragment);
@@ -55,19 +55,19 @@ void Vocksel::Shader::init(const char *vertexPath, const char *fragmentPath) {
 
 
 void Vocksel::Shader::use() {
-    glUseProgram(ID);
+    glUseProgram(ID_);
 }
 
 void Vocksel::Shader::setMat4(const std::string& name, const glm::mat4& matrix) const {
-    glUniformMatrix4fv(glGetUniformLocation(ID, name.c_str()), 1, GL_FALSE, glm::value_ptr(matrix));
+    glUniformMatrix4fv(glGetUniformLocation(ID_, name.c_str()), 1, GL_FALSE, glm::value_ptr(matrix));
 }
 
 void Vocksel::Shader::setVec3(const std::string& name, const glm::vec3& vec) const {
-    glUniform3fv(glGetUniformLocation(ID, name.c_str()), 1, glm::value_ptr(vec));
+    glUniform3fv(glGetUniformLocation(ID_, name.c_str()), 1, glm::value_ptr(vec));
 }
 
 void Vocksel::Shader::setInt(const std::string &name, int value) const {
-    glUniform1i(glGetUniformLocation(ID, name.c_str()), value);
+    glUniform1i(glGetUniformLocation(ID_, name.c_str()), value);
 }
 
 
@@ -75,7 +75,7 @@ void Vocksel::Shader::checkCompileErrors(GLuint object, std::string type) {
     int  success;
     char infoLog[512];
 
-    if (object == ID) {
+    if (object == ID_) {
         glGetProgramiv(object, GL_LINK_STATUS, &success);
     }else {
         glGetShaderiv(object, GL_COMPILE_STATUS, &success);
@@ -83,7 +83,7 @@ void Vocksel::Shader::checkCompileErrors(GLuint object, std::string type) {
 
     if(!success)
     {
-        if (object == ID) {
+        if (object == ID_) {
             glGetProgramInfoLog(object, 512, NULL, infoLog);
         }else {
             glGetShaderInfoLog(object, 512, NULL, infoLog);
@@ -93,7 +93,7 @@ void Vocksel::Shader::checkCompileErrors(GLuint object, std::string type) {
 }
 
 Vocksel::Shader::~Shader() {
-    glDeleteProgram(ID);
+    glDeleteProgram(ID_);
 
 }
 

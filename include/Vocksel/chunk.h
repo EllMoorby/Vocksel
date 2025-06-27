@@ -6,6 +6,7 @@
 #include "constants.h"
 #include "shader.h"
 #include "static_mesh.h"
+#include "texture_atlas.h"
 
 namespace Vocksel {
     class Chunk {
@@ -13,22 +14,25 @@ namespace Vocksel {
         Chunk(glm::vec3 position);
         ~Chunk();
 
-        // Delete copy constructor and copy assignment operator explicitly:
+        // Prevents copying and assigning
         Chunk(const Chunk&) = delete;
         Chunk& operator=(const Chunk&) = delete;
 
-        // Default move constructor and move assignment operator:
+        // Default move and assignment operator
         Chunk(Chunk&&) noexcept = default;
         Chunk& operator=(Chunk&&) noexcept = default;
 
         void generateMesh();
-        void render(Shader& shader, const Camera& camera);
+        void render(Shader& shader);
+        static void initAtlas(const std::string& atlasPath);
 
         static constexpr int kSize = Constants::CHUNK_SIZE;
 
         private:
+        std::string getBlockType(int block_type);
         glm::vec3 position_;
         uint8_t voxels_[kSize][kSize][kSize];
+        static TextureAtlas* texture_atlas_;
         std::unique_ptr<StaticMesh> mesh_;
 
     };

@@ -1,14 +1,17 @@
 #include "Vocksel/application.h"
+#include <format>
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb/stb_image.h"
-#include <format>
+
 
 Vocksel::Application::Application() {
     initWindow();
     initGL();
 
     shader_.init("assets/shaders/core/basic.vs.glsl", "assets/shaders/core/basic.fs.glsl");
-    const int worldSize = 3;
+
+    Chunk::initAtlas("assets/textures");
+    const int worldSize = 10;
     for (int x = 0; x < worldSize; ++x)
         for (int y = 0; y < worldSize; ++y)
             for (int z = 0; z < worldSize; ++z)
@@ -57,7 +60,6 @@ void Vocksel::Application::initGL() {
         throw std::runtime_error("Failed to initialize GLAD");
     }
 
-    // Enable depth testing
     glEnable(GL_DEPTH_TEST);
 }
 
@@ -65,13 +67,13 @@ void Vocksel::Application::run() {
     float second_count = 0.0f;
     while (!glfwWindowShouldClose(window_)) {
         float current_frame = glfwGetTime();
-        delta_time = current_frame - last_frame;
-        last_frame = current_frame;
-        second_count += delta_time;
+        delta_time_ = current_frame - last_frame_;
+        last_frame_ = current_frame;
+        second_count += delta_time_;
 
         // Work out FPS
         if (second_count >= 1.0f) {
-            glfwSetWindowTitle(window_, std::format("Vocksel | {}", 1.0f/delta_time).c_str());
+            glfwSetWindowTitle(window_, std::format("Vocksel | {}", 1.0f/delta_time_).c_str());
             second_count = 0;
         }
         processInput();
@@ -81,6 +83,7 @@ void Vocksel::Application::run() {
 
         shader_.use();
 
+        // Calculate view matrix and set view and projection
         glm::mat4 view = camera_.getViewMatrix();
         glm::mat4 projection = camera_.getProjectionMatrix(
             static_cast<float>(Constants::SCREEN_WIDTH) /
@@ -90,18 +93,20 @@ void Vocksel::Application::run() {
         shader_.setMat4("view", view);
         shader_.setMat4("projection", projection);
 
+        // Render cubes
         for (auto& cube : cubes_) {
-            cube.render(shader_, camera_);
+            cube.render(shader_);
         }
 
+        // Render chunks
         for (auto& chunk : chunks_) {
-            chunk.render(shader_, camera_);
+            chunk.render(shader_);
         }
 
         glfwSwapBuffers(window_);
         glfwPollEvents();
 
-
+        // Show Errors (Should put in debug)
         GLenum err;
         while ((err = glGetError()) != GL_NO_ERROR) {
             std::cerr << "OpenGL error: " << err << std::endl;
@@ -155,9 +160,9 @@ void Vocksel::Application::mouseCallback(GLFWwindow *window_, double xpos, doubl
 }
 
 void Vocksel::Application::processInput() {
-    float speed = Constants::CAMERA_SPEED * delta_time;
+    float speed = Constants::CAMERA_SPEED * delta_time_;
     if (glfwGetKey(window_, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
-        speed = Constants::CAMERA_SPEED * delta_time * 2;
+        speed = Constants::CAMERA_SPEED * delta_time_ * 2;
     if (glfwGetKey(window_, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window_, true);
     if (glfwGetKey(window_, GLFW_KEY_W) == GLFW_PRESS) {

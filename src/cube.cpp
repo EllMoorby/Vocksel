@@ -8,10 +8,10 @@
 #include "Vocksel/shader.h"
 
 std::unique_ptr<Vocksel::StaticMesh> Vocksel::Cube::mesh_ = nullptr;
-GLuint Vocksel::Cube::texture_id = 0;
+GLuint Vocksel::Cube::texture_id_ = 0;
 
 
-const float Vocksel::Cube::vertices[] = {
+const float Vocksel::Cube::vertices_[] = {
     // Positions          // Texture Coords
     // Back face
     -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
@@ -50,7 +50,7 @@ const float Vocksel::Cube::vertices[] = {
      0.5f,  0.5f, -0.5f,  1.0f, 1.0f
 };
 
-const unsigned int Vocksel::Cube::indices[] = {
+const unsigned int Vocksel::Cube::indices_[] = {
     0, 1, 2, 2, 3, 0,    // Back
     4, 5, 6, 6, 7, 4,    // Front
     8, 9, 10, 10, 11, 8, // Left
@@ -77,30 +77,29 @@ void Vocksel::Cube::init(glm::vec3 pos, glm::vec3 col) {
     initialized_ = true;
 
     initMesh();
-    initTexture("assets/textures/grass.jpg");
+    initTexture("assets/textures/stone.png");
 }
 
 
 void Vocksel::Cube::initMesh() {
     if (mesh_) return;
     mesh_ = std::make_unique<StaticMesh>(
-        vertices,
-        sizeof(vertices) / sizeof(float),
-        indices,
-        sizeof(indices) / sizeof(unsigned int),
+        vertices_,
+        sizeof(vertices_) / sizeof(float),
+        indices_,
+        sizeof(indices_) / sizeof(unsigned int),
         5
     );
 }
 
 void Vocksel::Cube::initTexture(const char *texture) {
-    if (texture_id != 0) {
+    if (texture_id_ != 0) {
         return;
     }
 
-    glGenTextures(1, &texture_id);
-    glBindTexture(GL_TEXTURE_2D, texture_id);
+    glGenTextures(1, &texture_id_);
+    glBindTexture(GL_TEXTURE_2D, texture_id_);
 
-    // Set texture parameters
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -109,7 +108,7 @@ void Vocksel::Cube::initTexture(const char *texture) {
     int width, height, nrChannels;
     unsigned char* data = stbi_load(texture, &width, &height, &nrChannels, 0);
     if (data) {
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
         glGenerateMipmap(GL_TEXTURE_2D);
     } else {
         std::cerr << "Failed to load texture " << texture << std::endl;
@@ -124,7 +123,7 @@ void Vocksel::Cube::cleanUpMesh() {
 
 
 
-void Vocksel::Cube::render(Shader& shader, const Camera& camera) {
+void Vocksel::Cube::render(Shader& shader) {
     glm::mat4 model = glm::mat4(1.0f);
     model = glm::translate(model, glm::vec3(position_));
     model = glm::rotate(model, static_cast<float>(glfwGetTime()), glm::vec3(.3f, 1.0f, .5f));
@@ -133,7 +132,7 @@ void Vocksel::Cube::render(Shader& shader, const Camera& camera) {
     shader.setVec3("color", color_);
 
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, texture_id);
+    glBindTexture(GL_TEXTURE_2D, texture_id_);
     shader.setInt("texture_diffuse", 0);  // Add this line
 
     mesh_->bind();
