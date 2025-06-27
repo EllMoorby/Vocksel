@@ -40,6 +40,8 @@ add_executable(Vocksel
         src/application.cpp
         include/Vocksel/static_mesh.h
         src/static_mesh.cpp
+        include/Vocksel/chunk.h
+        src/chunk.cpp
 )
 
 # Copy assets directory to build

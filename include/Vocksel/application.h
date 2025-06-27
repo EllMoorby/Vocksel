@@ -6,6 +6,8 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <iostream>
 #include <vector>
+
+#include "chunk.h"
 #include "Vocksel/constants.h"
 #include "Vocksel/cube.h"
 #include "Vocksel/shader.h"
@@ -41,6 +43,7 @@ class Application {
     Camera camera_;
     Shader shader_;
     std::vector<Cube> cubes_;
+    std::vector<Chunk> chunks_;
 
 };
 }

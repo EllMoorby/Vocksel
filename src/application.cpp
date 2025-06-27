@@ -3,27 +3,15 @@
 #include <format>
 
 Vocksel::Application::Application() {
-    srand(static_cast<unsigned int>(time(nullptr)));
     initWindow();
     initGL();
 
     shader_.init("assets/shaders/core/basic.vs.glsl", "assets/shaders/core/basic.fs.glsl");
-    Cube::initMesh();
-    const int chunkSize = 16;
-    const float spacing = 1.0f;
-    for (int x = 0; x < chunkSize; ++x) {
-        for (int y = 0; y < chunkSize; ++y) {
-            for (int z = 0; z < chunkSize; ++z) {
-                glm::vec3 pos = glm::vec3(x * spacing, y * spacing, z * spacing);
-                glm::vec3 color = glm::vec3(
-                    static_cast<float>(rand()) / RAND_MAX,
-                    static_cast<float>(rand()) / RAND_MAX,
-                    static_cast<float>(rand()) / RAND_MAX
-                );
-                cubes_.push_back(Cube::create(pos, color));
-            }
-        }
-    }
+    const int worldSize = 2;
+    for (int x = 0; x < worldSize; ++x)
+        for (int y = 0; y < worldSize; ++y)
+            for (int z = 0; z < worldSize; ++z)
+                chunks_.emplace_back(glm::vec3(x, y, z) * (float)Chunk::kSize);
 
 
 }
@@ -99,6 +87,10 @@ void Vocksel::Application::run() {
 
         for (auto& cube : cubes_) {
             cube.render(shader_, camera_);
+        }
+
+        for (auto& chunk : chunks_) {
+            chunk.render(shader_, camera_);
         }
 
         glfwSwapBuffers(window_);
