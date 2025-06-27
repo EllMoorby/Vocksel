@@ -5,7 +5,7 @@
 
 namespace Vocksel {
     class StaticMesh {
-        public:
+    public:
         StaticMesh(const float* vertices, int float_count, const unsigned int* indices, int index_count, int vertexStride);
         ~StaticMesh();
 
@@ -14,7 +14,7 @@ namespace Vocksel {
 
         int getIndexCount() const;
 
-        private:
+    private:
         GLuint VAO_, VBO_, EBO_;
         int index_count_;
 

@@ -11,29 +11,29 @@
 namespace Vocksel {
     class Chunk {
         public:
-        Chunk(glm::vec3 position);
-        ~Chunk();
+            Chunk(glm::vec3 position);
+            ~Chunk();
 
-        // Prevents copying and assigning
-        Chunk(const Chunk&) = delete;
-        Chunk& operator=(const Chunk&) = delete;
+            // Prevents copying and assigning
+            Chunk(const Chunk&) = delete;
+            Chunk& operator=(const Chunk&) = delete;
 
-        // Default move and assignment operator
-        Chunk(Chunk&&) noexcept = default;
-        Chunk& operator=(Chunk&&) noexcept = default;
+            // Default move and assignment operator
+            Chunk(Chunk&&) noexcept = default;
+            Chunk& operator=(Chunk&&) noexcept = default;
 
-        void generateMesh();
-        void render(Shader& shader);
-        static void initAtlas(const std::string& atlasPath);
+            void generateMesh();
+            void render(Shader& shader);
+            static void initAtlas(const std::string& atlasPath);
 
-        static constexpr int kSize = Constants::CHUNK_SIZE;
+            static constexpr int kSize = Constants::CHUNK_SIZE;
 
         private:
-        std::string getBlockType(int block_type);
-        glm::vec3 position_;
-        uint8_t voxels_[kSize][kSize][kSize];
-        static TextureAtlas* texture_atlas_;
-        std::unique_ptr<StaticMesh> mesh_;
+            std::string getBlockType(int block_type);
+            glm::vec3 position_;
+            uint8_t voxels_[kSize][kSize][kSize];
+            static TextureAtlas* texture_atlas_;
+            std::unique_ptr<StaticMesh> mesh_;
 
     };
 }

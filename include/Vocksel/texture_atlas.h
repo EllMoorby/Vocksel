@@ -9,7 +9,7 @@
 
 namespace Vocksel {
     class TextureAtlas {
-        public:
+    public:
         TextureAtlas(int tile_size);
         ~TextureAtlas();
 
@@ -19,7 +19,7 @@ namespace Vocksel {
 
         float getTileScale() const;
 
-        private:
+    private:
         GLuint atlas_texture_;
         int tile_size_;
         int atlas_size_;

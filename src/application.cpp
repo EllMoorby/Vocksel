@@ -8,20 +8,9 @@ Vocksel::Application::Application() {
     initWindow();
     initGL();
 
+    world_.init();
     shader_.init("assets/shaders/core/basic.vs.glsl", "assets/shaders/core/basic.fs.glsl");
-
-    Chunk::initAtlas("assets/textures");
-    const int worldSize = 10;
-    for (int x = 0; x < worldSize; ++x)
-        for (int y = 0; y < worldSize; ++y)
-            for (int z = 0; z < worldSize; ++z)
-                chunks_.emplace_back(glm::vec3(x, y, z) * (float)Chunk::kSize);
-
-
     cubes_.emplace_back(Cube::create(glm::vec3(-3.0f,.0f,0.f), glm::vec3(1.f,1.f,1.f)));
-
-
-
 }
 
 void Vocksel::Application::initWindow() {
@@ -68,6 +57,7 @@ void Vocksel::Application::initGL() {
 
 void Vocksel::Application::run() {
     float second_count = 0.0f;
+    last_frame_ = glfwGetTime();
     while (!glfwWindowShouldClose(window_)) {
         float current_frame = glfwGetTime();
         delta_time_ = current_frame - last_frame_;
@@ -101,10 +91,8 @@ void Vocksel::Application::run() {
             cube.render(shader_);
         }
 
-        // Render chunks
-        for (auto& chunk : chunks_) {
-            chunk.render(shader_);
-        }
+        world_.render(shader_);
+
 
         glfwSwapBuffers(window_);
         glfwPollEvents();

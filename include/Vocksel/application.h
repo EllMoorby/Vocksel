@@ -8,6 +8,7 @@
 #include <vector>
 
 #include "chunk.h"
+#include "world.h"
 #include "Vocksel/constants.h"
 #include "Vocksel/cube.h"
 #include "Vocksel/shader.h"
@@ -16,34 +17,34 @@
 namespace Vocksel {
 class Application {
     public:
-    Application();
-    ~Application();
+        Application();
+        ~Application();
 
-    void run();
+        void run();
 
     private:
-    void initWindow();
-    void initGL();
-    void cleanUp();
+        void initWindow();
+        void initGL();
+        void cleanUp();
 
-    void processInput();
-    static void mouseCallback(GLFWwindow* window ,double xpos, double ypos);
-    static void framebufferSizeCallback(GLFWwindow* window, int width, int height);
+        void processInput();
+        static void mouseCallback(GLFWwindow* window ,double xpos, double ypos);
+        static void framebufferSizeCallback(GLFWwindow* window, int width, int height);
 
 
-    bool first_mouse_move_cond_ = true;
-    double lastx_mouse_ = Constants::SCREEN_WIDTH/2, lasty_mouse_ = Constants::SCREEN_HEIGHT/2;
-    float yaw_camera_ = 90.0f, pitch_camera_;
+        bool first_mouse_move_cond_ = true;
+        double lastx_mouse_ = Constants::SCREEN_WIDTH/2, lasty_mouse_ = Constants::SCREEN_HEIGHT/2;
+        float yaw_camera_ = 90.0f, pitch_camera_;
 
-    float current_frame_;
-    float delta_time_;
-    float last_frame_;
+        float current_frame_;
+        float delta_time_;
+        float last_frame_;
 
-    GLFWwindow* window_;
-    Camera camera_;
-    Shader shader_;
-    std::vector<Cube> cubes_;
-    std::vector<Chunk> chunks_;
+        GLFWwindow* window_;
+        Camera camera_;
+        Shader shader_;
+        std::vector<Cube> cubes_;
+        World world_;
 
 };
 }
