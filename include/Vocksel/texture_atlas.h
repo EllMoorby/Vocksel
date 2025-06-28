@@ -16,9 +16,7 @@ namespace Vocksel {
         void loadFromFolder(const std::string& path);
         GLuint getAtlasTexture() const;
         glm::vec2 getUVOffset(const std::string& textureName) const;
-
         float getTileScale() const;
-
     private:
         GLuint atlas_texture_;
         int tile_size_;

@@ -11,13 +11,10 @@ namespace Vocksel {
 
         void bind();
         void unbind();
-
         int getIndexCount() const;
-
     private:
         GLuint VAO_, VBO_, EBO_;
         int index_count_;
-
     };
 }
 #endif //STATIC_MESH_H

@@ -16,17 +16,16 @@ namespace Vocksel {
         void moveUp(float speed);
         void moveDown(float speed);
 
-
         void recalculateVectors();
+
         glm::mat4 getViewMatrix() const;
         glm::mat4 getProjectionMatrix(float aspectRatio) const;
-
+    public:
         glm::vec3 position_ = glm::vec3(0.f, 0.f, -3.f);
         glm::vec3 front_ = glm::normalize(glm::vec3(0.0f, 0.0f, 1.0f));
         glm::vec3 up_ = Constants::WORLD_UP;
         glm::vec3 right_ = glm::normalize(glm::cross(front_, up_));
         glm::vec3 flatfront_ = glm::normalize(glm::vec3(front_.x, 0.0f, front_.z));
-
     private:
         float fov_ = glm::radians(90.0f);
         float nearplane_ = 0.1f;

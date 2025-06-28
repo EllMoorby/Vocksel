@@ -134,6 +134,15 @@ std::string Vocksel::Chunk::getBlockType(int block_type) {
     }
 }
 
+void Vocksel::Chunk::editVoxel(uint8_t x, uint8_t y, uint8_t z, uint8_t block_type) {
+    voxels_[x][y][z] = block_type;
+}
+
+glm::vec3 Vocksel::Chunk::getPosition() {
+    return position_;
+}
+
+
 
 void Vocksel::Chunk::render(Shader &shader) {
     glm::mat4 model = glm::mat4(1.0f);
