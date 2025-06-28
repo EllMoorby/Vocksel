@@ -59,7 +59,6 @@ void Vocksel::World::render(Shader &shader) {
 }
 
 Vocksel::World::~World() {
-
 }
 
 

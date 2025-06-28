@@ -68,6 +68,8 @@ add_executable(Vocksel
         src/texture_atlas.cpp
         include/Vocksel/world.h
         src/world.cpp
+        include/Vocksel/input_manager.h
+        src/input_manager.cpp
 )
 
 # Copy assets directory to build

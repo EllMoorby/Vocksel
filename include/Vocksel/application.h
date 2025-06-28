@@ -8,6 +8,7 @@
 #include <vector>
 
 #include "chunk.h"
+#include "input_manager.h"
 #include "world.h"
 #include "Vocksel/constants.h"
 #include "Vocksel/cube.h"
@@ -26,7 +27,8 @@ namespace Vocksel {
         void initWindow();
         void initGL();
         void initGUI();
-        void processInput();
+        void initInput();
+        void closeWindow();
         static void mouseCallback(GLFWwindow* window ,double xpos, double ypos);
         static void framebufferSizeCallback(GLFWwindow* window, int width, int height);
         void cleanUp();
@@ -42,6 +44,7 @@ namespace Vocksel {
         GLFWwindow* window_;
         Camera camera_;
         Shader shader_;
+        InputManager input_;
         std::vector<Cube> cubes_;
         World world_;
 };

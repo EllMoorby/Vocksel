@@ -12,8 +12,10 @@
 
 Vocksel::Application::Application() {
     initWindow();
+    input_.init(window_);
     initGL();
     initGUI();
+    initInput();
 
     world_.init();
     shader_.init("assets/shaders/core/basic.vs.glsl", "assets/shaders/core/basic.fs.glsl");
@@ -73,6 +75,51 @@ void Vocksel::Application::initGUI() {
 
 }
 
+void Vocksel::Application::initInput() {
+    auto bindMovement = [this](int key, auto dirFunc) {
+        input_.bindKey(key, [this, dirFunc](float dt) {
+            float speed = Constants::CAMERA_SPEED * dt;
+            if (input_.isKeyPressed(GLFW_KEY_LEFT_SHIFT)) {
+                speed *= 2.0f;
+            }
+            dirFunc(speed);
+        });
+    };
+
+    bindMovement(GLFW_KEY_W, [this](float speed) {
+        camera_.moveForward(speed);
+    });
+    bindMovement(GLFW_KEY_S, [this](float speed) {
+        camera_.moveBackward(speed);
+    });
+    bindMovement(GLFW_KEY_A, [this](float speed) {
+        camera_.moveLeft(speed);
+    });
+    bindMovement(GLFW_KEY_D, [this](float speed) {
+        camera_.moveRight(speed);
+    });
+
+    bindMovement(GLFW_KEY_SPACE, [this](float speed) {
+        camera_.moveUp(speed);
+    });
+    bindMovement(GLFW_KEY_LEFT_CONTROL, [this](float speed) {
+        camera_.moveDown(speed);
+    });
+
+
+    input_.bindKey(GLFW_KEY_ESCAPE, [this] {
+        closeWindow();
+    });
+
+    input_.bindKey(GLFW_KEY_ENTER, [this] {
+        input_.setMouseMode(input_.getMouseMode() == GLFW_CURSOR_DISABLED
+            ? GLFW_CURSOR_NORMAL
+            : GLFW_CURSOR_DISABLED);
+    });
+
+}
+
+
 
 void Vocksel::Application::run() {
     float second_count = 0.0f;
@@ -93,7 +140,7 @@ void Vocksel::Application::run() {
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
-        processInput();
+        input_.update(delta_time_);
 
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -154,7 +201,7 @@ void Vocksel::Application::framebufferSizeCallback(GLFWwindow *window, int width
 
 void Vocksel::Application::mouseCallback(GLFWwindow *window_, double xpos, double ypos) {
     auto app = static_cast<Application*>(glfwGetWindowUserPointer(window_));
-    if (not app->in_mouse_mode_) return;
+    if (app->input_.isMouseFree()) return;
 
     if (app->first_mouse_move_cond_) {
         app->lastx_mouse_ = xpos;
@@ -193,46 +240,13 @@ void Vocksel::Application::mouseCallback(GLFWwindow *window_, double xpos, doubl
     app->camera_.recalculateVectors();
 }
 
-void Vocksel::Application::processInput() {
-    float speed = Constants::CAMERA_SPEED * delta_time_;
-    if (glfwGetKey(window_, GLFW_KEY_ENTER) == GLFW_PRESS) {
-        if (in_mouse_mode_) {
-            glfwSetInputMode(window_, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-            in_mouse_mode_ = false;
-        }else {
-            glfwSetInputMode(window_, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-            in_mouse_mode_ = true;
-        }
-    }
-    if (glfwGetKey(window_, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
-        speed = Constants::CAMERA_SPEED * delta_time_ * 2;
-    }
-    if (glfwGetKey(window_, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
-        glfwSetWindowShouldClose(window_, true);
-    }
-    if (glfwGetKey(window_, GLFW_KEY_W) == GLFW_PRESS) {
-        camera_.moveForward(speed);
-    }
-    if (glfwGetKey(window_, GLFW_KEY_S) == GLFW_PRESS) {
-        camera_.moveBackward(speed);
-    }
-    if (glfwGetKey(window_, GLFW_KEY_A) == GLFW_PRESS) {
-        camera_.moveLeft(speed);
-    }
-    if (glfwGetKey(window_, GLFW_KEY_D) == GLFW_PRESS) {
-        camera_.moveRight(speed);
-    }
-    if (glfwGetKey(window_, GLFW_KEY_SPACE) == GLFW_PRESS) {
-        camera_.moveUp(speed);
-    }
-    if (glfwGetKey(window_, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) {
-        camera_.moveDown(speed);
-    }
+void Vocksel::Application::closeWindow() {
+    glfwSetWindowShouldClose(window_, GLFW_TRUE);
 }
+
 
 void Vocksel::Application::cleanUp() {
     Cube::cleanUpMesh();
-    //TODO: Separate out chunk deinit to cleanup and add here.
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();

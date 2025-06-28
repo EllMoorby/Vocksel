@@ -9,12 +9,12 @@
 namespace Vocksel {
     class Camera {
     public:
-        void moveForward(float speed);
-        void moveBackward(float speed);
-        void moveRight(float speed);
-        void moveLeft(float speed);
-        void moveUp(float speed);
-        void moveDown(float speed);
+        void moveForward(float delta_time);
+        void moveBackward(float delta_time);
+        void moveRight(float delta_time);
+        void moveLeft(float delta_time);
+        void moveUp(float delta_time);
+        void moveDown(float delta_time);
 
         void recalculateVectors();
 

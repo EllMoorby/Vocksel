@@ -160,8 +160,13 @@ void Vocksel::Chunk::render(Shader &shader) {
     mesh_->unbind();
 }
 
-Vocksel::Chunk::~Chunk() {
+void Vocksel::Chunk::cleanUp() {
     mesh_.reset();
+}
+
+
+Vocksel::Chunk::~Chunk() {
+    cleanUp();
 }
 
 
