@@ -25,11 +25,13 @@ namespace Vocksel {
     private:
         void initWindow();
         void initGL();
+        void initGUI();
         void processInput();
         static void mouseCallback(GLFWwindow* window ,double xpos, double ypos);
         static void framebufferSizeCallback(GLFWwindow* window, int width, int height);
         void cleanUp();
     private:
+        bool in_mouse_mode_ = true;
         bool first_mouse_move_cond_ = true;
         double lastx_mouse_ = Constants::SCREEN_WIDTH/2, lasty_mouse_ = Constants::SCREEN_HEIGHT/2;
         float yaw_camera_ = 90.0f, pitch_camera_;

@@ -29,7 +29,7 @@ namespace Vocksel {
     private:
         float fov_ = glm::radians(90.0f);
         float nearplane_ = 0.1f;
-        float farplane_ = 100.0f;
+        float farplane_ = 400.0f;
     };
 }
 

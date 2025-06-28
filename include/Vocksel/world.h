@@ -12,9 +12,10 @@ namespace Vocksel {
         void init();
         void render(Shader &shader);
         void generateWorld();
+    public:
+        float noise_amplitude_scale_, noise_frequency_scale_;
     private:
-        float noise_scale_x, noise_scale_y;
-        const int world_size_;
+
         std::vector<Chunk> chunks_;
         std::vector<float> noise_data_;
     };
