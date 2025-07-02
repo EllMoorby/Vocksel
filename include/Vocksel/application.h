@@ -9,7 +9,9 @@
 
 #include "chunk.h"
 #include "input_manager.h"
+#include "resource_manager.h"
 #include "world.h"
+#include "model_manager.h"
 #include "Vocksel/constants.h"
 #include "Vocksel/cube.h"
 #include "Vocksel/shader.h"
@@ -43,10 +45,11 @@ namespace Vocksel {
 
         GLFWwindow* window_;
         Camera camera_;
-        Shader shader_;
         InputManager input_;
-        std::vector<Cube> cubes_;
-        World world_;
+        ResourceManager resources_;
+        ModelManager model_manager_;
+        std::vector<std::unique_ptr<Cube>> cubes_;
+        std::unique_ptr<World> world_;
 };
 }
 #endif //APPLICATION_H

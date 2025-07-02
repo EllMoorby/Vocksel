@@ -1,15 +1,13 @@
 #include "Vocksel/world.h"
 
-Vocksel::World::World(): noise_amplitude_scale_(.85f), noise_frequency_scale_(3.f) {
+Vocksel::World::World(ResourceManager& resource_manager): noise_amplitude_scale_(.85f), noise_frequency_scale_(3.f), resource_manager_(resource_manager) {
 
 }
 
 void Vocksel::World::init() {
-    Chunk::initAtlas("assets/textures");
-
     for (int x = 0; x < Constants::WORLD_SIZE; ++x)
         for (int z = 0; z < Constants::WORLD_SIZE; ++z)
-            chunks_.emplace_back(glm::vec3(x, 0, z) * (float)Chunk::kSize);
+            chunks_.emplace_back(glm::vec3(x, 0, z) * (float)Chunk::kSize, resource_manager_);
 
     generateWorld();
 }

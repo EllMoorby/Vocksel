@@ -6,9 +6,8 @@
 #include "Vocksel/camera.h"
 #include "Vocksel/shader.h"
 
-std::unique_ptr<Vocksel::StaticMesh> Vocksel::Cube::mesh_ = nullptr;
+const std::string Vocksel::Cube::MODEL_NAME = "cube";
 GLuint Vocksel::Cube::texture_id_ = 0;
-
 
 const float Vocksel::Cube::vertices_[] = {
     // Positions          // Texture Coords
@@ -61,12 +60,13 @@ const unsigned int Vocksel::Cube::indices_[] = {
 
 
 
-Vocksel::Cube::Cube()
-    : position_(0.0f), color_(1.0f), rotation_angle_(0.0f), initialized_(false) {}
+Vocksel::Cube::Cube(ModelManager& model_manager)
+    : model_manager_(model_manager), position_(0.0f), color_(1.0f), rotation_angle_(0.0f), initialized_(false) {}
 
-Vocksel::Cube Vocksel::Cube::create(const glm::vec3 &pos, const glm::vec3 &col) {
-    Cube cube;
-    cube.init(pos, col);
+
+std::unique_ptr<Vocksel::Cube> Vocksel::Cube::create(ModelManager& model_manager,const glm::vec3 &pos, const glm::vec3 &col) {
+    auto cube = std::make_unique<Cube>(model_manager);
+    cube->init(pos, col);
     return cube;
 }
 
@@ -75,20 +75,23 @@ void Vocksel::Cube::init(glm::vec3 pos, glm::vec3 col) {
     position_ = pos;
     initialized_ = true;
 
-    initMesh();
+    initMesh(model_manager_);
+
     initTexture("assets/textures/stone.png");
 }
 
 
-void Vocksel::Cube::initMesh() {
-    if (mesh_) return;
-    mesh_ = std::make_unique<StaticMesh>(
-        vertices_,
-        sizeof(vertices_) / sizeof(float),
-        indices_,
-        sizeof(indices_) / sizeof(unsigned int),
-        5
-    );
+void Vocksel::Cube::initMesh(ModelManager& model_manager) {
+    if (!model_manager.getModel(MODEL_NAME)) {
+        model_manager.createModelFromData(
+            MODEL_NAME,
+            vertices_,
+            sizeof(vertices_) / sizeof(float),
+            indices_,
+            sizeof(indices_) / sizeof(unsigned int),
+            5
+        );
+    }
 }
 
 void Vocksel::Cube::initTexture(const char *texture) {
@@ -116,28 +119,34 @@ void Vocksel::Cube::initTexture(const char *texture) {
 }
 
 
-void Vocksel::Cube::cleanUpMesh() {
-    mesh_.reset();
+void Vocksel::Cube::cleanUp() {
+    if (texture_id_ != 0) {
+        glDeleteTextures(1, &texture_id_);
+        texture_id_ = 0;
+    }
 }
 
 
 
 void Vocksel::Cube::render(Shader& shader) {
+    if (!initialized_) return;
+
     glDisable(GL_CULL_FACE);
     glm::mat4 model = glm::mat4(1.0f);
     model = glm::translate(model, glm::vec3(position_));
     model = glm::rotate(model, static_cast<float>(glfwGetTime()), glm::vec3(.3f, 1.0f, .5f));
 
-    shader.setMat4("model", model);
     shader.setVec3("color", color_);
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, texture_id_);
-    shader.setInt("texture_diffuse", 0);  // Add this line
+    shader.setInt("texture_diffuse", 0);
 
-    mesh_->bind();
-    glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
-    mesh_->unbind();
+    if (auto* cube_model = model_manager_.getModel(MODEL_NAME)) {
+        cube_model->setTransformMatrix(model);
+        cube_model->render(shader);
+    }
+
     glEnable(GL_CULL_FACE);
 
 }

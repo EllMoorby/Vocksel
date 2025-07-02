@@ -1,14 +1,20 @@
 #include "Vocksel/texture_atlas.h"
-
+#include <GLFW/glfw3.h>
 #include <algorithm>
 #include <filesystem>
 #include <iostream>
 #include <vector>
 #include "stb/stb_image.h"
 
-Vocksel::TextureAtlas::TextureAtlas(int tile_size): tile_size_(tile_size) {}
+Vocksel::TextureAtlas::TextureAtlas(int tile_size): atlas_texture_(0), tile_size_(tile_size) {}
 
 void Vocksel::TextureAtlas::loadFromFolder(const std::string &path) {
+    if (!glfwGetCurrentContext()) {
+        throw std::runtime_error("No OpenGL context for texture loading");
+    }
+
+    std::cout << "Created texture atlas (ID: " << atlas_texture_ << ")\n";
+
     std::vector<std::string> texture_files;
     for (const auto& entry : std::filesystem::directory_iterator(path)) {
         if (entry.path().extension() == ".png" || entry.path().extension() == ".jpg") {
@@ -99,8 +105,19 @@ glm::vec2 Vocksel::TextureAtlas::getUVOffset(const std::string &textureName) con
     return offset;
 }
 
-Vocksel::TextureAtlas::~TextureAtlas() {
+void Vocksel::TextureAtlas::cleanUp() {
+    if (atlas_texture_ != 0) {
+        glDeleteTextures(1, &atlas_texture_);
+        atlas_texture_ = 0;
+    }
 
+    texture_positions_.clear();
+
+    atlas_size_ = 0;
+}
+
+Vocksel::TextureAtlas::~TextureAtlas() {
+    cleanUp();
 }
 
 

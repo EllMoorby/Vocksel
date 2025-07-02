@@ -4,12 +4,11 @@
 
 Vocksel::Shader::Shader(): ID_(0) {}
 
-Vocksel::Shader::Shader(const char *vertexPath, const char *fragmentPath) {
+Vocksel::Shader::Shader(const char *vertexPath, const char *fragmentPath): ID_(0) {
     init(vertexPath, fragmentPath);
 }
 
 void Vocksel::Shader::init(const char *vertexPath, const char *fragmentPath) {
-    // If the shader has already initialised
     if (ID_ != 0) {
         std::cerr << "Shader already initialized. Ignoring init() call." << std::endl;
         return;
@@ -44,6 +43,7 @@ void Vocksel::Shader::init(const char *vertexPath, const char *fragmentPath) {
     checkCompileErrors(fragment, "FRAGMENT");
 
     ID_ = glCreateProgram();
+
     glAttachShader(ID_, vertex);
     glAttachShader(ID_, fragment);
     glLinkProgram(ID_);
@@ -52,7 +52,6 @@ void Vocksel::Shader::init(const char *vertexPath, const char *fragmentPath) {
     glDeleteShader(vertex);
     glDeleteShader(fragment);
 }
-
 
 void Vocksel::Shader::use() {
     glUseProgram(ID_);
@@ -93,7 +92,8 @@ void Vocksel::Shader::checkCompileErrors(GLuint object, std::string type) {
 }
 
 Vocksel::Shader::~Shader() {
-    glDeleteProgram(ID_);
-
+    if (ID_ != 0) {
+        glDeleteProgram(ID_);
+    }
 }
 

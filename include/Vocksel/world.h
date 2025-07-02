@@ -6,7 +6,7 @@
 namespace Vocksel {
     class World {
     public:
-        World();
+        World(ResourceManager& resource_manager);
         ~World();
 
         void init();
@@ -15,7 +15,7 @@ namespace Vocksel {
     public:
         float noise_amplitude_scale_, noise_frequency_scale_;
     private:
-
+        ResourceManager& resource_manager_;
         std::vector<Chunk> chunks_;
         std::vector<float> noise_data_;
     };

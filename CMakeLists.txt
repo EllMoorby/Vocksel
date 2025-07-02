@@ -2,7 +2,10 @@ cmake_minimum_required(VERSION 3.31)
 project(Vocksel LANGUAGES C CXX)
 
 set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_BUILD_TYPE Debug)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -static-libgcc -static-libstdc++")
 
 include(FetchContent)
 
@@ -70,6 +73,12 @@ add_executable(Vocksel
         src/world.cpp
         include/Vocksel/input_manager.h
         src/input_manager.cpp
+        include/Vocksel/resource_manager.h
+        src/resource_manager.cpp
+        src/model_manager.cpp
+        include/Vocksel/model_manager.h
+        src/model.cpp
+        include/Vocksel/model.h
 )
 
 # Copy assets directory to build

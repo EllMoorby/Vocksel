@@ -1,8 +1,5 @@
 #include "Vocksel/chunk.h"
 
-
-Vocksel::TextureAtlas* Vocksel::Chunk::texture_atlas_ = nullptr;
-
 // Face directions (order: +X, -X, +Y, -Y, +Z, -Z) [UNUSED]
 const glm::ivec3 faceNormals[6] = {
     {1, 0, 0}, {-1, 0, 0},
@@ -26,14 +23,8 @@ const glm::vec3 faceVertices[6][4] = {
 };
 
 
-void Vocksel::Chunk::initAtlas(const std::string &atlasPath) {
-    texture_atlas_ = new TextureAtlas(160);
-    texture_atlas_->loadFromFolder(atlasPath);
-}
 
-
-
-Vocksel::Chunk::Chunk(glm::vec3 position): position_(position) {
+Vocksel::Chunk::Chunk(glm::vec3 position, ResourceManager& resource_manager): position_(position), resource_manager_(resource_manager) {
     // set it to random for now
     for (int x = 0; x < kSize; ++x)
         for (int y = 0; y < kSize; ++y)
@@ -47,6 +38,8 @@ void Vocksel::Chunk::generateMesh() {
     std::vector<float> vertices;
     std::vector<unsigned int> indices;
     unsigned int idx_offset = 0;
+
+    TextureAtlas& atlas = resource_manager_.getBlockAtlas();
 
     // For each voxel
     for (int x = 0; x < kSize; ++x) {
@@ -80,8 +73,8 @@ void Vocksel::Chunk::generateMesh() {
                     glm::vec3 blockPos = glm::vec3(x, y, z);
 
                     // Get the texture coordinate of the texture
-                    glm::vec2 uv_offset = texture_atlas_->getUVOffset(getBlockType(block_type));
-                    float tile_scale = texture_atlas_->getTileScale();
+                    glm::vec2 uv_offset = atlas.getUVOffset(getBlockType(block_type));
+                    float tile_scale = atlas.getTileScale();
 
                     const glm::vec2 baseUVs[4] = {
                         {0.0f, 0.0f}, {tile_scale, 0.0f},
@@ -151,8 +144,10 @@ void Vocksel::Chunk::render(Shader &shader) {
     shader.setMat4("model", model);
     shader.setVec3("color", glm::vec3(0.0f, 1.0f, 0.0f));
 
+    TextureAtlas& atlas = resource_manager_.getBlockAtlas();
+
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, texture_atlas_->getAtlasTexture());
+    glBindTexture(GL_TEXTURE_2D, atlas.getAtlasTexture());
     shader.setInt("textureAtlas", 0);
 
     mesh_->bind();

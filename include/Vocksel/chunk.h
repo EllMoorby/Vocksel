@@ -4,6 +4,7 @@
 
 #include "camera.h"
 #include "constants.h"
+#include "resource_manager.h"
 #include "shader.h"
 #include "static_mesh.h"
 #include "texture_atlas.h"
@@ -11,10 +12,9 @@
 namespace Vocksel {
     class Chunk {
     public:
-        Chunk(glm::vec3 position);
+        Chunk(glm::vec3 position, ResourceManager& resource_manager);
         ~Chunk();
 
-        static void initAtlas(const std::string& atlasPath);
         void generateMesh();
         void render(Shader& shader);
         void editVoxel(uint8_t x, uint8_t y, uint8_t z, uint8_t block_type);
@@ -34,8 +34,8 @@ namespace Vocksel {
         std::string getBlockType(int block_type);
     private:
         glm::vec3 position_;
+        ResourceManager& resource_manager_;
         uint8_t voxels_[kSize][kSize][kSize];
-        static TextureAtlas* texture_atlas_; //TODO: move to a new class so i can deinit chunks
         std::unique_ptr<StaticMesh> mesh_;
     };
 }
