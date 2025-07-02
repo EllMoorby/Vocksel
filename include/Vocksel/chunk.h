@@ -18,8 +18,11 @@ namespace Vocksel {
         void generateMesh();
         void render(Shader& shader);
         void editVoxel(uint8_t x, uint8_t y, uint8_t z, uint8_t block_type);
+        uint8_t getVoxel(uint8_t x, uint8_t y, uint8_t z);
         glm::vec3 getPosition();
         void cleanUp();
+        void setNeighbor(int direction, Chunk* neighbor);
+        Chunk* getNeighbor(int direction) const;
 
         // Prevents copying and assigning
         Chunk(const Chunk&) = delete;
@@ -37,6 +40,7 @@ namespace Vocksel {
         ResourceManager& resource_manager_;
         uint8_t voxels_[kSize][Constants::WORLD_HEIGHT][kSize];
         std::unique_ptr<StaticMesh> mesh_;
+        Chunk* neighbors_[6] = {nullptr}; // +X, -X, +Y, -Y, +Z, -Z
     };
 }
 

@@ -32,6 +32,18 @@ Vocksel::Chunk::Chunk(glm::vec3 position, ResourceManager& resource_manager): po
                 voxels_[x][y][z] = 1;
 }
 
+void Vocksel::Chunk::setNeighbor(int direction, Chunk *neighbor) {
+    if (direction >= 0 && direction < 6) neighbors_[direction] = neighbor;
+}
+
+Vocksel::Chunk *Vocksel::Chunk::getNeighbor(int direction) const {
+    if (direction >= 0 && direction < 6) return neighbors_[direction];
+    std::cerr << "direction out of bounds: " << direction << std::endl;
+    return nullptr;
+}
+
+
+
 void Vocksel::Chunk::generateMesh() {
     std::vector<float> vertices;
     std::vector<uint32_t> indices;
@@ -56,15 +68,31 @@ void Vocksel::Chunk::generateMesh() {
                         {0, 0, 1}, {0, 0, -1}   // +Z, -Z
                     };
 
+                    glm::ivec3 neighbor_pos = glm::ivec3(x, y, z) + directions[dir];
 
-                    glm::ivec3 neighbor = glm::ivec3(x,y,z) + directions[dir];
+                    bool out_of_bounds = neighbor_pos.x < 0 || neighbor_pos.y < 0 || neighbor_pos.z < 0 ||
+                                         neighbor_pos.x >= kSize || neighbor_pos.y >= Constants::WORLD_HEIGHT || neighbor_pos.z >= kSize;
 
-                    // Is this face blocked?
-                    bool visible = (neighbor.x < 0 || neighbor.y < 0 || neighbor.z < 0 ||
-                        neighbor.x >= kSize || neighbor.y >= Constants::WORLD_HEIGHT || neighbor.z >= kSize) ||
-                       (neighbor.x >= 0 && neighbor.y >= 0 && neighbor.z >= 0 &&
-                        neighbor.x < kSize && neighbor.y < Constants::WORLD_HEIGHT && neighbor.z < kSize &&
-                        voxels_[neighbor.x][neighbor.y][neighbor.z] == 0);
+                    bool visible = false;
+
+                    if (out_of_bounds) {
+                        // Try to get neighbor chunk
+                        Chunk* neighbor_chunk = getNeighbor(dir);
+                        if (neighbor_chunk) {
+                            glm::ivec3 local_pos = neighbor_pos;
+                            if (local_pos.x < 0) local_pos.x += kSize;
+                            if (local_pos.x >= kSize) local_pos.x -= kSize;
+                            if (local_pos.z < 0) local_pos.z += kSize;
+                            if (local_pos.z >= kSize) local_pos.z -= kSize;
+
+                            uint8_t neighbor_block = neighbor_chunk->getVoxel(local_pos.x, local_pos.y, local_pos.z);
+                            visible = (neighbor_block == 0);
+                        } else {
+                            visible = true; // no neighbor chunk loaded
+                        }
+                    } else {
+                        visible = (voxels_[neighbor_pos.x][neighbor_pos.y][neighbor_pos.z] == 0);
+                    }
 
                     if (not visible) continue;
 
@@ -139,6 +167,14 @@ void Vocksel::Chunk::editVoxel(uint8_t x, uint8_t y, uint8_t z, uint8_t block_ty
         return;
     }
     voxels_[x][y][z] = block_type;
+}
+
+uint8_t Vocksel::Chunk::getVoxel(uint8_t x, uint8_t y, uint8_t z) {
+    if (x > kSize - 1 || y > Constants::WORLD_HEIGHT - 1 || z > kSize - 1) {
+        std::cerr << "Getting block out of range. x: " << x << " y: "<< y << " z: " << z << std::endl;
+        return 0;
+    }
+    return voxels_[x][y][z];
 }
 
 glm::vec3 Vocksel::Chunk::getPosition() {

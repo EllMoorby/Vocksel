@@ -10,6 +10,19 @@ void Vocksel::World::init() {
         for (int z = 0; z < Constants::WORLD_SIZE; ++z)
             chunks_.emplace_back(glm::vec3(x, 0, z) * (float)Chunk::kSize, resource_manager_);
 
+    for (int x = 0; x < Constants::WORLD_SIZE; ++x) {
+        for (int z = 0; z < Constants::WORLD_SIZE; ++z) {
+            Chunk& chunk = chunks_[x * Constants::WORLD_SIZE + z];
+            if (x < Constants::WORLD_SIZE - 1)
+                chunk.setNeighbor(0, &chunks_[(x + 1) * Constants::WORLD_SIZE + z]); // +X
+            if (x > 0)
+                chunk.setNeighbor(1, &chunks_[(x - 1) * Constants::WORLD_SIZE + z]); // -X
+            if (z < Constants::WORLD_SIZE - 1)
+                chunk.setNeighbor(4, &chunks_[x * Constants::WORLD_SIZE + (z + 1)]); // +Z
+            if (z > 0)
+                chunk.setNeighbor(5, &chunks_[x * Constants::WORLD_SIZE + (z - 1)]); // -Z
+        }
+    }
     generateWorld();
 }
 

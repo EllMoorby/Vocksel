@@ -29,7 +29,6 @@ Vocksel::Model* Vocksel::ModelManager::getModel(const std::string &name) {
     if (it != models_.end()) {
         return it->second.get();
     }
-    std::cerr << "Model " << name << " not found" << std::endl;
     return nullptr;
 }
 
