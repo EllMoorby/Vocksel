@@ -35,7 +35,7 @@ namespace Vocksel {
     private:
         glm::vec3 position_;
         ResourceManager& resource_manager_;
-        uint8_t voxels_[kSize][kSize][kSize];
+        uint8_t voxels_[kSize][Constants::WORLD_HEIGHT][kSize];
         std::unique_ptr<StaticMesh> mesh_;
     };
 }

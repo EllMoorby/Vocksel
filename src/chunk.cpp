@@ -1,13 +1,13 @@
 #include "Vocksel/chunk.h"
 
 // Face directions (order: +X, -X, +Y, -Y, +Z, -Z) [UNUSED]
-const glm::ivec3 faceNormals[6] = {
+const glm::ivec3 face_normals[6] = {
     {1, 0, 0}, {-1, 0, 0},
     {0, 1, 0}, {0, -1, 0},
     {0, 0, 1}, {0, 0, -1}
 };
 
-const glm::vec3 faceVertices[6][4] = {
+const glm::vec3 face_vertices[6][4] = {
     // +X (right)
     {{0.5f, -0.5f, -0.5f}, {0.5f,  0.5f, -0.5f}, {0.5f,  0.5f,  0.5f}, {0.5f, -0.5f,  0.5f}},
     // -X (left)
@@ -27,7 +27,7 @@ const glm::vec3 faceVertices[6][4] = {
 Vocksel::Chunk::Chunk(glm::vec3 position, ResourceManager& resource_manager): position_(position), resource_manager_(resource_manager) {
     // set it to random for now
     for (int x = 0; x < kSize; ++x)
-        for (int y = 0; y < kSize; ++y)
+        for (int y = 0; y < Constants::WORLD_HEIGHT; ++y)
             for (int z = 0; z < kSize; ++z)
                 voxels_[x][y][z] = rand() % 5;
 
@@ -43,7 +43,7 @@ void Vocksel::Chunk::generateMesh() {
 
     // For each voxel
     for (int x = 0; x < kSize; ++x) {
-        for (int y = 0; y < kSize; ++y) {
+        for (int y = 0; y < Constants::WORLD_HEIGHT; ++y) {
             for (int z = 0; z < kSize; ++z) {
                 if (voxels_[x][y][z] == 0) continue;
 
@@ -63,33 +63,39 @@ void Vocksel::Chunk::generateMesh() {
 
                     // Is this face blocked?
                     bool visible = (neighbor.x < 0 || neighbor.y < 0 || neighbor.z < 0 ||
-                        neighbor.x >= kSize || neighbor.y >= kSize || neighbor.z >= kSize) ||
+                        neighbor.x >= kSize || neighbor.y >= Constants::WORLD_HEIGHT || neighbor.z >= kSize) ||
                        (neighbor.x >= 0 && neighbor.y >= 0 && neighbor.z >= 0 &&
-                        neighbor.x < kSize && neighbor.y < kSize && neighbor.z < kSize &&
+                        neighbor.x < kSize && neighbor.y < Constants::WORLD_HEIGHT && neighbor.z < kSize &&
                         voxels_[neighbor.x][neighbor.y][neighbor.z] == 0);
 
                     if (not visible) continue;
 
-                    glm::vec3 blockPos = glm::vec3(x, y, z);
+                    glm::vec3 block_pos = glm::vec3(x, y, z);
+                    glm::vec3 block_normal = glm::vec3(face_normals[dir]);
 
                     // Get the texture coordinate of the texture
                     glm::vec2 uv_offset = atlas.getUVOffset(getBlockType(block_type));
                     float tile_scale = atlas.getTileScale();
 
-                    const glm::vec2 baseUVs[4] = {
+                    const glm::vec2 kBaseUVs[4] = {
                         {0.0f, 0.0f}, {tile_scale, 0.0f},
                         {tile_scale, tile_scale}, {0.0f, tile_scale}
                     };
 
                     for (int i = 0; i < 4; ++i) {
-                        glm::vec3 v = blockPos + faceVertices[dir][i];
+                        glm::vec3 v = block_pos + face_vertices[dir][i];
                         vertices.push_back(v.x);
                         vertices.push_back(v.y);
                         vertices.push_back(v.z);
 
                         // Apply atlas offset and scaling
-                        vertices.push_back(uv_offset.x + baseUVs[i].x);
-                        vertices.push_back(uv_offset.y + baseUVs[i].y);
+                        vertices.push_back(uv_offset.x + kBaseUVs[i].x);
+                        vertices.push_back(uv_offset.y + kBaseUVs[i].y);
+
+
+                        vertices.push_back(block_normal.x);
+                        vertices.push_back(block_normal.y);
+                        vertices.push_back(block_normal.z);
                     }
 
                     // Add 2 triangles (6 indices)
@@ -108,7 +114,7 @@ void Vocksel::Chunk::generateMesh() {
     }
 
     // Create the mesh
-    mesh_ = std::make_unique<StaticMesh>(vertices.data(), vertices.size(), indices.data(), indices.size(), 5);
+    mesh_ = std::make_unique<StaticMesh>(vertices.data(), vertices.size(), indices.data(), indices.size(), 8);
 
 }
 
@@ -125,6 +131,7 @@ std::string Vocksel::Chunk::getBlockType(int block_type) {
         case 4:
         return "wool";
     }
+    return "";
 }
 
 void Vocksel::Chunk::editVoxel(uint8_t x, uint8_t y, uint8_t z, uint8_t block_type) {

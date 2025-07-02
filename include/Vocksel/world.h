@@ -13,7 +13,8 @@ namespace Vocksel {
         void render(Shader &shader);
         void generateWorld();
     public:
-        float noise_amplitude_scale_, noise_frequency_scale_;
+        int noise_num_octaves_;
+        float noise_freq_per_octave_, noise_ampl_per_octave_, noise_frequency_;
     private:
         ResourceManager& resource_manager_;
         std::vector<Chunk> chunks_;

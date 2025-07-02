@@ -78,7 +78,7 @@
     void Vocksel::Application::initInput() {
         input_.init(window_);
 
-        auto bindMovement = [this](int key, auto dirFunc) {
+        auto bind_movement = [this](int key, auto dirFunc) {
             input_.bindKey(key, [this, dirFunc](float dt) {
                 float speed = Constants::CAMERA_SPEED * dt;
                 if (input_.isKeyPressed(GLFW_KEY_LEFT_SHIFT)) {
@@ -88,23 +88,23 @@
             });
         };
 
-        bindMovement(GLFW_KEY_W, [this](float speed) {
+        bind_movement(GLFW_KEY_W, [this](float speed) {
             camera_.moveForward(speed);
         });
-        bindMovement(GLFW_KEY_S, [this](float speed) {
+        bind_movement(GLFW_KEY_S, [this](float speed) {
             camera_.moveBackward(speed);
         });
-        bindMovement(GLFW_KEY_A, [this](float speed) {
+        bind_movement(GLFW_KEY_A, [this](float speed) {
             camera_.moveLeft(speed);
         });
-        bindMovement(GLFW_KEY_D, [this](float speed) {
+        bind_movement(GLFW_KEY_D, [this](float speed) {
             camera_.moveRight(speed);
         });
 
-        bindMovement(GLFW_KEY_SPACE, [this](float speed) {
+        bind_movement(GLFW_KEY_SPACE, [this](float speed) {
             camera_.moveUp(speed);
         });
-        bindMovement(GLFW_KEY_LEFT_CONTROL, [this](float speed) {
+        bind_movement(GLFW_KEY_LEFT_CONTROL, [this](float speed) {
             camera_.moveDown(speed);
         });
 
@@ -149,6 +149,7 @@
 
             auto &basic_shader = resources_.getShader("basic");
             basic_shader.use();
+            basic_shader.setBool("showNormals", true);
 
             // Calculate view matrix and set view and projection
             glm::mat4 view = camera_.getViewMatrix();
@@ -172,10 +173,16 @@
             if (ImGui::Button("Regenerate")) {
                 world_->generateWorld();
             }
-            if (ImGui::SliderFloat("Noise Amplitude",&world_->noise_amplitude_scale_, 0.0f, 10.0f)) {
+            if (ImGui::SliderInt("Octaves",&world_->noise_num_octaves_, 1, 10)) {
                 world_->generateWorld();
             }
-            if (ImGui::SliderFloat("Noise Frequency",&world_->noise_frequency_scale_, 0.0f, 10.0f)) {
+            if (ImGui::SliderFloat("Frequency per octave",&world_->noise_freq_per_octave_, 0.01f, 10.0f)) {
+                world_->generateWorld();
+            }
+            if (ImGui::SliderFloat("Amplitude per octave",&world_->noise_ampl_per_octave_, 0.01f, 10.0f)) {
+                world_->generateWorld();
+            }
+            if (ImGui::SliderFloat("Noise Frequency",&world_->noise_frequency_, 0.0001f, 0.03f)) {
                 world_->generateWorld();
             }
 
@@ -188,12 +195,12 @@
             glfwSwapBuffers(window_);
             glfwPollEvents();
 
-            // Show Errors (TODO: Should put in debug)
+#ifdef Debug
             GLenum err;
             while ((err = glGetError()) != GL_NO_ERROR) {
                 std::cerr << "OpenGL error: " << err << std::endl;
             }
-
+#endif
         }
     }
 
@@ -217,9 +224,8 @@
         app->lastx_mouse_ = xpos;
         app->lasty_mouse_ = ypos;
 
-        const float kSsensitivity = 0.1f;
-        xoffset *= kSsensitivity;
-        yoffset *= kSsensitivity;
+        xoffset *= Constants::CAMERA_SENS;
+        yoffset *= Constants::CAMERA_SENS;
 
         app->yaw_camera_ += xoffset;
         app->pitch_camera_ += yoffset;

@@ -22,6 +22,9 @@ Vocksel::StaticMesh::StaticMesh(const float* vertices, int float_count, const un
     glEnableVertexAttribArray(1);
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, vertex_stride * sizeof(float), (void*)(3 * sizeof(float)));
 
+    glEnableVertexAttribArray(2);
+    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, vertex_stride * sizeof(float), (void*)(5 * sizeof(float)));
+
     glBindVertexArray(0);
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);

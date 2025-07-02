@@ -23,15 +23,15 @@ void Vocksel::TextureAtlas::loadFromFolder(const std::string &path) {
     }
 
     // Calculate minimum atlas size that fits all textures
-    int numTextures = texture_files.size();
-    int texturesPerRow = 1;
+    int num_textures = texture_files.size();
+    int textures_per_row = 1;
 
     // Find smallest power-of-two that fits all texture
-    while (texturesPerRow * texturesPerRow < numTextures) {
-        texturesPerRow++;
+    while (textures_per_row * textures_per_row < num_textures) {
+        textures_per_row++;
     }
 
-    atlas_size_ = texturesPerRow * tile_size_; // tile_size_ = 512
+    atlas_size_ = textures_per_row * tile_size_; // tile_size_ = 512
 
     std::cout << "Creating atlas size: " << atlas_size_ << "x" << atlas_size_ << std::endl;
 
@@ -39,7 +39,7 @@ void Vocksel::TextureAtlas::loadFromFolder(const std::string &path) {
     std::vector<unsigned char> atlas_data(atlas_size_ * atlas_size_ * 4, 0);
 
 
-    int xPos = 0, yPos = 0;
+    int x_pos = 0, y_pos = 0;
     for (const auto& file : texture_files) {
         int w, h, c;
         stbi_set_flip_vertically_on_load(1);
@@ -53,7 +53,7 @@ void Vocksel::TextureAtlas::loadFromFolder(const std::string &path) {
         // Copy to atlas
         for (int y = 0; y < tile_size_; y++) {
             for (int x = 0; x < tile_size_; x++) {
-                int atlasIdx = ((yPos + y) * atlas_size_ + (xPos + x)) * 4;
+                int atlasIdx = ((y_pos + y) * atlas_size_ + (x_pos + x)) * 4;
                 int texIdx = (y * tile_size_ + x) * 4;
                 for (int i = 0; i < 4; i++) {
                     atlas_data[atlasIdx + i] = data[texIdx + i];
@@ -62,17 +62,17 @@ void Vocksel::TextureAtlas::loadFromFolder(const std::string &path) {
         }
 
         std::string name = std::filesystem::path(file).stem().string();
-        texture_positions_[name] = {xPos, yPos};
+        texture_positions_[name] = {x_pos, y_pos};
 
-        xPos += tile_size_;
-        if (xPos >= atlas_size_) {
-            xPos = 0;
-            yPos += tile_size_;
+        x_pos += tile_size_;
+        if (x_pos >= atlas_size_) {
+            x_pos = 0;
+            y_pos += tile_size_;
         }
 
         stbi_image_free(data);
     }
-
+//
     glGenTextures(1, &atlas_texture_);
     glBindTexture(GL_TEXTURE_2D, atlas_texture_);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, atlas_size_, atlas_size_, 0, GL_RGBA, GL_UNSIGNED_BYTE, atlas_data.data());

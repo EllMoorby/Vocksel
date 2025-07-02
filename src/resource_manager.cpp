@@ -11,6 +11,7 @@ void Vocksel::ResourceManager::init() {
 
     loadBlockAtlas("assets/textures");
     loadShader("basic","assets/shaders/core/basic.vs.glsl", "assets/shaders/core/basic.fs.glsl");
+    loadShader("normals","assets/shaders/core/normals.vs.glsl", "assets/shaders/core/normals.fs.glsl");
 
 
     initialized_ = true;

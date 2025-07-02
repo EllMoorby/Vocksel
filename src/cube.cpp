@@ -77,20 +77,13 @@ void Vocksel::Cube::init(glm::vec3 pos, glm::vec3 col) {
 
     initMesh(model_manager_);
 
-    initTexture("assets/textures/stone.png");
+    initTexture("assets/textures/grass.png");
 }
 
 
 void Vocksel::Cube::initMesh(ModelManager& model_manager) {
     if (!model_manager.getModel(MODEL_NAME)) {
-        model_manager.createModelFromData(
-            MODEL_NAME,
-            vertices_,
-            sizeof(vertices_) / sizeof(float),
-            indices_,
-            sizeof(indices_) / sizeof(unsigned int),
-            5
-        );
+        model_manager.loadModel("assets/models/cube.obj", "cube");
     }
 }
 
@@ -107,8 +100,8 @@ void Vocksel::Cube::initTexture(const char *texture) {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-    int width, height, nrChannels;
-    unsigned char* data = stbi_load(texture, &width, &height, &nrChannels, 0);
+    int width, height, nr_channels;
+    unsigned char* data = stbi_load(texture, &width, &height, &nr_channels, 4);
     if (data) {
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
         glGenerateMipmap(GL_TEXTURE_2D);

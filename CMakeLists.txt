@@ -88,6 +88,9 @@ add_custom_command(TARGET Vocksel POST_BUILD
         ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/assets
 )
 
+# Set debug mode.
+target_compile_definitions(Vocksel PRIVATE Debug)
+
 
 target_link_libraries(Vocksel
         PRIVATE

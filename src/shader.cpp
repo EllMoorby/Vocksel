@@ -15,30 +15,30 @@ void Vocksel::Shader::init(const char *vertexPath, const char *fragmentPath) {
     }
 
     // Otherwise initialise
-    std::string vertexCode, fragmentCode;
-    std::ifstream vShaderFile(vertexPath), fShaderFile(fragmentPath);
+    std::string vertex_code, fragment_code;
+    std::ifstream v_shader_file(vertexPath), f_shader_file(fragmentPath);
 
-    std::stringstream vShaderStream, fShaderStream;
+    std::stringstream v_shader_stream, f_shader_stream;
 
-    vShaderStream << vShaderFile.rdbuf();
-    fShaderStream << fShaderFile.rdbuf();
+    v_shader_stream << v_shader_file.rdbuf();
+    f_shader_stream << f_shader_file.rdbuf();
 
-    vShaderFile.close();
-    fShaderFile.close();
+    v_shader_file.close();
+    f_shader_file.close();
 
-    vertexCode = vShaderStream.str();
-    fragmentCode = fShaderStream.str();
+    vertex_code = v_shader_stream.str();
+    fragment_code = f_shader_stream.str();
 
-    const char* vertexSource = vertexCode.c_str();
-    const char* fragmentSource = fragmentCode.c_str();
+    const char* vertex_source = vertex_code.c_str();
+    const char* fragment_source = fragment_code.c_str();
 
     GLuint vertex = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertex, 1, &vertexSource, nullptr);
+    glShaderSource(vertex, 1, &vertex_source, nullptr);
     glCompileShader(vertex);
     checkCompileErrors(vertex, "VERTEX");
 
     GLuint fragment = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragment, 1, &fragmentSource, nullptr);
+    glShaderSource(fragment, 1, &fragment_source, nullptr);
     glCompileShader(fragment);
     checkCompileErrors(fragment, "FRAGMENT");
 
@@ -69,6 +69,9 @@ void Vocksel::Shader::setInt(const std::string &name, int value) const {
     glUniform1i(glGetUniformLocation(ID_, name.c_str()), value);
 }
 
+void Vocksel::Shader::setBool(const std::string &name, bool value) const {
+    glUniform1i(glGetUniformLocation(ID_, name.c_str()), value ? 1 : 0);
+}
 
 void Vocksel::Shader::checkCompileErrors(GLuint object, std::string type) {
     int  success;

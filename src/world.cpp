@@ -1,6 +1,7 @@
 #include "Vocksel/world.h"
 
-Vocksel::World::World(ResourceManager& resource_manager): noise_amplitude_scale_(.85f), noise_frequency_scale_(3.f), resource_manager_(resource_manager) {
+Vocksel::World::World(ResourceManager& resource_manager): noise_num_octaves_(5), noise_freq_per_octave_(0.95f),
+    noise_ampl_per_octave_(0.43f), noise_frequency_(0.021f), resource_manager_(resource_manager) {
 
 }
 
@@ -19,6 +20,12 @@ void Vocksel::World::generateWorld() {
     noise.SetNoiseType(FastNoiseLite::NoiseType_OpenSimplex2S);
     noise.SetRotationType3D(FastNoiseLite::RotationType3D_ImproveXZPlanes);
 
+    noise.SetFractalType(FastNoiseLite::FractalType_FBm);
+    noise.SetFractalOctaves(noise_num_octaves_);
+    noise.SetFractalLacunarity(noise_freq_per_octave_);
+    noise.SetFractalGain(noise_ampl_per_octave_);
+    noise.SetFrequency(noise_frequency_);
+
     const int chunk_size = Constants::CHUNK_SIZE;
 
     for (int chunk_index = 0; chunk_index < chunks_.size(); ++chunk_index) {
@@ -29,14 +36,15 @@ void Vocksel::World::generateWorld() {
             for (int z = 0; z < chunk_size; ++z) {
                 float world_x = chunk_pos.x + x;
                 float world_z = chunk_pos.z + z;
-                float noise_val = noise.GetNoise(world_x * noise_frequency_scale_, world_z * noise_frequency_scale_) * noise_amplitude_scale_;
+                float noise_val = noise.GetNoise(world_x, world_z);
 
                 // Convert to height
-                float height_f = (noise_val + 1.0f) * 0.5f * chunk_size;
+                //float modified_noise = std::pow((noise_val + 1.0f) * 0.5f, 0.7f); // 0.7 = smoother hills
+                float height_f = (noise_val + 1.0f) * 0.5f * Constants::WORLD_HEIGHT;
                 int height = static_cast<int>(height_f);
 
-                for (int y = 0; y < chunk_size; ++y) {
-                    uint8_t block_type = (y < height) ? 3 : 0;
+                for (int y = 0; y < Constants::WORLD_HEIGHT; ++y) {
+                    uint8_t block_type = (y < height) ? 1 : 0;
                     chunk.editVoxel(x, y, z, block_type);
                 }
             }
