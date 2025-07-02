@@ -9,57 +9,6 @@
 const std::string Vocksel::Cube::MODEL_NAME = "cube";
 GLuint Vocksel::Cube::texture_id_ = 0;
 
-const float Vocksel::Cube::vertices_[] = {
-    // Positions          // Texture Coords
-    // Back face
-    -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-     0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
-     0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-    -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-
-    // Front face
-    -0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-     0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-     0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
-    -0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-
-    // Left face
-    -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-    -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-
-    // Right face
-     0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-     0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-     0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-     0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-
-    // Bottom face
-    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-     0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
-     0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-
-    // Top face
-    -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-    -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
-     0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-     0.5f,  0.5f, -0.5f,  1.0f, 1.0f
-};
-
-const unsigned int Vocksel::Cube::indices_[] = {
-    0, 1, 2, 2, 3, 0,    // Back
-    4, 5, 6, 6, 7, 4,    // Front
-    8, 9, 10, 10, 11, 8, // Left
-    12, 13, 14, 14, 15, 12, // Right
-    16, 17, 18, 18, 19, 16, // Bottom
-    20, 21, 22, 22, 23, 20  // Top
-};
-
-
-
-
 Vocksel::Cube::Cube(ModelManager& model_manager)
     : model_manager_(model_manager), position_(0.0f), color_(1.0f), rotation_angle_(0.0f), initialized_(false) {}
 
@@ -73,11 +22,11 @@ std::unique_ptr<Vocksel::Cube> Vocksel::Cube::create(ModelManager& model_manager
 void Vocksel::Cube::init(glm::vec3 pos, glm::vec3 col) {
     color_ = col;
     position_ = pos;
-    initialized_ = true;
 
     initMesh(model_manager_);
 
     initTexture("assets/textures/grass.png");
+    initialized_ = true;
 }
 
 
@@ -119,8 +68,6 @@ void Vocksel::Cube::cleanUp() {
     }
 }
 
-
-
 void Vocksel::Cube::render(Shader& shader) {
     if (!initialized_) return;
 
@@ -141,7 +88,6 @@ void Vocksel::Cube::render(Shader& shader) {
     }
 
     glEnable(GL_CULL_FACE);
-
 }
 
 

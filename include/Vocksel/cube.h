@@ -31,9 +31,6 @@ namespace Vocksel {
 
         static GLuint texture_id_;
         static const std::string MODEL_NAME;
-        // Cube vertices
-        static const float vertices_[];
-        static const unsigned int indices_[36];
     };
 }
 

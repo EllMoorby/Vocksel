@@ -83,6 +83,8 @@ add_executable(Vocksel
 
 # Copy assets directory to build
 add_custom_command(TARGET Vocksel POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E remove_directory
+        ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/assets
         COMMAND ${CMAKE_COMMAND} -E copy_directory
         ${CMAKE_SOURCE_DIR}/assets
         ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/assets
