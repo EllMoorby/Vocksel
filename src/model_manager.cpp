@@ -10,7 +10,7 @@ void Vocksel::ModelManager::loadModel(const std::string &path, const std::string
     models_[name] = std::move(model);
 }
 
-bool Vocksel::ModelManager::createModelFromData(const std::string &name, const float *vertices, size_t vertexCount, const unsigned int *indices, size_t indexCount, int vertexStride) {
+bool Vocksel::ModelManager::createModelFromData(const std::string &name, const float *vertices, size_t vertexCount, const uint32_t *indices, size_t indexCount, int vertexStride) {
     if (getModel(name)) {
         std::cerr << "Model " << name << " already exists\n";
         return false;

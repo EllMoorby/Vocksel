@@ -6,7 +6,7 @@
 #include <vector>
 #include "stb/stb_image.h"
 
-Vocksel::TextureAtlas::TextureAtlas(int tile_size): atlas_texture_(0), tile_size_(tile_size) {}
+Vocksel::TextureAtlas::TextureAtlas(int tile_size): atlas_texture_(0), tile_size_(tile_size), atlas_size_(0) {}
 
 void Vocksel::TextureAtlas::loadFromFolder(const std::string &path) {
     if (!glfwGetCurrentContext()) {
@@ -31,7 +31,7 @@ void Vocksel::TextureAtlas::loadFromFolder(const std::string &path) {
         textures_per_row++;
     }
 
-    atlas_size_ = textures_per_row * tile_size_; // tile_size_ = 512
+    atlas_size_ = textures_per_row * tile_size_;
 
     std::cout << "Creating atlas size: " << atlas_size_ << "x" << atlas_size_ << std::endl;
 
@@ -91,7 +91,7 @@ GLuint Vocksel::TextureAtlas::getAtlasTexture() const {
 }
 
 float Vocksel::TextureAtlas::getTileScale() const {
-    return 1.0f / (atlas_size_/tile_size_);
+    return 1.0f / (static_cast<float>(atlas_size_)/static_cast<float>(tile_size_));
 }
 
 
@@ -100,7 +100,7 @@ glm::vec2 Vocksel::TextureAtlas::getUVOffset(const std::string &textureName) con
     if (it == texture_positions_.end()) return {0,0};
 
     glm::vec2 offset(it->second.x, it->second.y);
-    offset /= float(atlas_size_);
+    offset /= static_cast<float>(atlas_size_);
 
     return offset;
 }

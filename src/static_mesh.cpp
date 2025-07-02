@@ -3,7 +3,7 @@
 #include <iostream>
 
 
-Vocksel::StaticMesh::StaticMesh(const float* vertices, int float_count, const unsigned int* indices, int index_count, int vertex_stride): index_count_(index_count) {
+Vocksel::StaticMesh::StaticMesh(const float* vertices, int float_count, const uint32_t* indices, int index_count, int vertex_stride): index_count_(index_count) {
     glGenVertexArrays(1, &VAO_);
     glGenBuffers(1, &VBO_);
     glGenBuffers(1, &EBO_);
@@ -14,7 +14,7 @@ Vocksel::StaticMesh::StaticMesh(const float* vertices, int float_count, const un
     glBufferData(GL_ARRAY_BUFFER, float_count * sizeof(float), vertices, GL_STATIC_DRAW);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO_);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, index_count * sizeof(unsigned int), indices, GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, index_count * sizeof(uint32_t), indices, GL_STATIC_DRAW);
 
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, vertex_stride * sizeof(float), (void*)0);

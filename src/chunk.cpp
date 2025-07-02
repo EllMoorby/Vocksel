@@ -36,8 +36,8 @@ Vocksel::Chunk::Chunk(glm::vec3 position, ResourceManager& resource_manager): po
 
 void Vocksel::Chunk::generateMesh() {
     std::vector<float> vertices;
-    std::vector<unsigned int> indices;
-    unsigned int idx_offset = 0;
+    std::vector<uint32_t> indices;
+    uint32_t idx_offset = 0;
 
     TextureAtlas& atlas = resource_manager_.getBlockAtlas();
 

@@ -53,7 +53,7 @@ bool Vocksel::Model::loadFromFile(std::string path) {
     std::vector<glm::vec3> positions;
     std::vector<glm::vec2> tex_coords;
     std::vector<glm::vec3> normals;
-    std::vector<unsigned int> position_indices, tex_coord_indices, normal_indices;
+    std::vector<uint32_t> position_indices, tex_coord_indices, normal_indices;
 
     std::string line;
     while (std::getline(file, line)) {
@@ -85,10 +85,10 @@ bool Vocksel::Model::loadFromFile(std::string path) {
     }
 
     std::vector<float> vertices;
-    std::vector<unsigned int> indices;
+    std::vector<uint32_t> indices;
 
-    std::unordered_map<std::string, unsigned int> vertex_to_index;
-    unsigned int current_index = 0;
+    std::unordered_map<std::string, uint32_t> vertex_to_index;
+    uint32_t current_index = 0;
 
     // Go through each face
     for (size_t i = 0; i < position_indices.size(); i++) {
