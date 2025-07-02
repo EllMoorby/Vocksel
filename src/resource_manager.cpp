@@ -5,8 +5,8 @@ Vocksel::ResourceManager::ResourceManager() {
 }
 
 void Vocksel::ResourceManager::init() {
-
     if (initialized_) return;
+
     blocks_atlas_ = std::make_unique<TextureAtlas>(160);
 
     loadBlockAtlas("assets/textures");

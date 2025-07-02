@@ -26,7 +26,11 @@ bool Vocksel::ModelManager::createModelFromData(const std::string &name, const f
 
 Vocksel::Model* Vocksel::ModelManager::getModel(const std::string &name) {
     auto it = models_.find(name);
-    return (it != models_.end()) ? it->second.get() : nullptr;
+    if (it != models_.end()) {
+        return it->second.get();
+    }
+    std::cerr << "Model " << name << " not found" << std::endl;
+    return nullptr;
 }
 
 

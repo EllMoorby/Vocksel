@@ -1,6 +1,6 @@
 #include "Vocksel/chunk.h"
 
-// Face directions (order: +X, -X, +Y, -Y, +Z, -Z) [UNUSED]
+// Face directions (order: +X, -X, +Y, -Y, +Z, -Z)
 const glm::ivec3 face_normals[6] = {
     {1, 0, 0}, {-1, 0, 0},
     {0, 1, 0}, {0, -1, 0},
@@ -25,13 +25,11 @@ const glm::vec3 face_vertices[6][4] = {
 
 
 Vocksel::Chunk::Chunk(glm::vec3 position, ResourceManager& resource_manager): position_(position), resource_manager_(resource_manager) {
-    // set it to random for now
+    // Set it all to grass
     for (int x = 0; x < kSize; ++x)
         for (int y = 0; y < Constants::WORLD_HEIGHT; ++y)
             for (int z = 0; z < kSize; ++z)
-                voxels_[x][y][z] = rand() % 5;
-
-    generateMesh();
+                voxels_[x][y][z] = 1;
 }
 
 void Vocksel::Chunk::generateMesh() {
@@ -131,10 +129,15 @@ std::string Vocksel::Chunk::getBlockType(int block_type) {
         case 4:
         return "wool";
     }
+    std::cerr << "Unknown block type: " << block_type << std::endl;
     return "";
 }
 
 void Vocksel::Chunk::editVoxel(uint8_t x, uint8_t y, uint8_t z, uint8_t block_type) {
+    if (x > kSize - 1 || y > Constants::WORLD_HEIGHT - 1 || z > kSize - 1) {
+        std::cerr << "Editing block out of range. x: " << x << " y: "<< y << " z: " << z << std::endl;
+        return;
+    }
     voxels_[x][y][z] = block_type;
 }
 
@@ -145,6 +148,16 @@ glm::vec3 Vocksel::Chunk::getPosition() {
 
 
 void Vocksel::Chunk::render(Shader &shader) {
+
+    GLint current_program;
+    glGetIntegerv(GL_CURRENT_PROGRAM, &current_program);
+    if (current_program != shader.ID_) {
+        std::cerr << "ERROR: Wrong shader bound! Expected " << shader.ID_
+                  << " but found " << current_program << std::endl;
+        return;
+    }
+
+
     glm::mat4 model = glm::mat4(1.0f);
     model = glm::translate(model, glm::vec3(position_));
 
