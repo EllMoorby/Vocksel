@@ -12,6 +12,7 @@
 #include "resource_manager.h"
 #include "world.h"
 #include "model_manager.h"
+#include "player.h"
 #include "Vocksel/constants.h"
 #include "Vocksel/cube.h"
 #include "Vocksel/shader.h"
@@ -38,16 +39,15 @@ namespace Vocksel {
         bool in_mouse_mode_ = true;
         bool first_mouse_move_cond_ = true;
         double lastx_mouse_ = Constants::SCREEN_WIDTH/2, lasty_mouse_ = Constants::SCREEN_HEIGHT/2;
-        float yaw_camera_ = 90.0f, pitch_camera_;
         float current_frame_;
         float delta_time_;
         float last_frame_;
 
         GLFWwindow* window_;
-        Camera camera_;
         InputManager input_;
         ResourceManager resources_;
         ModelManager model_manager_;
+        Player player_;
         std::vector<std::unique_ptr<Cube>> cubes_;
         std::unique_ptr<World> world_;
 };

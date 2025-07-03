@@ -14,6 +14,22 @@ void Vocksel::InputManager::bindKey(int key, std::function<void()> action) {
     key_actions_[key] = [action](float){ action(); };
 }
 
+glm::vec3 Vocksel::InputManager::getWASDVector() {
+    glm::vec3 movement(0.0f);
+
+    if (isKeyPressed(GLFW_KEY_W)) movement.z += 1.0f;
+    if (isKeyPressed(GLFW_KEY_S)) movement.z -= 1.0f;
+    if (isKeyPressed(GLFW_KEY_A)) movement.x -= 1.0f;
+    if (isKeyPressed(GLFW_KEY_D)) movement.x += 1.0f;
+
+    if (glm::length(movement) > 0.0f) {
+        movement = glm::normalize(movement);
+    }
+
+    return movement;
+}
+
+
 
 void Vocksel::InputManager::update(float delta_time) {
     for (auto& [key, action] : key_actions_) {
@@ -28,6 +44,7 @@ int Vocksel::InputManager::getMouseMode() {
 }
 
 void Vocksel::InputManager::setMouseMode(int mode) {
+    // TODO: Add raw motion mode
     mouse_mode_ = mode;
     glfwSetInputMode(window_, GLFW_CURSOR, mode);
 }

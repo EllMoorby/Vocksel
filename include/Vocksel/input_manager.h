@@ -12,6 +12,7 @@ namespace Vocksel {
         void init(GLFWwindow* window);
         void bindKey(int key, std::function<void()> action);
         void bindKey(int key, std::function<void(float)> callback);
+        glm::vec3 getWASDVector();
         void update(float delta_time);
 
         bool isKeyPressed(int key);

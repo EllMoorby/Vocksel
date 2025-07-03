@@ -80,36 +80,6 @@
     void Vocksel::Application::initInput() {
         input_.init(window_);
 
-        auto bind_movement = [this](int key, auto dirFunc) {
-            input_.bindKey(key, [this, dirFunc](float dt) {
-                float speed = Constants::CAMERA_SPEED * dt;
-                if (input_.isKeyPressed(GLFW_KEY_LEFT_SHIFT)) {
-                    speed *= 2.0f;
-                }
-                dirFunc(speed);
-            });
-        };
-
-        bind_movement(GLFW_KEY_W, [this](float speed) {
-            camera_.moveForward(speed);
-        });
-        bind_movement(GLFW_KEY_S, [this](float speed) {
-            camera_.moveBackward(speed);
-        });
-        bind_movement(GLFW_KEY_A, [this](float speed) {
-            camera_.moveLeft(speed);
-        });
-        bind_movement(GLFW_KEY_D, [this](float speed) {
-            camera_.moveRight(speed);
-        });
-
-        bind_movement(GLFW_KEY_SPACE, [this](float speed) {
-            camera_.moveUp(speed);
-        });
-        bind_movement(GLFW_KEY_LEFT_CONTROL, [this](float speed) {
-            camera_.moveDown(speed);
-        });
-
 
         input_.bindKey(GLFW_KEY_ESCAPE, [this] {
             closeWindow();
@@ -145,6 +115,11 @@
             ImGui::NewFrame();
 
             input_.update(delta_time_);
+            player_.update(input_, delta_time_);
+            auto& camera = player_.getCamera();
+
+            camera.setPosition(player_.getPosition());
+            camera.setRotation(player_.getYaw(), player_.getPitch());
 
             glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -154,8 +129,8 @@
             basic_shader.setBool("showNormals", true);
 
             // Calculate view matrix and set view and projection
-            glm::mat4 view = camera_.getViewMatrix();
-            glm::mat4 projection = camera_.getProjectionMatrix(
+            glm::mat4 view = camera.getViewMatrix();
+            glm::mat4 projection = camera.getProjectionMatrix(
                 static_cast<float>(Constants::SCREEN_WIDTH) /
                 static_cast<float>(Constants::SCREEN_HEIGHT)
             );
@@ -187,6 +162,8 @@
             if (ImGui::SliderFloat("Noise Frequency",&world_->noise_frequency_, 0.0001f, 0.03f)) {
                 world_->generateWorld();
             }
+            ImGui::Text("Position %.2f %.2f %.2f", player_.getPosition().x, player_.getPosition().y, player_.getPosition().z);
+            ImGui::Text("Yaw %.2f Pitch %.2f", player_.getYaw(), player_.getPitch());
 
             ImGui::End();
 
@@ -226,29 +203,7 @@
         app->lastx_mouse_ = xpos;
         app->lasty_mouse_ = ypos;
 
-        xoffset *= Constants::CAMERA_SENS;
-        yoffset *= Constants::CAMERA_SENS;
-
-        app->yaw_camera_ += xoffset;
-        app->pitch_camera_ += yoffset;
-
-
-        if (app->pitch_camera_ > 89.0f) {
-            app->pitch_camera_ = 89.0f;
-        }
-        if (app->pitch_camera_ < -89.0f) {
-            app->pitch_camera_ = -89.0f;
-        }
-
-
-        glm::vec3 direction;
-        direction.x = cos(glm::radians(app->yaw_camera_)) * cos(glm::radians(app->pitch_camera_));
-        direction.y = sin(glm::radians(app->pitch_camera_));
-        direction.z = sin(glm::radians(app->yaw_camera_)) * cos(glm::radians(app->pitch_camera_));
-        app->camera_.front_ = glm::normalize(direction);
-
-
-        app->camera_.recalculateVectors();
+        app->player_.handleMouseInput(xoffset, yoffset);
     }
 
     void Vocksel::Application::closeWindow() {

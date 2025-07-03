@@ -81,6 +81,8 @@ add_executable(Vocksel
         include/Vocksel/model.h
         include/Vocksel/texture.h
         src/texture.cpp
+        include/Vocksel/player.h
+        src/player.cpp
 )
 
 # Copy assets directory to build

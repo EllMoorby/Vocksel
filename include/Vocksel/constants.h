@@ -8,7 +8,7 @@ namespace Vocksel::Constants {
     constexpr uint32_t WORLD_SIZE = 10;
     constexpr uint32_t WORLD_HEIGHT = 32;
     constexpr uint32_t CHUNK_SIZE = 16;
-    constexpr int CAMERA_SPEED = 5;
+    constexpr float MOVEMENT_SPEED = 300.f;
     constexpr float CAMERA_SENS = .1f;
     constexpr glm::vec3 WORLD_UP = glm::vec3(0.0f, 1.0f, 0.0f);
 
