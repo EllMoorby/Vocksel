@@ -2,11 +2,14 @@
 #define RESOURCE__MANAGER_H
 #include <memory>
 #include <string>
+#include <unordered_map>
 
-#include "texture_atlas.h"
+#include "texture.h"
+#include "Vocksel/texture_atlas.h"
 #include "Vocksel/shader.h"
 
 namespace Vocksel {
+
     class ResourceManager {
         public:
         ResourceManager();
@@ -16,6 +19,9 @@ namespace Vocksel {
 
         void loadShader(std::string name, const char* vertexPath, const char* fragmentPath);
         Shader& getShader(const std::string& name);
+
+        void loadTexture(std::string name, const char* path);
+        Texture& getTexture(const std::string& name);
 
         void loadBlockAtlas(const std::string& path);
         TextureAtlas& getBlockAtlas();
@@ -27,6 +33,7 @@ namespace Vocksel {
         ResourceManager& operator=(const ResourceManager&) = delete;
         private:
         std::unordered_map<std::string, std::unique_ptr<Shader>> shaders_;
+        std::unordered_map<std::string, std::unique_ptr<Texture>> textures_;
         std::unique_ptr<TextureAtlas> blocks_atlas_;
         bool initialized_ = false;
 

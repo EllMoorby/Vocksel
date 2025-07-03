@@ -69,17 +69,68 @@ bool Vocksel::Model::loadFromFile(std::string path) {
         }else if (tokens[0] == "vn") { // Vertex normal
             normals.emplace_back(std::stof(tokens[1]), std::stof(tokens[2]), std::stof(tokens[3]));
         } else if (tokens[0] == "f") {
-            for (size_t i = 1; i < tokens.size(); i++) {
-                std::vector<std::string> faceTokens = split(tokens[i], '/');
+            size_t vertex_count = tokens.size() - 1;
 
-                position_indices.push_back(std::stoul(faceTokens[0]) - 1);
+            if (vertex_count == 3) { // Triangle
+                for (size_t i = 1; i <= 3; i++) {
+                    std::vector<std::string> faceTokens = split(tokens[i], '/');
+                    position_indices.push_back(std::stoul(faceTokens[0]) - 1);
 
-                if (faceTokens.size() > 1 && !faceTokens[1].empty()) {
-                    tex_coord_indices.push_back(std::stoul(faceTokens[1]) - 1);
+                    if (faceTokens.size() > 1 && !faceTokens[1].empty()) {
+                        tex_coord_indices.push_back(std::stoul(faceTokens[1]) - 1);
+                    }
+                    if (faceTokens.size() > 2 && !faceTokens[2].empty()) {
+                        normal_indices.push_back(std::stoul(faceTokens[2]) - 1);
+                    }
                 }
-                if (faceTokens.size() > 2 && !faceTokens[2].empty()) {
-                    normal_indices.push_back(std::stoul(faceTokens[2]) - 1);
+            }
+            else if (vertex_count == 4) { // Quad - split into two triangles
+                // First triangle (vertices 1, 2, 3)
+                for (size_t i = 1; i <= 3; i++) {
+                    std::vector<std::string> faceTokens = split(tokens[i], '/');
+                    position_indices.push_back(std::stoul(faceTokens[0]) - 1);
+
+                    if (faceTokens.size() > 1 && !faceTokens[1].empty()) {
+                        tex_coord_indices.push_back(std::stoul(faceTokens[1]) - 1);
+                    }
+                    if (faceTokens.size() > 2 && !faceTokens[2].empty()) {
+                        normal_indices.push_back(std::stoul(faceTokens[2]) - 1);
+                    }
                 }
+
+                // Second triangle (vertices 1, 3, 4)
+                // Vertex 1
+                std::vector<std::string> faceTokens1 = split(tokens[1], '/');
+                position_indices.push_back(std::stoul(faceTokens1[0]) - 1);
+                if (faceTokens1.size() > 1 && !faceTokens1[1].empty()) {
+                    tex_coord_indices.push_back(std::stoul(faceTokens1[1]) - 1);
+                }
+                if (faceTokens1.size() > 2 && !faceTokens1[2].empty()) {
+                    normal_indices.push_back(std::stoul(faceTokens1[2]) - 1);
+                }
+
+                // Vertex 3
+                std::vector<std::string> faceTokens3 = split(tokens[3], '/');
+                position_indices.push_back(std::stoul(faceTokens3[0]) - 1);
+                if (faceTokens3.size() > 1 && !faceTokens3[1].empty()) {
+                    tex_coord_indices.push_back(std::stoul(faceTokens3[1]) - 1);
+                }
+                if (faceTokens3.size() > 2 && !faceTokens3[2].empty()) {
+                    normal_indices.push_back(std::stoul(faceTokens3[2]) - 1);
+                }
+
+                // Vertex 4
+                std::vector<std::string> faceTokens4 = split(tokens[4], '/');
+                position_indices.push_back(std::stoul(faceTokens4[0]) - 1);
+                if (faceTokens4.size() > 1 && !faceTokens4[1].empty()) {
+                    tex_coord_indices.push_back(std::stoul(faceTokens4[1]) - 1);
+                }
+                if (faceTokens4.size() > 2 && !faceTokens4[2].empty()) {
+                    normal_indices.push_back(std::stoul(faceTokens4[2]) - 1);
+                }
+            }
+            else {
+                std::cerr << "Unsupported face with " << vertex_count << " vertices" << std::endl;
             }
         }
     }

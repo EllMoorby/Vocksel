@@ -18,7 +18,7 @@
         world_ = std::make_unique<World>(resources_);
         world_->init();
 
-        cubes_.emplace_back(Cube::create(model_manager_, glm::vec3(-3.0f, .0f, 0.f), glm::vec3(1.f, 1.f, 1.f)));
+        cubes_.emplace_back(Cube::create(model_manager_, resources_, glm::vec3(-3.0f, .0f, 0.f), glm::vec3(1.f, 1.f, 1.f), "stone"));
     }
 
     void Vocksel::Application::initWindow() {
@@ -58,7 +58,9 @@
         }
 
 
+
         glEnable(GL_DEPTH_TEST);
+        //glEnable(GL_DEPTH_CLAMP);
         glEnable(GL_CULL_FACE);
         glCullFace(GL_BACK);
         glFrontFace(GL_CCW);

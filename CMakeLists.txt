@@ -79,6 +79,8 @@ add_executable(Vocksel
         include/Vocksel/model_manager.h
         src/model.cpp
         include/Vocksel/model.h
+        include/Vocksel/texture.h
+        src/texture.cpp
 )
 
 # Copy assets directory to build

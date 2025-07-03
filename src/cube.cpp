@@ -9,23 +9,22 @@
 const std::string Vocksel::Cube::MODEL_NAME = "cube";
 GLuint Vocksel::Cube::texture_id_ = 0;
 
-Vocksel::Cube::Cube(ModelManager& model_manager)
-    : model_manager_(model_manager), position_(0.0f), color_(1.0f), rotation_angle_(0.0f), initialized_(false) {}
+Vocksel::Cube::Cube(ModelManager& model_manager, ResourceManager& resource_manager)
+    : model_manager_(model_manager), resource_manager_(resource_manager), position_(0.0f), color_(1.0f), rotation_angle_(0.0f), initialized_(false) {}
 
 
-std::unique_ptr<Vocksel::Cube> Vocksel::Cube::create(ModelManager& model_manager,const glm::vec3 &pos, const glm::vec3 &col) {
-    auto cube = std::make_unique<Cube>(model_manager);
-    cube->init(pos, col);
+std::unique_ptr<Vocksel::Cube> Vocksel::Cube::create(ModelManager& model_manager, ResourceManager& resource_manager,const glm::vec3 &pos, const glm::vec3 &col, const char* texture_name) {
+    auto cube = std::make_unique<Cube>(model_manager, resource_manager);
+    cube->init(pos, col, texture_name);
     return cube;
 }
 
-void Vocksel::Cube::init(glm::vec3 pos, glm::vec3 col) {
+void Vocksel::Cube::init(glm::vec3 pos, glm::vec3 col, const char* texture_name) {
     color_ = col;
     position_ = pos;
+    texture_name_ = texture_name;
 
     initMesh(model_manager_);
-
-    initTexture("assets/textures/grass.png");
     initialized_ = true;
 }
 
@@ -35,31 +34,6 @@ void Vocksel::Cube::initMesh(ModelManager& model_manager) {
         model_manager.loadModel("assets/models/cube.obj", "cube");
     }
 }
-
-void Vocksel::Cube::initTexture(const char *texture) {
-    if (texture_id_ != 0) {
-        return;
-    }
-
-    glGenTextures(1, &texture_id_);
-    glBindTexture(GL_TEXTURE_2D, texture_id_);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-    int width, height, nr_channels;
-    unsigned char* data = stbi_load(texture, &width, &height, &nr_channels, 4);
-    if (data) {
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-        glGenerateMipmap(GL_TEXTURE_2D);
-    } else {
-        std::cerr << "Failed to load texture " << texture << std::endl;
-    }
-    stbi_image_free(data);
-}
-
 
 void Vocksel::Cube::cleanUp() {
     if (texture_id_ != 0) {
@@ -78,9 +52,11 @@ void Vocksel::Cube::render(Shader& shader) {
 
     shader.setVec3("color", color_);
 
+    Texture& texture = resource_manager_.getTexture(texture_name_);
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, texture_id_);
+    texture.bind();
     shader.setInt("texture_diffuse", 0);
+
 
     if (auto* cube_model = model_manager_.getModel(MODEL_NAME)) {
         cube_model->setTransformMatrix(model);
