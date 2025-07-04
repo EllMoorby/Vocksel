@@ -27,7 +27,7 @@ const glm::vec3 face_vertices[6][4] = {
 Vocksel::Chunk::Chunk(glm::vec3 position, ResourceManager& resource_manager): position_(position), resource_manager_(resource_manager) {
     // Set it all to grass
     for (int x = 0; x < kSize; ++x)
-        for (int y = 0; y < Constants::WORLD_HEIGHT; ++y)
+        for (int y = 0; y < Constants::CHUNK_HEIGHT; ++y)
             for (int z = 0; z < kSize; ++z)
                 voxels_[x][y][z] = 1;
 }
@@ -53,7 +53,7 @@ void Vocksel::Chunk::generateMesh() {
 
     // For each voxel
     for (int x = 0; x < kSize; ++x) {
-        for (int y = 0; y < Constants::WORLD_HEIGHT; ++y) {
+        for (int y = 0; y < Constants::CHUNK_HEIGHT; ++y) {
             for (int z = 0; z < kSize; ++z) {
                 if (voxels_[x][y][z] == 0) continue;
 
@@ -71,7 +71,7 @@ void Vocksel::Chunk::generateMesh() {
                     glm::ivec3 neighbor_pos = glm::ivec3(x, y, z) + directions[dir];
 
                     bool out_of_bounds = neighbor_pos.x < 0 || neighbor_pos.y < 0 || neighbor_pos.z < 0 ||
-                                         neighbor_pos.x >= kSize || neighbor_pos.y >= Constants::WORLD_HEIGHT || neighbor_pos.z >= kSize;
+                                         neighbor_pos.x >= kSize || neighbor_pos.y >= Constants::CHUNK_HEIGHT || neighbor_pos.z >= kSize;
 
                     bool visible = false;
 
@@ -162,7 +162,7 @@ std::string Vocksel::Chunk::getBlockType(int block_type) {
 }
 
 void Vocksel::Chunk::editVoxel(uint8_t x, uint8_t y, uint8_t z, uint8_t block_type) {
-    if (x > kSize - 1 || y > Constants::WORLD_HEIGHT - 1 || z > kSize - 1) {
+    if (x > kSize - 1 || y > Constants::CHUNK_HEIGHT - 1 || z > kSize - 1) {
         std::cerr << "Editing block out of range. x: " << x << " y: "<< y << " z: " << z << std::endl;
         return;
     }
@@ -170,7 +170,7 @@ void Vocksel::Chunk::editVoxel(uint8_t x, uint8_t y, uint8_t z, uint8_t block_ty
 }
 
 uint8_t Vocksel::Chunk::getVoxel(uint8_t x, uint8_t y, uint8_t z) {
-    if (x > kSize - 1 || y > Constants::WORLD_HEIGHT - 1 || z > kSize - 1) {
+    if (x > kSize - 1 || y > Constants::CHUNK_HEIGHT - 1 || z > kSize - 1) {
         std::cerr << "Getting block out of range. x: " << x << " y: "<< y << " z: " << z << std::endl;
         return 0;
     }

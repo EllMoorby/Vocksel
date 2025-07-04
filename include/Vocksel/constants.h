@@ -6,7 +6,7 @@ namespace Vocksel::Constants {
     constexpr uint32_t SCREEN_WIDTH = 1920;
     constexpr uint32_t SCREEN_HEIGHT = 1080;
     constexpr uint32_t WORLD_SIZE = 10;
-    constexpr uint32_t WORLD_HEIGHT = 32;
+    constexpr uint32_t CHUNK_HEIGHT = 32;
     constexpr uint32_t CHUNK_SIZE = 16;
     constexpr float MOVEMENT_SPEED = 300.f;
     constexpr float CAMERA_SENS = .1f;

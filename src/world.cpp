@@ -8,7 +8,7 @@ Vocksel::World::World(ResourceManager& resource_manager): noise_num_octaves_(5),
 void Vocksel::World::init() {
     for (int x = 0; x < Constants::WORLD_SIZE; x++)
         for (int z = 0; z < Constants::WORLD_SIZE; z++)
-            chunks_.emplace_back(glm::vec3(x, 0, z) * (float)Chunk::kSize, resource_manager_);
+            chunks_.emplace_back(glm::vec3(x, 0, z) * (float)Constants::CHUNK_SIZE, resource_manager_);
 
     for (int x = 0; x < Constants::WORLD_SIZE; x++) {
         for (int z = 0; z < Constants::WORLD_SIZE; z++) {
@@ -53,10 +53,10 @@ void Vocksel::World::generateWorld() {
 
                 // Convert to height
                 //float modified_noise = std::pow((noise_val + 1.0f) * 0.5f, 0.7f); // 0.7 = smoother hills
-                float height_f = (noise_val + 1.0f) * 0.5f * Constants::WORLD_HEIGHT;
+                float height_f = (noise_val + 1.0f) * 0.5f * Constants::CHUNK_HEIGHT;
                 int height = static_cast<int>(height_f);
 
-                for (int y = 0; y < Constants::WORLD_HEIGHT; ++y) {
+                for (int y = 0; y < Constants::CHUNK_HEIGHT; ++y) {
                     uint8_t block_type = (y < height) ? 1 : 0;
                     chunk.editVoxel(x, y, z, block_type);
                 }
@@ -83,7 +83,7 @@ void Vocksel::World::generateSpawnPosition() {
         for (int z = 0; z < chunk_size; z++) {
             bool found_possible = false;
             uint8_t last_type = 999;
-            for (int y = Constants::WORLD_HEIGHT - 1; y >= 0 ; y--) {
+            for (int y = Constants::CHUNK_HEIGHT - 1; y >= 0 ; y--) {
                 if (chunk.getVoxel(x,y,z) == 1 && last_type == 0 && found_possible == false) {
                     possible_spawns.emplace_back(glm::vec3(x,y + 1,z)); // This only works if we are checking the corner most chunk
                     found_possible = true;
