@@ -22,7 +22,7 @@ namespace Vocksel {
         glm::vec3 getPosition();
         void cleanUp();
         void setNeighbor(int direction, Chunk* neighbor);
-        Chunk* getNeighbor(int direction) const;
+        [[nodiscard]] Chunk* getNeighbor(int direction) const;
 
         // Prevents copying and assigning
         Chunk(const Chunk&) = delete;
@@ -31,14 +31,12 @@ namespace Vocksel {
         // Default move and assignment operator
         Chunk(Chunk&&) noexcept = default;
         Chunk& operator=(Chunk&&) noexcept = default;
-    public:
-        static constexpr int kSize = Constants::CHUNK_SIZE;
     private:
         std::string getBlockType(int block_type);
     private:
         glm::vec3 position_;
         ResourceManager& resource_manager_;
-        uint8_t voxels_[kSize][Constants::CHUNK_HEIGHT][kSize];
+        uint8_t voxels_[Constants::CHUNK_SIZE][Constants::CHUNK_HEIGHT][Constants::CHUNK_SIZE];
         std::unique_ptr<StaticMesh> mesh_;
         Chunk* neighbors_[6] = {nullptr}; // +X, -X, +Y, -Y, +Z, -Z
     };

@@ -26,9 +26,9 @@ const glm::vec3 face_vertices[6][4] = {
 
 Vocksel::Chunk::Chunk(glm::vec3 position, ResourceManager& resource_manager): position_(position), resource_manager_(resource_manager) {
     // Set it all to grass
-    for (int x = 0; x < kSize; ++x)
+    for (int x = 0; x < Constants::CHUNK_SIZE; ++x)
         for (int y = 0; y < Constants::CHUNK_HEIGHT; ++y)
-            for (int z = 0; z < kSize; ++z)
+            for (int z = 0; z < Constants::CHUNK_SIZE; ++z)
                 voxels_[x][y][z] = 1;
 }
 
@@ -50,6 +50,8 @@ void Vocksel::Chunk::generateMesh() {
     uint32_t idx_offset = 0;
 
     TextureAtlas& atlas = resource_manager_.getBlockAtlas();
+
+    constexpr uint32_t kSize = Constants::CHUNK_SIZE;
 
     // For each voxel
     for (int x = 0; x < kSize; ++x) {
@@ -162,7 +164,7 @@ std::string Vocksel::Chunk::getBlockType(int block_type) {
 }
 
 void Vocksel::Chunk::editVoxel(uint8_t x, uint8_t y, uint8_t z, uint8_t block_type) {
-    if (x > kSize - 1 || y > Constants::CHUNK_HEIGHT - 1 || z > kSize - 1) {
+    if (x > Constants::CHUNK_SIZE - 1 || y > Constants::CHUNK_HEIGHT - 1 || z > Constants::CHUNK_SIZE - 1) {
         std::cerr << "Editing block out of range. x: " << x << " y: "<< y << " z: " << z << std::endl;
         return;
     }
@@ -170,7 +172,7 @@ void Vocksel::Chunk::editVoxel(uint8_t x, uint8_t y, uint8_t z, uint8_t block_ty
 }
 
 uint8_t Vocksel::Chunk::getVoxel(uint8_t x, uint8_t y, uint8_t z) {
-    if (x > kSize - 1 || y > Constants::CHUNK_HEIGHT - 1 || z > kSize - 1) {
+    if (x > Constants::CHUNK_SIZE - 1 || y > Constants::CHUNK_HEIGHT - 1 || z > Constants::CHUNK_SIZE - 1) {
         std::cerr << "Getting block out of range. x: " << x << " y: "<< y << " z: " << z << std::endl;
         return 0;
     }

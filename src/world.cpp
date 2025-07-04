@@ -82,7 +82,7 @@ void Vocksel::World::generateSpawnPosition() {
     for (int x = 0; x < chunk_size; x++) {
         for (int z = 0; z < chunk_size; z++) {
             bool found_possible = false;
-            uint8_t last_type = 999;
+            uint8_t last_type = 200;
             for (int y = Constants::CHUNK_HEIGHT - 1; y >= 0 ; y--) {
                 if (chunk.getVoxel(x,y,z) == 1 && last_type == 0 && found_possible == false) {
                     possible_spawns.emplace_back(glm::vec3(x,y + 1,z)); // This only works if we are checking the corner most chunk
