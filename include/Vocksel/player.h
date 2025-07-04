@@ -35,6 +35,7 @@ namespace Vocksel {
         glm::vec3 position_ = glm::vec3(0.f, 10.f, -10.f);
         glm::vec3 velocity_ = glm::vec3(0.f, 0.f, 0.f);
         glm::vec3 acceleration_ = glm::vec3(0.f, 0.f, 0.f);
+        glm::vec3 camera_offset_ = glm::vec3(0.f , 1.f, 0.f);
 
         glm::vec3 front_ = glm::normalize(glm::vec3(0.0f, 0.0f, 1.0f));
         glm::vec3 up_ = Constants::WORLD_UP;

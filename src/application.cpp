@@ -18,6 +18,8 @@
         world_ = std::make_unique<World>(resources_);
         world_->init();
 
+        player_.setPosition(world_->getSpawnPosition());
+
         cubes_.emplace_back(Cube::create(model_manager_, resources_, glm::vec3(-3.0f, .0f, 0.f), glm::vec3(1.f, 1.f, 1.f), "stone"));
     }
 
@@ -117,9 +119,6 @@
             input_.update(delta_time_);
             player_.update(input_, delta_time_);
             auto& camera = player_.getCamera();
-
-            camera.setPosition(player_.getPosition());
-            camera.setRotation(player_.getYaw(), player_.getPitch());
 
             glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

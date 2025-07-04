@@ -81,7 +81,7 @@ void Vocksel::Player::applyPhysics(float deltaTime) {
 void Vocksel::Player::update(InputManager &input_manager, float delta_time) {
     handleInput(input_manager, delta_time);
     applyPhysics(delta_time);
-    camera_.setPosition(position_);
+    camera_.setPosition(position_ + camera_offset_);
 }
 
 Vocksel::Player::~Player() {

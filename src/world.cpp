@@ -6,12 +6,12 @@ Vocksel::World::World(ResourceManager& resource_manager): noise_num_octaves_(5),
 }
 
 void Vocksel::World::init() {
-    for (int x = 0; x < Constants::WORLD_SIZE; ++x)
-        for (int z = 0; z < Constants::WORLD_SIZE; ++z)
+    for (int x = 0; x < Constants::WORLD_SIZE; x++)
+        for (int z = 0; z < Constants::WORLD_SIZE; z++)
             chunks_.emplace_back(glm::vec3(x, 0, z) * (float)Chunk::kSize, resource_manager_);
 
-    for (int x = 0; x < Constants::WORLD_SIZE; ++x) {
-        for (int z = 0; z < Constants::WORLD_SIZE; ++z) {
+    for (int x = 0; x < Constants::WORLD_SIZE; x++) {
+        for (int z = 0; z < Constants::WORLD_SIZE; z++) {
             Chunk& chunk = chunks_[x * Constants::WORLD_SIZE + z];
             if (x < Constants::WORLD_SIZE - 1)
                 chunk.setNeighbor(0, &chunks_[(x + 1) * Constants::WORLD_SIZE + z]); // +X
@@ -45,8 +45,8 @@ void Vocksel::World::generateWorld() {
         auto& chunk = chunks_[chunk_index];
         glm::vec3 chunk_pos = chunk.getPosition();
 
-        for (int x = 0; x < chunk_size; ++x) {
-            for (int z = 0; z < chunk_size; ++z) {
+        for (int x = 0; x < chunk_size; x++) {
+            for (int z = 0; z < chunk_size; z++) {
                 float world_x = chunk_pos.x + x;
                 float world_z = chunk_pos.z + z;
                 float noise_val = noise.GetNoise(world_x, world_z);
@@ -67,7 +67,47 @@ void Vocksel::World::generateWorld() {
     for (auto& chunk : chunks_) {
         chunk.generateMesh();
     }
+
+    generateSpawnPosition();
 }
+
+void Vocksel::World::generateSpawnPosition() {
+    if (chunks_.empty()) return;
+
+    const int chunk_size = Constants::CHUNK_SIZE;
+
+    std::vector<glm::vec3> possible_spawns;
+
+    auto& chunk = chunks_[0];
+    for (int x = 0; x < chunk_size; x++) {
+        for (int z = 0; z < chunk_size; z++) {
+            bool found_possible = false;
+            uint8_t last_type = 999;
+            for (int y = Constants::WORLD_HEIGHT - 1; y >= 0 ; y--) {
+                if (chunk.getVoxel(x,y,z) == 1 && last_type == 0 && found_possible == false) {
+                    possible_spawns.emplace_back(glm::vec3(x,y + 1,z)); // This only works if we are checking the corner most chunk
+                    found_possible = true;
+                }
+                last_type = chunk.getVoxel(x,y,z);
+            }
+        }
+    }
+
+    int rand_pos = rand() % possible_spawns.size();
+    spawn_position_ = possible_spawns[rand_pos];
+
+}
+
+
+const glm::vec3 &Vocksel::World::getSpawnPosition() {
+    return spawn_position_;
+}
+
+void Vocksel::World::setSpawnPosition(glm::vec3 position) {
+    spawn_position_ = position;
+}
+
+
 
 
 void Vocksel::World::render(Shader &shader) {
