@@ -19,8 +19,23 @@ glm::vec3 Vocksel::InputManager::getWASDVector() {
 
     if (isKeyPressed(GLFW_KEY_W)) movement.z += 1.0f;
     if (isKeyPressed(GLFW_KEY_S)) movement.z -= 1.0f;
-    if (isKeyPressed(GLFW_KEY_A)) movement.x -= 1.0f;
-    if (isKeyPressed(GLFW_KEY_D)) movement.x += 1.0f;
+    if (isKeyPressed(GLFW_KEY_A)) movement.x += 1.0f;
+    if (isKeyPressed(GLFW_KEY_D)) movement.x -= 1.0f;
+
+    if (glm::length(movement) > 0.0f) {
+        movement = glm::normalize(movement);
+    }
+
+    return movement;
+}
+
+glm::vec3 Vocksel::InputManager::getArrowVector() {
+    glm::vec3 movement(0.0f);
+
+    if (isKeyPressed(GLFW_KEY_UP)) movement.z += 1.0f;
+    if (isKeyPressed(GLFW_KEY_DOWN)) movement.z -= 1.0f;
+    if (isKeyPressed(GLFW_KEY_LEFT)) movement.x += 1.0f;
+    if (isKeyPressed(GLFW_KEY_RIGHT)) movement.x -= 1.0f;
 
     if (glm::length(movement) > 0.0f) {
         movement = glm::normalize(movement);

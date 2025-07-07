@@ -21,6 +21,10 @@
         player_.setPosition(world_->getSpawnPosition());
 
         cubes_.emplace_back(Cube::create(model_manager_, resources_, glm::vec3(-3.0f, .0f, 0.f), glm::vec3(1.f, 1.f, 1.f), "stone"));
+        creature_ = std::make_unique<Creature>(model_manager_,resources_,glm::vec3(-3.f,8.f,0.f));
+
+
+
     }
 
     void Vocksel::Application::initWindow() {
@@ -82,7 +86,6 @@
     void Vocksel::Application::initInput() {
         input_.init(window_);
 
-
         input_.bindKey(GLFW_KEY_ESCAPE, [this] {
             closeWindow();
         });
@@ -117,8 +120,10 @@
             ImGui::NewFrame();
 
             input_.update(delta_time_);
+            creature_->update(input_, delta_time_);
             player_.update(input_, delta_time_);
             auto& camera = player_.getCamera();
+
 
             glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -142,29 +147,24 @@
                 cube->render(basic_shader);
             }
 
+            for (auto& sphere : spheres_) {
+                sphere->render(basic_shader);
+            }
+
+
+            creature_->render(basic_shader);
+
             world_->render(basic_shader);
 
-            ImGui::Begin("Voxel Debug");
-            ImGui::Text("FPS: %.1f", 1.0f / delta_time_);
-            if (ImGui::Button("Regenerate")) {
-                world_->generateWorld();
+            ImGui::Begin("Debug");
+            ImGui::Text("Position %.2f %.2f %.2f", creature_->getPosition().x, creature_->getPosition().y, creature_->getPosition().z);
+            ImGui::Text("Direction %.2f %.2f %.2f", creature_->getHeadSegment()->getDirection().x, creature_->getHeadSegment()->getDirection().y, creature_->getHeadSegment()->getDirection().z);
+            for (auto& segment : creature_->getBodySegments()) {
+                ImGui::Text("Direction %.2f %.2f %.2f", segment->getDirection().x, segment->getDirection().y, segment->getDirection().z);
             }
-            if (ImGui::SliderInt("Octaves",&world_->noise_num_octaves_, 1, 10)) {
-                world_->generateWorld();
-            }
-            if (ImGui::SliderFloat("Frequency per octave",&world_->noise_freq_per_octave_, 0.01f, 10.0f)) {
-                world_->generateWorld();
-            }
-            if (ImGui::SliderFloat("Amplitude per octave",&world_->noise_ampl_per_octave_, 0.01f, 10.0f)) {
-                world_->generateWorld();
-            }
-            if (ImGui::SliderFloat("Noise Frequency",&world_->noise_frequency_, 0.0001f, 0.03f)) {
-                world_->generateWorld();
-            }
-            ImGui::Text("Position %.2f %.2f %.2f", player_.getPosition().x, player_.getPosition().y, player_.getPosition().z);
-            ImGui::Text("Yaw %.2f Pitch %.2f", player_.getYaw(), player_.getPitch());
 
             ImGui::End();
+
 
             // Render ImGui
             ImGui::Render();

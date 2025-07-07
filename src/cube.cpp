@@ -7,7 +7,6 @@
 #include "Vocksel/shader.h"
 
 const std::string Vocksel::Cube::MODEL_NAME = "cube";
-GLuint Vocksel::Cube::texture_id_ = 0;
 
 Vocksel::Cube::Cube(ModelManager& model_manager, ResourceManager& resource_manager)
     : model_manager_(model_manager), resource_manager_(resource_manager), position_(0.0f), color_(1.0f), rotation_angle_(0.0f), initialized_(false) {}
@@ -36,10 +35,7 @@ void Vocksel::Cube::initMesh(ModelManager& model_manager) {
 }
 
 void Vocksel::Cube::cleanUp() {
-    if (texture_id_ != 0) {
-        glDeleteTextures(1, &texture_id_);
-        texture_id_ = 0;
-    }
+
 }
 
 void Vocksel::Cube::render(Shader& shader) {

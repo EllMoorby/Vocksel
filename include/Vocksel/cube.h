@@ -22,7 +22,6 @@ namespace Vocksel {
         static void cleanUp();
     private:
         static void initMesh(ModelManager& model_manager);
-        void initTexture(const char* texture);
     private:
         glm::vec3 position_ = glm::vec3(0.f, .0f, .0f);
         glm::vec3 color_ = glm::vec3(0.0f, 0.0f, 0.0f);
@@ -32,7 +31,6 @@ namespace Vocksel {
         ResourceManager& resource_manager_;
         std::string texture_name_;
 
-        static GLuint texture_id_;
         static const std::string MODEL_NAME;
     };
 }

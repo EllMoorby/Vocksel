@@ -83,6 +83,12 @@ add_executable(Vocksel
         src/texture.cpp
         include/Vocksel/player.h
         src/player.cpp
+        include/Vocksel/sphere.h
+        src/sphere.cpp
+        include/Vocksel/creature.h
+        include/Vocksel/creature_segment.h
+        src/creature_segment.cpp
+        src/creature.cpp
 )
 
 # Copy assets directory to build

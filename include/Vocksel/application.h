@@ -8,11 +8,13 @@
 #include <vector>
 
 #include "chunk.h"
+#include "creature.h"
 #include "input_manager.h"
 #include "resource_manager.h"
 #include "world.h"
 #include "model_manager.h"
 #include "player.h"
+#include "sphere.h"
 #include "Vocksel/constants.h"
 #include "Vocksel/cube.h"
 #include "Vocksel/shader.h"
@@ -49,6 +51,10 @@ namespace Vocksel {
         ModelManager model_manager_;
         Player player_;
         std::vector<std::unique_ptr<Cube>> cubes_;
+        std::vector<std::unique_ptr<Sphere>> spheres_;
+        std::unique_ptr<Creature> creature_;
+
+
         std::unique_ptr<World> world_;
 };
 }
