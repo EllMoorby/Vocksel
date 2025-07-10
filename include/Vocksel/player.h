@@ -25,7 +25,6 @@ namespace Vocksel {
 
         void setPosition(const glm::vec3& position) { position_ = position; }
         void setRotation(float yaw, float pitch);
-        void setMovementSpeed(float speed) { movement_speed_ = speed; }
         Camera& getCamera() { return camera_; }
 
         private:
@@ -45,7 +44,7 @@ namespace Vocksel {
         float yaw_ = 90.0f;
         float pitch_ = 0.0f;
 
-        float movement_speed_ = Constants::MOVEMENT_SPEED;
+        const float movement_speed_ = Constants::MOVEMENT_SPEED;
         bool is_grounded_ = false;
 
 

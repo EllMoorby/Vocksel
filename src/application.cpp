@@ -156,6 +156,7 @@
             world_->render(basic_shader);
 
             ImGui::Begin("Debug");
+            ImGui::Text("Player Position %.2f %.2f %.2f", player_.getPosition().x, player_.getPosition().y, player_.getPosition().z);
             ImGui::Text("Head Position %.2f %.2f %.2f", creature_->getPosition().x, creature_->getPosition().y, creature_->getPosition().z);
             ImGui::Text("Head Direction %.2f %.2f %.2f", creature_->getHeadSegment()->getDirection().x, creature_->getHeadSegment()->getDirection().y, creature_->getHeadSegment()->getDirection().z);
             int idx = 1;

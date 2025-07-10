@@ -18,7 +18,7 @@ Vocksel::Creature::Creature(ModelManager &model_manager, ResourceManager &resour
 void Vocksel::Creature::setPosition(glm::vec3 position) {
     position_ = position;
     updateHeadPosition();
-    updateSegmentPositions(0.f);
+    updateSegmentPositions();
 }
 
 
@@ -51,7 +51,7 @@ void Vocksel::Creature::update(InputManager& input_manager, float delta_time) {
 
     position_ += movement_ * delta_time;
     updateHeadPosition();
-    updateSegmentPositions(delta_time);
+    updateSegmentPositions();
 
     head_segment_->update(delta_time);
     for (auto &segment : body_segments_) {
@@ -60,9 +60,10 @@ void Vocksel::Creature::update(InputManager& input_manager, float delta_time) {
 }
 
 
-void Vocksel::Creature::updateSegmentPositions(float delta_time) {
+void Vocksel::Creature::updateSegmentPositions() {
     auto* target_segment = head_segment_.get();
-    head_segment_->setDirection(front_);
+    glm::vec3 smoothed_front = glm::normalize(glm::mix(head_segment_->getDirection(), front_, 0.2f));
+    head_segment_->setDirection(smoothed_front);
     head_segment_->angle_to_ahead_ = 0.f;
 
     for (auto& current_segment : body_segments_) {
