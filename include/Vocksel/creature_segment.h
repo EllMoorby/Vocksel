@@ -20,6 +20,9 @@ namespace Vocksel {
         glm::vec3 getDirection() const {return direction_;}
 
         void cleanUp();
+        float angle_to_ahead_ = 0.f;
+        glm::vec3 new_dir_ = glm::vec3(0.f);
+
 
     private:
         std::unique_ptr<Sphere> sphere_;

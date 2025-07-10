@@ -1,6 +1,7 @@
     #include "Vocksel/application.h"
     #include <format>
     #define STB_IMAGE_IMPLEMENTATION
+
     #include "stb/stb_image.h"
     #include <GLFW/glfw3.h>
     #include "imgui.h"
@@ -63,10 +64,8 @@
             throw std::runtime_error("Failed to initialize GLAD");
         }
 
-
-
         glEnable(GL_DEPTH_TEST);
-        //glEnable(GL_DEPTH_CLAMP);
+        glEnable(GL_DEPTH_CLAMP);
         glEnable(GL_CULL_FACE);
         glCullFace(GL_BACK);
         glFrontFace(GL_CCW);
@@ -157,10 +156,14 @@
             world_->render(basic_shader);
 
             ImGui::Begin("Debug");
-            ImGui::Text("Position %.2f %.2f %.2f", creature_->getPosition().x, creature_->getPosition().y, creature_->getPosition().z);
-            ImGui::Text("Direction %.2f %.2f %.2f", creature_->getHeadSegment()->getDirection().x, creature_->getHeadSegment()->getDirection().y, creature_->getHeadSegment()->getDirection().z);
+            ImGui::Text("Head Position %.2f %.2f %.2f", creature_->getPosition().x, creature_->getPosition().y, creature_->getPosition().z);
+            ImGui::Text("Head Direction %.2f %.2f %.2f", creature_->getHeadSegment()->getDirection().x, creature_->getHeadSegment()->getDirection().y, creature_->getHeadSegment()->getDirection().z);
+            int idx = 1;
             for (auto& segment : creature_->getBodySegments()) {
-                ImGui::Text("Direction %.2f %.2f %.2f", segment->getDirection().x, segment->getDirection().y, segment->getDirection().z);
+                ImGui::Text("[%.i] Direction %.2f %.2f %.2f", idx, segment->getDirection().x, segment->getDirection().y, segment->getDirection().z);
+                ImGui::Text("[%.i] Angle to infront %.2f", idx, segment->angle_to_ahead_);
+
+                idx++;
             }
 
             ImGui::End();

@@ -11,6 +11,7 @@ namespace Vocksel::Constants {
     constexpr float MOVEMENT_SPEED = 300.f;
     constexpr float CAMERA_SENS = .1f;
     constexpr glm::vec3 WORLD_UP = glm::vec3(0.0f, 1.0f, 0.0f);
+    constexpr float CREATURE_MAX_TURN = 100.f;
 
 }
 

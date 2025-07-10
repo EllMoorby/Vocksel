@@ -27,9 +27,10 @@ namespace Vocksel {
 
         void cleanUp();
 
+
     private:
         void updateHeadPosition();
-        void updateSegmentPositions();
+        void updateSegmentPositions(float delta_time);
     private:
         glm::vec3 front_ = glm::vec3(0.f, 0.f, 1.f);
         glm::vec3 movement_ = glm::vec3(0.f, 0.f, 0.f);
