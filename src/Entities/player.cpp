@@ -47,7 +47,7 @@ void Vocksel::Player::handleInput(InputManager &input, float deltaTime) {
 
     if (glm::length(move_dir) > 0.0f) {
         move_dir = glm::normalize(move_dir);
-        acceleration_ += move_dir * 500.f * deltaTime;
+        acceleration_ += move_dir * 500.f;
     }
 }
 
@@ -67,12 +67,20 @@ void Vocksel::Player::applyPhysics(float deltaTime) {
     if (!is_grounded_) {
         acceleration_.y += Constants::GRAVITY;
     }
-    velocity_ += acceleration_;
+    velocity_ += acceleration_ * deltaTime * 100.f;
     velocity_ *= std::pow(0.95f, deltaTime * 120.f);
 
-    if (glm::length(velocity_) > movement_speed_) {
-        velocity_ = glm::normalize(velocity_) * movement_speed_;
+    glm::vec3 horizontal_vel = glm::vec3(velocity_.x, 0.0f, velocity_.z);
+    glm::vec3 vertical_vel = glm::vec3(0.0f, velocity_.y, 0.0f);
+
+    if (glm::length(horizontal_vel) > movement_speed_) {
+        horizontal_vel = glm::normalize(horizontal_vel) * movement_speed_;
     }
+
+    if (glm::length(vertical_vel) > movement_speed_) {
+        vertical_vel = glm::normalize(vertical_vel) * movement_speed_;
+    }
+    velocity_ = horizontal_vel + vertical_vel;
     glm::vec3 new_pos = position_ + velocity_ * deltaTime;
 
 

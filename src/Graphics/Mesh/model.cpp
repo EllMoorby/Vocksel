@@ -151,13 +151,20 @@ bool Vocksel::Model::loadFromFile(std::string path) {
         size_t face_vertex_count = 3; // Default to triangles
 
         // Calculate face normal for the first triangle of this face
-        glm::vec3 faceNormal(0, 1, 0); // Default up normal
-        if (normals.empty() && face_vertex_count >= 3) {
-            faceNormal = calculateFaceNormal(
-                positions[position_indices[i]],
-                positions[position_indices[i+1]],
-                positions[position_indices[i+2]]
-            );
+        glm::vec3 faceNormal(0, 1, 0);
+        if (normals.empty() && i + 2 < position_indices.size()) {
+            uint32_t idx0 = position_indices[i];
+            uint32_t idx1 = position_indices[i+1];
+            uint32_t idx2 = position_indices[i+2];
+
+            // Verify position indices are valid
+            if (idx0 < positions.size() && idx1 < positions.size() && idx2 < positions.size()) {
+                faceNormal = calculateFaceNormal(
+                    positions[idx0],
+                    positions[idx1],
+                    positions[idx2]
+                );
+            }
         }
 
         // Check if we've seen this vertex before
