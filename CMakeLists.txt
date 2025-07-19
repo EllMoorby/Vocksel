@@ -54,41 +54,41 @@ find_package(OpenGL REQUIRED)
 
 add_executable(Vocksel
         src/main.cpp
-        src/shader.cpp
-        include/Vocksel/shader.h
-        include/Vocksel/constants.h
-        include/Vocksel/camera.h
-        src/camera.cpp
-        include/Vocksel/application.h
-        src/application.cpp
-        include/Vocksel/static_mesh.h
-        src/static_mesh.cpp
-        include/Vocksel/chunk.h
-        src/chunk.cpp
-        include/Vocksel/texture_atlas.h
-        src/texture_atlas.cpp
-        include/Vocksel/world.h
-        src/world.cpp
-        include/Vocksel/input_manager.h
-        src/input_manager.cpp
-        include/Vocksel/resource_manager.h
-        src/resource_manager.cpp
-        src/model_manager.cpp
-        include/Vocksel/model_manager.h
-        src/model.cpp
-        include/Vocksel/model.h
-        include/Vocksel/texture.h
-        src/texture.cpp
-        include/Vocksel/player.h
-        src/player.cpp
-        include/Vocksel/creature.h
-        include/Vocksel/creature_segment.h
-        src/creature_segment.cpp
-        src/creature.cpp
-        include/Vocksel/engine_services.h
-        src/engine_services.cpp
-        include/Vocksel/mesh_object.h
-        src/mesh_object.cpp
+        src/Graphics/shader.cpp
+        include/Vocksel/Graphics/shader.h
+        include/Vocksel/Core/constants.h
+        include/Vocksel/Graphics/camera.h
+        src/Graphics/camera.cpp
+        include/Vocksel/Core/application.h
+        src/Core/application.cpp
+        include/Vocksel/Graphics/Mesh/static_mesh.h
+        src/Graphics/Mesh/static_mesh.cpp
+        include/Vocksel/World/chunk.h
+        src/World/chunk.cpp
+        include/Vocksel/Graphics/texture_atlas.h
+        src/Resources/texture_atlas.cpp
+        include/Vocksel/World/world.h
+        src/World/world.cpp
+        include/Vocksel/Core/input_manager.h
+        src/Core/input_manager.cpp
+        include/Vocksel/Resources/resource_manager.h
+        src/Resources/resource_manager.cpp
+        src/Resources/model_manager.cpp
+        include/Vocksel/Resources/model_manager.h
+        src/Graphics/Mesh/model.cpp
+        include/Vocksel/Graphics/Mesh/model.h
+        include/Vocksel/Graphics/texture.h
+        src/Graphics/texture.cpp
+        include/Vocksel/Entities/player.h
+        src/Entities/player.cpp
+        include/Vocksel/Entities/creature.h
+        include/Vocksel/Entities/creature_segment.h
+        src/Entities/creature_segment.cpp
+        src/Entities/creature.cpp
+        include/Vocksel/Core/engine_services.h
+        src/Core/engine_services.cpp
+        include/Vocksel/Graphics/Mesh/mesh_object.h
+        src/Graphics/Mesh/mesh_object.cpp
 )
 
 # Copy assets directory to build

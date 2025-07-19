@@ -1,4 +1,4 @@
-#include "Vocksel/application.h"
+#include "../include/Vocksel/Core/application.h"
 
 int main() {
 
