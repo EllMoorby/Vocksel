@@ -6,8 +6,8 @@
 namespace Vocksel {
     class Sphere {
     public:
-        Sphere(ModelManager& model_manager, ResourceManager& resource_manager);
-        static std::unique_ptr<Sphere> create(ModelManager& model_manager, ResourceManager& resource_manager, const glm::vec3& pos, const float radius, const char* texture_name);
+        Sphere();
+        static std::unique_ptr<Sphere> create(const glm::vec3& pos, const float radius, const char* texture_name);
 
         void init(glm::vec3 pos, float radius, const char* texture_name);
         void render(Shader& shader);
@@ -15,13 +15,11 @@ namespace Vocksel {
         static void cleanUp();
 
     private:
-        static void initMesh(ModelManager& model_manager);
+        static void initMesh();
     private:
         glm::vec3 position_ = glm::vec3(0.f, .0f, .0f);
         float radius_ = 0;
         bool initialized_ = false;
-        ModelManager& model_manager_;
-        ResourceManager& resource_manager_;
         std::string texture_name_;
 
         static const std::string MODEL_NAME;

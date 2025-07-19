@@ -89,6 +89,8 @@ add_executable(Vocksel
         include/Vocksel/creature_segment.h
         src/creature_segment.cpp
         src/creature.cpp
+        include/Vocksel/engine_services.h
+        src/engine_services.cpp
 )
 
 # Copy assets directory to build

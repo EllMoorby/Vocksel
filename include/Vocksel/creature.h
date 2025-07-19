@@ -9,10 +9,10 @@
 namespace Vocksel {
     class Creature {
         public:
-        Creature(ModelManager &model_manager, ResourceManager &resource_manager, glm::vec3 position);
+        Creature(glm::vec3 position);
         ~Creature();
 
-        void update(InputManager& input_manager ,float delta_time);
+        void update(float delta_time);
         void render(Shader& shader);
 
         void setDesiredMovement(glm::vec3 dir);
@@ -43,9 +43,6 @@ namespace Vocksel {
 
         std::unique_ptr<CreatureSegment> head_segment_;
         std::vector<std::unique_ptr<CreatureSegment>> body_segments_;
-
-        ModelManager &model_manager_;
-        ResourceManager &resource_manager_;
     };
 }
 

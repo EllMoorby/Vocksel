@@ -1,8 +1,13 @@
 #include "Vocksel/player.h"
 
-Vocksel::Player::Player(): camera_() {
+Vocksel::Player::Player(): world_() {
     updateVectors();
 }
+
+void Vocksel::Player::init(World &world) {
+    world_ = &world;
+}
+
 
 void Vocksel::Player::handleMouseInput(float xoffset, float yoffset) {
     yaw_ += xoffset * Constants::CAMERA_SENS;
@@ -61,22 +66,64 @@ void Vocksel::Player::updateVectors() {
 }
 
 void Vocksel::Player::applyPhysics(float deltaTime) {
-    //acceleration_.y += gravity_;
+    if (!is_grounded_) {
+        acceleration_.y += Constants::GRAVITY;
+    }
     velocity_ += acceleration_;
     velocity_ *= std::pow(0.95f, deltaTime * 120.f);
+
     if (glm::length(velocity_) > movement_speed_) {
         velocity_ = glm::normalize(velocity_) * movement_speed_;
     }
-    position_ += velocity_ * deltaTime;
+    glm::vec3 new_pos = position_ + velocity_ * deltaTime;
+
+
+
+    if (checkCollision(new_pos.x, position_.y, position_.z, size_)) {
+        velocity_.x = 0;
+    } else {
+        position_.x = new_pos.x;
+    }
+
+    if (checkCollision(position_.x, new_pos.y, position_.z, size_)) {
+        velocity_.y = 0;
+        is_grounded_ = (new_pos.y < position_.y);
+    } else {
+        position_.y = new_pos.y;
+        is_grounded_ = false;
+    }
+
+    if (checkCollision(position_.x, position_.y, new_pos.z, size_)) {
+        velocity_.z = 0;
+    } else {
+        position_.z = new_pos.z;
+    }
 
     acceleration_ = glm::vec3(0.f);
+}
 
-    // TODO: Ground detection
-    if (position_.y <= 0.0f) {
-        position_.y = 0.0f;
-        velocity_.y = 0.0f;
-        is_grounded_ = true;
+bool Vocksel::Player::checkCollision(float x, float y, float z, const glm::vec3& size) {
+    float minX = x - size.x;
+    float maxX = x + size.x;
+    float minY = y;
+    float maxY = y + size.y;
+    float minZ = z - size.z;
+    float maxZ = z + size.z;
+
+    for (float bx = std::floor(minX); bx <= std::ceil(maxX); bx += 1.0f) {
+        for (float by = std::floor(minY); by <= std::ceil(maxY); by += 1.0f) {
+            for (float bz = std::floor(minZ); bz <= std::ceil(maxZ); bz += 1.0f) {
+                if (world_->getBlockAtWorldPos(bx, by, bz) != 0) {
+                    if (maxX > bx - 0.5f && minX < bx + 0.5f &&
+                        maxY > by - 0.5f && minY < by + 0.5f &&
+                        maxZ > bz - 0.5f && minZ < bz + 0.5f) {
+                        return true;
+                        }
+                }
+            }
+        }
     }
+    return false;
 }
 
 void Vocksel::Player::update(InputManager &input_manager, float delta_time) {

@@ -1,8 +1,7 @@
 #include "Vocksel/creature_segment.h"
 
-Vocksel::CreatureSegment::CreatureSegment(ModelManager &model_manager, ResourceManager &resource_manager, float radius, glm::vec3 position)
-    : radius_(radius), position_(position), model_manager_(model_manager), resource_manager_(resource_manager),
-        sphere_(Sphere::create(model_manager, resource_manager, position, radius, "stone")) {
+Vocksel::CreatureSegment::CreatureSegment(float radius, glm::vec3 position)
+    : radius_(radius), position_(position), sphere_(Sphere::create(position, radius, "stone")) {
 
 }
 

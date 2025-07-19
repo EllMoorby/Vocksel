@@ -12,7 +12,7 @@
 namespace Vocksel {
     class Chunk {
     public:
-        Chunk(glm::vec3 position, ResourceManager& resource_manager);
+        Chunk(glm::vec3 position);
         ~Chunk();
 
         void generateMesh();
@@ -35,7 +35,6 @@ namespace Vocksel {
         std::string getBlockType(int block_type);
     private:
         glm::vec3 position_;
-        ResourceManager& resource_manager_;
         uint8_t voxels_[Constants::CHUNK_SIZE][Constants::CHUNK_HEIGHT][Constants::CHUNK_SIZE];
         std::unique_ptr<StaticMesh> mesh_;
         Chunk* neighbors_[6] = {nullptr}; // +X, -X, +Y, -Y, +Z, -Z

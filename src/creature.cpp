@@ -2,16 +2,17 @@
 #define GLM_ENABLE_EXPERIMENTAL
 #include "glm/gtx/quaternion.hpp"
 #include "glm/gtx/rotate_vector.hpp"
+#include "Vocksel/engine_services.h"
 
-Vocksel::Creature::Creature(ModelManager &model_manager, ResourceManager &resource_manager, glm::vec3 position): resource_manager_(resource_manager), model_manager_(model_manager) ,position_(position) {
-    head_segment_ = std::make_unique<CreatureSegment>(model_manager_, resource_manager_, 1.f, position_);
+Vocksel::Creature::Creature(glm::vec3 position): position_(position) {
+    head_segment_ = std::make_unique<CreatureSegment>(1.f, position_);
 
-    addSegment(std::make_unique<CreatureSegment>(model_manager_, resource_manager_, 1.f, glm::vec3(position.x - 2.f , position.y, position.z)));
-    addSegment(std::make_unique<CreatureSegment>(model_manager_, resource_manager_, 1.f, glm::vec3(position.x - 4.f , position.y, position.z)));
-    addSegment(std::make_unique<CreatureSegment>(model_manager_, resource_manager_, 1.f, glm::vec3(position.x - 6.f , position.y, position.z)));
-    addSegment(std::make_unique<CreatureSegment>(model_manager_, resource_manager_, 1.f, glm::vec3(position.x - 8.f , position.y, position.z)));
-    addSegment(std::make_unique<CreatureSegment>(model_manager_, resource_manager_, 1.f, glm::vec3(position.x - 10.f , position.y, position.z)));
-    addSegment(std::make_unique<CreatureSegment>(model_manager_, resource_manager_, 1.f, glm::vec3(position.x - 12.f , position.y, position.z)));
+    addSegment(std::make_unique<CreatureSegment>(1.f, glm::vec3(position.x - 2.f , position.y, position.z)));
+    addSegment(std::make_unique<CreatureSegment>(1.f, glm::vec3(position.x - 4.f , position.y, position.z)));
+    addSegment(std::make_unique<CreatureSegment>(1.f, glm::vec3(position.x - 6.f , position.y, position.z)));
+    addSegment(std::make_unique<CreatureSegment>(1.f, glm::vec3(position.x - 8.f , position.y, position.z)));
+    addSegment(std::make_unique<CreatureSegment>(1.f, glm::vec3(position.x - 10.f , position.y, position.z)));
+    addSegment(std::make_unique<CreatureSegment>(1.f, glm::vec3(position.x - 12.f , position.y, position.z)));
 
 }
 
@@ -40,8 +41,8 @@ void Vocksel::Creature::setDesiredMovement(glm::vec3 dir) {
     }
 }
 
-void Vocksel::Creature::update(InputManager& input_manager, float delta_time) {
-    setDesiredMovement(input_manager.getArrowVector());
+void Vocksel::Creature::update(float delta_time) {
+    setDesiredMovement(EngineServices::input().getArrowVector());
 
     movement_ = glm::mix(movement_, desired_movement_, acceleration_ * delta_time);
 

@@ -1,14 +1,16 @@
 #include "Vocksel/sphere.h"
 
+#include "Vocksel/engine_services.h"
+
 const std::string Vocksel::Sphere::MODEL_NAME = "sphere";
 
-Vocksel::Sphere::Sphere(ModelManager &model_manager, ResourceManager &resource_manager)
-    : model_manager_(model_manager), resource_manager_(resource_manager), position_(0.0f), radius_(1.0f), initialized_(false) {
+Vocksel::Sphere::Sphere()
+    : position_(0.0f), radius_(1.0f), initialized_(false) {
 
 }
 
-std::unique_ptr<Vocksel::Sphere> Vocksel::Sphere::create(ModelManager &model_manager, ResourceManager &resource_manager, const glm::vec3 &pos, const float radius, const char *texture_name) {
-    auto sphere = std::make_unique<Sphere>(model_manager, resource_manager);
+std::unique_ptr<Vocksel::Sphere> Vocksel::Sphere::create(const glm::vec3 &pos, const float radius, const char *texture_name) {
+    auto sphere = std::make_unique<Sphere>();
     sphere->init(pos, radius, texture_name);
     return sphere;
 }
@@ -18,13 +20,13 @@ void Vocksel::Sphere::init(glm::vec3 pos, float radius, const char *texture_name
     position_ = pos;
     texture_name_ = texture_name;
 
-    initMesh(model_manager_);
+    initMesh();
     initialized_ = true;
 }
 
-void Vocksel::Sphere::initMesh(ModelManager &model_manager) {
-    if (!model_manager.getModel(MODEL_NAME)) {
-        model_manager.loadModel("assets/models/sphere.obj", "sphere");
+void Vocksel::Sphere::initMesh() {
+    if (!EngineServices::models().getModel(MODEL_NAME)) {
+        EngineServices::models().loadModel("assets/models/sphere.obj", "sphere");
     }
 }
 
@@ -37,13 +39,13 @@ void Vocksel::Sphere::render(Shader &shader) {
     model = glm::translate(model, glm::vec3(position_));
     model = glm::scale(model, glm::vec3(radius_, radius_, radius_));
 
-    Texture& texture = resource_manager_.getTexture(texture_name_);
+    Texture& texture = EngineServices::resources().getTexture(texture_name_);
     glActiveTexture(GL_TEXTURE0);
     texture.bind();
     shader.setInt("texture_diffuse", 0);
 
 
-    if (auto* sphere_model = model_manager_.getModel(MODEL_NAME)) {
+    if (auto* sphere_model = EngineServices::models().getModel(MODEL_NAME)) {
         sphere_model->setTransformMatrix(model);
         sphere_model->render(shader);
     }

@@ -2,7 +2,7 @@
 #define SHADER_H
 #include "glad/glad.h"
 #include <string>
-#include <GLFW/glfw3.h>
+
 #include "glm/fwd.hpp"
 #include <fstream>
 #include <iostream>

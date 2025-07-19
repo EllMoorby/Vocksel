@@ -33,6 +33,9 @@ namespace Vocksel {
         void initGL();
         void initGUI();
         void initInput();
+        void updateObjects();
+        void updateGUI();
+        void renderObjects();
         void closeWindow();
         static void mouseCallback(GLFWwindow* window ,double xpos, double ypos);
         static void framebufferSizeCallback(GLFWwindow* window, int width, int height);
@@ -41,14 +44,13 @@ namespace Vocksel {
         bool in_mouse_mode_ = true;
         bool first_mouse_move_cond_ = true;
         double lastx_mouse_ = Constants::SCREEN_WIDTH/2, lasty_mouse_ = Constants::SCREEN_HEIGHT/2;
+        glm::vec4 clear_color_ = glm::vec4(0.2f, 0.3f, 0.3f, 1.0f);
         float current_frame_;
         float delta_time_;
         float last_frame_;
+        float aspect_ratio_ = static_cast<float>(Constants::SCREEN_WIDTH) / static_cast<float>(Constants::SCREEN_HEIGHT);
 
         GLFWwindow* window_;
-        InputManager input_;
-        ResourceManager resources_;
-        ModelManager model_manager_;
         Player player_;
         std::vector<std::unique_ptr<Cube>> cubes_;
         std::vector<std::unique_ptr<Sphere>> spheres_;

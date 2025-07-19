@@ -29,7 +29,7 @@ namespace Vocksel {
 
         float yaw_ = -90.0f;
         float pitch_ = 0.0f;
-        float fov_ = glm::radians(45.0f);
+        float fov_ = glm::radians(70.0f);
         float nearplane_ = 0.1f;
         float farplane_ = 1000.0f;
     };

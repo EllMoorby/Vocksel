@@ -6,7 +6,7 @@
 namespace Vocksel {
     class CreatureSegment {
         public:
-        CreatureSegment(ModelManager &model_manager, ResourceManager &resource_manager, float radius, glm::vec3 position);
+        CreatureSegment(float radius, glm::vec3 position);
         ~CreatureSegment();
 
         void render(Shader& shader);
@@ -29,10 +29,6 @@ namespace Vocksel {
         float radius_;
         glm::vec3 position_;
         glm::vec3 direction_ = glm::vec3(0.f);
-
-        ResourceManager &resource_manager_;
-        ModelManager &model_manager_;
-
     };
 }
 

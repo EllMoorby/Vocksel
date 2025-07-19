@@ -1,5 +1,7 @@
 #include "Vocksel/chunk.h"
 
+#include "Vocksel/engine_services.h"
+
 // Face directions (order: +X, -X, +Y, -Y, +Z, -Z)
 const glm::ivec3 face_normals[6] = {
     {1, 0, 0}, {-1, 0, 0},
@@ -24,7 +26,7 @@ const glm::vec3 face_vertices[6][4] = {
 
 
 
-Vocksel::Chunk::Chunk(glm::vec3 position, ResourceManager& resource_manager): position_(position), resource_manager_(resource_manager) {
+Vocksel::Chunk::Chunk(glm::vec3 position): position_(position){
     // Set it all to grass
     for (int x = 0; x < Constants::CHUNK_SIZE; ++x)
         for (int y = 0; y < Constants::CHUNK_HEIGHT; ++y)
@@ -49,7 +51,7 @@ void Vocksel::Chunk::generateMesh() {
     std::vector<uint32_t> indices;
     uint32_t idx_offset = 0;
 
-    TextureAtlas& atlas = resource_manager_.getBlockAtlas();
+    TextureAtlas& atlas = EngineServices::resources().getBlockAtlas();
 
     constexpr uint32_t kSize = Constants::CHUNK_SIZE;
 
@@ -202,7 +204,7 @@ void Vocksel::Chunk::render(Shader &shader) {
     shader.setMat4("model", model);
     shader.setVec3("color", glm::vec3(0.0f, 1.0f, 0.0f));
 
-    TextureAtlas& atlas = resource_manager_.getBlockAtlas();
+    TextureAtlas& atlas = EngineServices::resources().getBlockAtlas();
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, atlas.getAtlasTexture());

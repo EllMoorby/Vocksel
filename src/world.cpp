@@ -1,14 +1,14 @@
 #include "Vocksel/world.h"
 
-Vocksel::World::World(ResourceManager& resource_manager): noise_num_octaves_(5), noise_freq_per_octave_(0.95f),
-    noise_ampl_per_octave_(0.43f), noise_frequency_(0.021f), resource_manager_(resource_manager) {
+Vocksel::World::World(): noise_num_octaves_(5), noise_freq_per_octave_(0.95f),
+    noise_ampl_per_octave_(0.43f), noise_frequency_(0.021f) {
 
 }
 
 void Vocksel::World::init() {
     for (int x = 0; x < Constants::WORLD_SIZE; x++)
         for (int z = 0; z < Constants::WORLD_SIZE; z++)
-            chunks_.emplace_back(glm::vec3(x, 0, z) * (float)Constants::CHUNK_SIZE, resource_manager_);
+            chunks_.emplace_back(glm::vec3(x, 0, z) * (float)Constants::CHUNK_SIZE);
 
     for (int x = 0; x < Constants::WORLD_SIZE; x++) {
         for (int z = 0; z < Constants::WORLD_SIZE; z++) {
@@ -24,6 +24,22 @@ void Vocksel::World::init() {
         }
     }
     generateWorld();
+}
+
+uint8_t Vocksel::World::getBlockAtWorldPos(int x, int y, int z) {
+    if (y >= (int)Constants::CHUNK_HEIGHT) return 0; // Treat up as air
+    if (y < 0) return 1; // Treat below 0 as solid
+
+    int chunkX = x / Constants::CHUNK_SIZE;
+    int chunkZ = z / Constants::CHUNK_SIZE;
+    int localX = x % Constants::CHUNK_SIZE;
+    int localZ = z % Constants::CHUNK_SIZE;
+
+    if (chunkX < 0 || chunkZ < 0 || chunkX >= Constants::WORLD_SIZE || chunkZ >= Constants::WORLD_SIZE)
+        return 0; // Treat out-of-bounds as air
+
+    Chunk& chunk = chunks_[chunkX * Constants::WORLD_SIZE + chunkZ];
+    return chunk.getVoxel(localX, y, localZ);
 }
 
 
