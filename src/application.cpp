@@ -24,7 +24,11 @@ Vocksel::Application::Application() {
 
     player_.setPosition(world_->getSpawnPosition());
 
-    cubes_.emplace_back(Cube::create(glm::vec3(-3.0f, .0f, 0.f), glm::vec3(1.f, 1.f, 1.f), "stone"));
+    mesh_objects_.push_back(
+    MeshObject::create(glm::vec3(-3.0f, .0f, 0.f), "teapot", "stone", glm::vec3(1.f))
+);
+    mesh_objects_.back()->setRotation(100);
+
     creature_ = std::make_unique<Creature>(glm::vec3(-3.f,8.f,0.f));
 
 
@@ -163,13 +167,9 @@ void Vocksel::Application::renderObjects() {
     basic_shader.setMat4("view", view);
     basic_shader.setMat4("projection", projection);
 
-    // Render cubes
-    for (auto& cube : cubes_) {
-        cube->render(basic_shader);
-    }
 
-    for (auto& sphere : spheres_) {
-        sphere->render(basic_shader);
+    for (auto& obj : mesh_objects_) {
+        obj->render(basic_shader);
     }
 
     creature_->render(basic_shader);
@@ -183,6 +183,8 @@ void Vocksel::Application::updateGUI() {
     ImGui::Text("Player Position %.2f %.2f %.2f", player_.getPosition().x, player_.getPosition().y, player_.getPosition().z);
     ImGui::Text("Player Velocity %.2f %.2f %.2f", player_.getVelocity().x, player_.getVelocity().y, player_.getVelocity().z);
     ImGui::Text("Player Grounded %i", player_.getIsGrounded());
+
+    ImGui::SliderFloat("Teapot Rotation", &mesh_objects_.back()->rotation_angle_, 0.f, 360.f);
     ImGui::End();
 }
 
@@ -193,7 +195,6 @@ void Vocksel::Application::framebufferSizeCallback(GLFWwindow *window, int width
         app->aspect_ratio_ = static_cast<float>(width) / static_cast<float>(height);
         glViewport(0, 0, width, height);
     }
-
 
 }
 
@@ -222,7 +223,6 @@ void Vocksel::Application::closeWindow() {
 
 
 void Vocksel::Application::cleanUp() {
-    Cube::cleanUp();
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();

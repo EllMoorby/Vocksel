@@ -10,13 +10,12 @@
 #include "chunk.h"
 #include "creature.h"
 #include "input_manager.h"
+#include "mesh_object.h"
 #include "resource_manager.h"
 #include "world.h"
 #include "model_manager.h"
 #include "player.h"
-#include "sphere.h"
 #include "Vocksel/constants.h"
-#include "Vocksel/cube.h"
 #include "Vocksel/shader.h"
 #include "Vocksel/camera.h"
 
@@ -52,8 +51,7 @@ namespace Vocksel {
 
         GLFWwindow* window_;
         Player player_;
-        std::vector<std::unique_ptr<Cube>> cubes_;
-        std::vector<std::unique_ptr<Sphere>> spheres_;
+        std::vector<std::unique_ptr<MeshObject>> mesh_objects_;
         std::unique_ptr<Creature> creature_;
 
 

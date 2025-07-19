@@ -117,11 +117,7 @@ void Vocksel::Creature::render(Shader &shader) {
 }
 
 void Vocksel::Creature::cleanUp() {
-    head_segment_->cleanUp();
     head_segment_.reset();
-    for (auto& segment : body_segments_) {
-        segment->cleanUp();
-    }
     body_segments_.clear();
 }
 

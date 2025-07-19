@@ -54,8 +54,6 @@ find_package(OpenGL REQUIRED)
 
 add_executable(Vocksel
         src/main.cpp
-        src/cube.cpp
-        include/Vocksel/cube.h
         src/shader.cpp
         include/Vocksel/shader.h
         include/Vocksel/constants.h
@@ -83,14 +81,14 @@ add_executable(Vocksel
         src/texture.cpp
         include/Vocksel/player.h
         src/player.cpp
-        include/Vocksel/sphere.h
-        src/sphere.cpp
         include/Vocksel/creature.h
         include/Vocksel/creature_segment.h
         src/creature_segment.cpp
         src/creature.cpp
         include/Vocksel/engine_services.h
         src/engine_services.cpp
+        include/Vocksel/mesh_object.h
+        src/mesh_object.cpp
 )
 
 # Copy assets directory to build

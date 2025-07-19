@@ -1,7 +1,7 @@
 #ifndef CREATURE_SEGMENT_H
 #define CREATURE_SEGMENT_H
+#include "mesh_object.h"
 #include "shader.h"
-#include "sphere.h"
 
 namespace Vocksel {
     class CreatureSegment {
@@ -19,13 +19,12 @@ namespace Vocksel {
         glm::vec3 getPosition() const {return position_;}
         glm::vec3 getDirection() const {return direction_;}
 
-        void cleanUp();
         float angle_to_ahead_ = 0.f;
         glm::vec3 new_dir_ = glm::vec3(0.f);
 
 
     private:
-        std::unique_ptr<Sphere> sphere_;
+        std::unique_ptr<MeshObject> body_mesh_;
         float radius_;
         glm::vec3 position_;
         glm::vec3 direction_ = glm::vec3(0.f);
