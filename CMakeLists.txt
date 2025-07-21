@@ -81,14 +81,20 @@ add_executable(Vocksel
         src/Graphics/texture.cpp
         include/Vocksel/Entities/player.h
         src/Entities/player.cpp
-        include/Vocksel/Entities/creature.h
-        include/Vocksel/Entities/creature_segment.h
-        src/Entities/creature_segment.cpp
-        src/Entities/creature.cpp
+        include/Vocksel/Entities/Creature/creature.h
+        include/Vocksel/Entities/Creature/creature_segment.h
+        src/Entities/Creature/creature_segment.cpp
+        src/Entities/Creature/creature.cpp
         include/Vocksel/Core/engine_services.h
         src/Core/engine_services.cpp
         include/Vocksel/Graphics/Mesh/mesh_object.h
         src/Graphics/Mesh/mesh_object.cpp
+        include/Vocksel/Entities/Creature/leg_segment.h
+        include/Vocksel/Entities/Creature/leg_chain.h
+        src/Entities/Creature/leg_chain.cpp
+        src/Entities/Creature/leg_segment.cpp
+        include/Vocksel/Core/Debug/debug_renderer.h
+        src/Core/Debug/debug_renderer.cpp
 )
 
 # Copy assets directory to build

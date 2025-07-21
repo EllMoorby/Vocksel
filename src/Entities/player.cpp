@@ -57,7 +57,7 @@ void Vocksel::Player::updateVectors() {
     front.y = sin(glm::radians(pitch_));
     front.z = sin(glm::radians(yaw_)) * cos(glm::radians(pitch_));
     front_ = glm::normalize(front);
-    right_ = -glm::normalize(glm::cross(front_, Constants::WORLD_UP));
+    right_ = glm::normalize(glm::cross(front_, Constants::WORLD_UP));
     up_ = glm::normalize(glm::cross(right_, front_));
 
     flatfront_ = glm::normalize(glm::vec3(front_.x, .0f, front_.z));

@@ -8,7 +8,7 @@
 #include <vector>
 
 #include "Vocksel/World/chunk.h"
-#include "Vocksel/Entities/creature.h"
+#include "../Entities/Creature/creature.h"
 #include "input_manager.h"
 #include "Vocksel/Graphics/Mesh/mesh_object.h"
 #include "Vocksel/Resources/resource_manager.h"
@@ -26,18 +26,23 @@ namespace Vocksel {
         ~Application();
 
         void run();
+        Player getPlayer() const {return player_;};
+        float getAspectRatio() const {return aspect_ratio_;};
+
 
     private:
         void initWindow();
         void initGL();
         void initGUI();
         void initInput();
+
         void updateObjects();
         void updateGUI();
         void renderObjects();
         void closeWindow();
         static void mouseCallback(GLFWwindow* window ,double xpos, double ypos);
         static void framebufferSizeCallback(GLFWwindow* window, int width, int height);
+
         void cleanUp();
     private:
         bool in_mouse_mode_ = true;
@@ -53,9 +58,7 @@ namespace Vocksel {
         Player player_;
         std::vector<std::unique_ptr<MeshObject>> mesh_objects_;
         std::unique_ptr<Creature> creature_;
-
-
         std::unique_ptr<World> world_;
-};
+    };
 }
 #endif //APPLICATION_H

@@ -10,10 +10,15 @@ void Vocksel::ResourceManager::init() {
     blocks_atlas_ = std::make_unique<TextureAtlas>(160);
 
     loadBlockAtlas("assets/textures/blocks");
-    loadShader("default","assets/shaders/core/basic.vs.glsl", "assets/shaders/core/basic.fs.glsl");
-    loadShader("normals","assets/shaders/core/normals.vs.glsl", "assets/shaders/core/normals.fs.glsl");
+    loadShader("default","assets/shaders/Core/basic.vs.glsl", "assets/shaders/Core/basic.fs.glsl");
+    loadShader("normals","assets/shaders/Core/normals.vs.glsl", "assets/shaders/Core/normals.fs.glsl");
+    loadShader("line","assets/shaders/Core/Debug/line.vs.glsl", "assets/shaders/Core/Debug/line.fs.glsl");
+
     loadTexture("default", "assets/textures/blocks/default.png");
     loadTexture("stone", "assets/textures/blocks/stone.png");
+    loadTexture("grass", "assets/textures/blocks/grass.png");
+    loadTexture("plank", "assets/textures/blocks/plank.png");
+    loadTexture("wool", "assets/textures/blocks/wool.png");
 
 
 
@@ -31,6 +36,7 @@ Vocksel::Shader& Vocksel::ResourceManager::getShader(const std::string &name) {
     if (it == shaders_.end()) {
         return *shaders_["default"];
     }
+    return *(it->second);
 }
 
 void Vocksel::ResourceManager::loadTexture(std::string name, const char *path) {

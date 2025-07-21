@@ -46,7 +46,7 @@ void Vocksel::Model::addMesh(std::unique_ptr<StaticMesh> mesh) {
 bool Vocksel::Model::loadFromFile(std::string path) {
     std::ifstream file(path);
     if (!file.is_open()) {
-        std::cerr << "Failed to open file " << path << std::endl;
+        std::cerr << "Failed to open file " << path << ". "<< strerror(errno) << std::endl;
         return false;
     }
 

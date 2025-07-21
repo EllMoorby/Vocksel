@@ -64,6 +64,7 @@ void Vocksel::Application::initWindow() {
 
 }
 
+
 void Vocksel::Application::initGL() {
     // Initialize GLAD
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
@@ -154,37 +155,56 @@ void Vocksel::Application::updateObjects() {
 
 
 void Vocksel::Application::renderObjects() {
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
     auto &basic_shader = EngineServices::resources().getShader("basic");
     basic_shader.use();
     basic_shader.setBool("showNormals", true);
 
     auto& camera = player_.getCamera();
-
-    // Calculate view matrix and set view and projection
     glm::mat4 view = camera.getViewMatrix();
     glm::mat4 projection = camera.getProjectionMatrix(aspect_ratio_);
 
     basic_shader.setMat4("view", view);
     basic_shader.setMat4("projection", projection);
 
-
     for (auto& obj : mesh_objects_) {
         obj->render(basic_shader);
     }
-
     creature_->render(basic_shader);
-
     world_->render(basic_shader);
+
+    auto* head = creature_->getHeadSegment().get();
+    glm::vec3 currentBase = head->getPosition();
+    for (auto& segment : head->leg_.segments_) {
+        EngineServices::debug().drawLine(currentBase, segment.getTipPosition(), glm::vec3(1, 0, 0), camera, aspect_ratio_);
+        currentBase = segment.getTipPosition();
+    }
+
+    // Draw body segments legs
+    for (auto& bodySegment : creature_->getBodySegments()) {
+        currentBase = bodySegment->getPosition();
+        for (auto& segment : bodySegment->leg_.segments_) {
+            EngineServices::debug().drawLine(currentBase, segment.getTipPosition(), glm::vec3(0, 1, 0),camera, aspect_ratio_); // Different color for body legs
+            currentBase = segment.getTipPosition();
+        }
+    }
 }
 
 
 void Vocksel::Application::updateGUI() {
     ImGui::Begin("Debug");
     ImGui::Text("Player Position %.2f %.2f %.2f", player_.getPosition().x, player_.getPosition().y, player_.getPosition().z);
-    ImGui::Text("Player Velocity %.2f %.2f %.2f", player_.getVelocity().x, player_.getVelocity().y, player_.getVelocity().z);
-    ImGui::Text("Player Grounded %i", player_.getIsGrounded());
+    ImGui::Text("Head Position %.2f %.2f %.2f", creature_->getPosition().x, creature_->getPosition().y, creature_->getPosition().z);
+    int idx2 = 1;
 
-    ImGui::SliderFloat("Teapot Rotation", &mesh_objects_.back()->rotation_angle_, 0.f, 360.f);
+    for (auto& legsegment : creature_->getHeadSegment()->leg_.segments_) {
+        ImGui::Text("[%.i] Tip position %.2f %.2f %.2f", idx2, legsegment.getTipPosition().x, legsegment.getTipPosition().y, legsegment.getTipPosition().z);
+        idx2++;
+    }
+
+
+
     ImGui::End();
 }
 

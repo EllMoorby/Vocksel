@@ -2,7 +2,7 @@
 #define CREATURE_H
 #include <vector>
 
-#include "Vocksel/Entities/creature_segment.h"
+#include "creature_segment.h"
 #include "Vocksel/Core/input_manager.h"
 #include "Vocksel/Graphics/shader.h"
 
