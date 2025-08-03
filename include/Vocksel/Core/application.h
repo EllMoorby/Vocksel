@@ -16,6 +16,7 @@
 #include "Vocksel/Resources/model_manager.h"
 #include "Vocksel/Entities/player.h"
 #include "constants.h"
+#include "Vocksel/Entities/Debug/leg_creature.h"
 #include "Vocksel/Graphics/shader.h"
 #include "Vocksel/Graphics/camera.h"
 
@@ -59,6 +60,11 @@ namespace Vocksel {
         std::vector<std::unique_ptr<MeshObject>> mesh_objects_;
         std::unique_ptr<Creature> creature_;
         std::unique_ptr<World> world_;
+
+        //TEST
+        std::unique_ptr<Debug::LegCreature> debug_creature_;
+        float new_vel[3] = {0.f,0.f,0.f};
+        int vel_idx;
     };
 }
 #endif //APPLICATION_H

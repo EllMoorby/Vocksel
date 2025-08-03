@@ -38,7 +38,7 @@ namespace Vocksel {
         glm::vec3 position_;
 
         float acceleration_ = 10.0f;
-        float max_speed_ = 20.0f;
+        float max_speed_ = 10.0f;
         float max_turn_angle_ = glm::radians(45.0f);
 
         std::unique_ptr<CreatureSegment> head_segment_;

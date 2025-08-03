@@ -95,6 +95,8 @@ add_executable(Vocksel
         src/Entities/Creature/leg_segment.cpp
         include/Vocksel/Core/Debug/debug_renderer.h
         src/Core/Debug/debug_renderer.cpp
+        include/Vocksel/Entities/Debug/LegCreature.h
+        src/Entities/Creature/Debug/leg_creature.cpp
 )
 
 # Copy assets directory to build
@@ -107,7 +109,7 @@ add_custom_command(TARGET Vocksel POST_BUILD
 )
 
 # Set debug mode.
-target_compile_definitions(Vocksel PRIVATE Debug)
+target_compile_definitions(Vocksel PRIVATE DEBUG)
 
 
 target_link_libraries(Vocksel

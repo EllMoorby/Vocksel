@@ -24,12 +24,10 @@ namespace Vocksel {
         glm::vec3 getDirection() const {return direction_;}
         float getGap() const {return gap_;}
         float getAngleToAhead() const {return angle_to_ahead_;}
+        std::vector<LegChain>& getLegs()  {return legs_;}
 
-        LegChain leg_;
-
-
+        void addLeg(glm::vec3 offset);
     private:
-
         std::unique_ptr<MeshObject> body_mesh_;
         float radius_;
         float gap_;
@@ -38,6 +36,8 @@ namespace Vocksel {
         glm::vec3 direction_ = glm::vec3(0.f);
         float angle_to_ahead_ = 0.f;
         glm::vec3 new_dir_ = glm::vec3(0.f);
+
+        std::vector<LegChain> legs_;
     };
 }
 

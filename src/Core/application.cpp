@@ -31,6 +31,8 @@ Vocksel::Application::Application() {
 
     creature_ = std::make_unique<Creature>(glm::vec3(-3.f,8.f,0.f));
 
+    debug_creature_ = std::make_unique<Debug::LegCreature>();
+
 
 
 }
@@ -138,7 +140,7 @@ void Vocksel::Application::run() {
         glfwSwapBuffers(window_);
         glfwPollEvents();
 
-#ifdef Debug
+#ifdef DEBUG
         GLenum err;
         while ((err = glGetError()) != GL_NO_ERROR) {
             std::cerr << "OpenGL error: " << err << std::endl;
@@ -151,6 +153,7 @@ void Vocksel::Application::updateObjects() {
     EngineServices::input().update(delta_time_);
     creature_->update(delta_time_);
     player_.update(EngineServices::input(), delta_time_);
+    debug_creature_->update(delta_time_);
 }
 
 
@@ -172,21 +175,29 @@ void Vocksel::Application::renderObjects() {
         obj->render(basic_shader);
     }
     creature_->render(basic_shader);
+    debug_creature_->render(camera, aspect_ratio_);
     world_->render(basic_shader);
 
     auto* head = creature_->getHeadSegment().get();
-    glm::vec3 currentBase = head->getPosition();
-    for (auto& segment : head->leg_.segments_) {
-        EngineServices::debug().drawLine(currentBase, segment.getTipPosition(), glm::vec3(1, 0, 0), camera, aspect_ratio_);
-        currentBase = segment.getTipPosition();
+
+    for (auto& leg : head->getLegs()) {
+        glm::vec3 currentBase = head->getPosition();
+        for (auto& segment : leg.segments_) {
+            EngineServices::debug().drawLine(currentBase, segment.getTipPosition(), glm::vec3(1, 0, 0), camera, aspect_ratio_);
+            currentBase = segment.getTipPosition();
+        }
     }
+
 
     // Draw body segments legs
     for (auto& bodySegment : creature_->getBodySegments()) {
-        currentBase = bodySegment->getPosition();
-        for (auto& segment : bodySegment->leg_.segments_) {
-            EngineServices::debug().drawLine(currentBase, segment.getTipPosition(), glm::vec3(0, 1, 0),camera, aspect_ratio_); // Different color for body legs
-            currentBase = segment.getTipPosition();
+        for (auto& leg : bodySegment->getLegs()) {
+            glm::vec3 currentBase = bodySegment->getPosition();
+
+            for (auto& segment : leg.segments_) {
+                EngineServices::debug().drawLine(currentBase, segment.getTipPosition(), glm::vec3(0, 1, 0),camera, aspect_ratio_); // Different color for body legs
+                currentBase = segment.getTipPosition();
+            }
         }
     }
 }
@@ -194,16 +205,36 @@ void Vocksel::Application::renderObjects() {
 
 void Vocksel::Application::updateGUI() {
     ImGui::Begin("Debug");
+    ImGui::SeparatorText("Player");
     ImGui::Text("Player Position %.2f %.2f %.2f", player_.getPosition().x, player_.getPosition().y, player_.getPosition().z);
+    ImGui::SeparatorText("Creature");
     ImGui::Text("Head Position %.2f %.2f %.2f", creature_->getPosition().x, creature_->getPosition().y, creature_->getPosition().z);
-    int idx2 = 1;
 
-    for (auto& legsegment : creature_->getHeadSegment()->leg_.segments_) {
-        ImGui::Text("[%.i] Tip position %.2f %.2f %.2f", idx2, legsegment.getTipPosition().x, legsegment.getTipPosition().y, legsegment.getTipPosition().z);
-        idx2++;
+    ImGui::SeparatorText("Debug Creature");
+    ImGui::SliderFloat("Pos X", &debug_creature_->position.x, -50.f, 50.f, "%.2f");
+    ImGui::SliderFloat("Pos Y", &debug_creature_->position.y, -50.f, 50.f, "%.2f");
+    ImGui::SliderFloat("Pos Z", &debug_creature_->position.z, -50.f, 50.f, "%.2f");
+
+    ImGui::NewLine();
+
+    ImGui::SliderFloat("Rest Pos X", &debug_creature_->offset.x, -50.f, 50.f, "%.2f");
+    ImGui::SliderFloat("Rest Pos Y", &debug_creature_->offset.y, -50.f, 50.f, "%.2f");
+    ImGui::SliderFloat("Rest Pos Z", &debug_creature_->offset.z, -50.f, 50.f, "%.2f");
+
+    ImGui::NewLine();
+
+    ImGui::InputFloat3("Add velocity to idx", new_vel, "%.2f");
+    ImGui::InputInt("IDX", &vel_idx, 1, 100);
+    if (ImGui::Button("Add velocity")) {
+        debug_creature_->segment.getLegs().back().setVelocity(glm::vec3(new_vel[0], new_vel[1], new_vel[2]) ,vel_idx);
+        std::cout << vel_idx << " " << new_vel<< std::endl;
     }
-
-
+    ImGui::SameLine();
+    if (ImGui::Button("Add To All")) {
+        for (auto& vel : debug_creature_->segment.getLegs().back().velocities_) {
+            vel = glm::vec3(new_vel[0], new_vel[1], new_vel[2]);
+        }
+    }
 
     ImGui::End();
 }
