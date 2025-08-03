@@ -73,6 +73,10 @@ void Vocksel::Shader::setBool(const std::string &name, bool value) const {
     glUniform1i(glGetUniformLocation(ID_, name.c_str()), value ? 1 : 0);
 }
 
+void Vocksel::Shader::setFloat(const std::string &name, float value) const {
+    glUniform1f(glGetUniformLocation(ID_, name.c_str()), value);
+}
+
 void Vocksel::Shader::checkCompileErrors(GLuint object, std::string type) {
     int  success;
     char infoLog[512];

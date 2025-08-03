@@ -189,6 +189,8 @@ glm::vec3 Vocksel::Chunk::getPosition() {
 
 void Vocksel::Chunk::render(Shader &shader) {
 
+
+    shader.use();
     GLint current_program;
     glGetIntegerv(GL_CURRENT_PROGRAM, &current_program);
     if (current_program != shader.ID_) {
