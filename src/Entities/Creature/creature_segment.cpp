@@ -7,19 +7,19 @@ Vocksel::CreatureSegment::CreatureSegment(float radius, float gap, glm::vec3 pos
         body_mesh_(MeshObject::create(position, "sphere", "stone", glm::vec3(radius))) {
 
     //Add Legs
-    // addLeg(glm::vec3(1.5f,-1.5f,1.f));
-    // addLeg(glm::vec3(-1.5f,-1.5f,1.f));
-    //
-    // for (auto& leg : legs_) {
-    //     leg.addLegSegment(.5f);
-    //     leg.addLegSegment(.5f);
-    //     leg.addLegSegment(.5f);
-    //
-    //     leg.addLegSegment(.5f);
-    //     leg.addLegSegment(.75f);
-    //     leg.addLegSegment(1.f);
-    //
-    // }
+     addLeg(glm::vec3(1.5f,-1.5f,1.f));
+     addLeg(glm::vec3(-1.5f,-1.5f,1.f));
+
+     for (auto& leg : legs_) {
+         leg.addLegSegment(.5f);
+         leg.addLegSegment(.5f);
+         leg.addLegSegment(.5f);
+
+         leg.addLegSegment(.5f);
+         leg.addLegSegment(.75f);
+         leg.addLegSegment(1.f);
+
+     }
 
 }
 

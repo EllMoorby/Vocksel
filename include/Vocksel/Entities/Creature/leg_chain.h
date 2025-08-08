@@ -27,6 +27,7 @@ namespace Vocksel {
         void setTarget(glm::vec3 target) {target_ = target;};
         void setOffset(glm::vec3 offset) {offset_ = offset;};
         void setVelocity(glm::vec3 velocity, uint32_t idx);
+        void setVelocityAll(glm::vec3 velocity);
 
 
 
@@ -46,6 +47,7 @@ namespace Vocksel {
         void updateLegShape(float delta_time);
     private:
         glm::vec3 root_ = glm::vec3(0.0f);
+        glm::vec3 last_root_ = glm::vec3(0.0f);
         std::unique_ptr<MeshObject> root_mesh_;
         std::unique_ptr<MeshObject> rest_mesh_;
 

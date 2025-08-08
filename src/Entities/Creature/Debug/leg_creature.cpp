@@ -9,7 +9,7 @@ Vocksel::Debug::LegCreature::LegCreature(): segment(CreatureSegment(.1f, 0.f, po
     segment.getLegs().back().addLegSegment(1.f);
     segment.getLegs().back().addLegSegment(1.f);
     segment.getLegs().back().addLegSegment(1.f);
-    segment.setDirection(glm::vec3(1.0f, 0.f, 0.0f));
+    segment.setDirection(glm::vec3(0.0f, 0.f, 1.0f));
 
 
 }
@@ -29,7 +29,6 @@ void Vocksel::Debug::LegCreature::update(float delta_time) {
     segment.getLegs().back().setOffset(offset);
     segment.getLegs().back().setTarget(segment.getLegs().back().getRestPosition());
     segment.update(delta_time);
-
 }
 
 

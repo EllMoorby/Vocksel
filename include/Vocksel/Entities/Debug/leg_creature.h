@@ -16,6 +16,7 @@ namespace Vocksel {
             glm::vec3 position = glm::vec3(-10.f, 0.f, -10.f);
             glm::vec3 offset = glm::vec3(0.f);
 
+
         };
     }
 }

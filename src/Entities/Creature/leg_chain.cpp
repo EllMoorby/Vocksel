@@ -22,8 +22,11 @@ void Vocksel::LegChain::updateLegShape(float delta_time) {
     if (segments_.empty()) return;
 
 
+
     float total_length = 0.f;
     for (auto& segment : segments_) {
+        auto new_pos = glm::vec3(root_.x, root_.y + total_length + segment.getLength(), root_.z);
+        segment.setTipPosition(new_pos);
         total_length += segment.getLength();
     }
 
@@ -35,18 +38,20 @@ void Vocksel::LegChain::updateLegShape(float delta_time) {
             current = segment.getTipPosition();
         }
         last_target_ = target_;
+        last_root_ = root_;
         return;
     }
 
-    if (glm::distance(target_, last_target_) < 0.0001f) {
-        return;
-    }
+
+
 
     for (int x = 0; x < 20; x++) {
 
+
         uint32_t idx = 0;
         for (auto& segment : segments_) {
-            segment.setTipPosition(segment.getTipPosition() + velocities_[idx] * delta_time * 2.f);
+            glm::vec3 world_vel = forward_ * velocities_[idx].x + Constants::WORLD_UP * velocities_[idx].y + right_* velocities_[idx].z;
+            segment.setTipPosition(segment.getTipPosition() + (world_vel * delta_time * 100.f));
             idx++;
         }
 
@@ -76,8 +81,10 @@ void Vocksel::LegChain::updateLegShape(float delta_time) {
             break;
         }
 
-        last_target_ = target_;
+
     }
+    last_root_ = root_;
+    last_target_ = target_;
 }
 
 
@@ -122,6 +129,11 @@ void Vocksel::LegChain::setVelocity(glm::vec3 velocity, uint32_t idx) {
     velocities_[idx] = velocity;
 }
 
+void Vocksel::LegChain::setVelocityAll(glm::vec3 velocity) {
+    for (auto& velocity_item : velocities_) {
+        velocity_item = velocity;
+    }
+}
 
 
 

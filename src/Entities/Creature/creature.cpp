@@ -8,11 +8,21 @@ Vocksel::Creature::Creature(glm::vec3 position): position_(position) {
     head_segment_ = std::make_unique<CreatureSegment>(.1f, 0.f, position_);
 
     addSegment(std::make_unique<CreatureSegment>(.1f,2.f, glm::vec3(position.x - 2.f , position.y, position.z)));
-    //addSegment(std::make_unique<CreatureSegment>(.1f,2.f, glm::vec3(position.x - 4.f , position.y, position.z)));
+    // addSegment(std::make_unique<CreatureSegment>(.1f,2.f, glm::vec3(position.x - 4.f , position.y, position.z)));
     // addSegment(std::make_unique<CreatureSegment>(1.f,2.f, glm::vec3(position.x - 6.f , position.y, position.z)));
     // addSegment(std::make_unique<CreatureSegment>(1.f,2.f, glm::vec3(position.x - 8.f , position.y, position.z)));
     // addSegment(std::make_unique<CreatureSegment>(1.f,2.f, glm::vec3(position.x - 10.f , position.y, position.z)));
     // addSegment(std::make_unique<CreatureSegment>(1.f,2.f, glm::vec3(position.x - 12.f , position.y, position.z)));
+
+    for (auto& leg : head_segment_->getLegs()) {
+        leg.setVelocityAll(glm::vec3(0.f, 5.f, 0.f));
+    }
+    for (auto& segment: body_segments_) {
+        for (auto& leg : segment->getLegs()) {
+            leg.setVelocityAll(glm::vec3(0.f, 5.f, 0.f));
+        }
+    }
+
 
 }
 
