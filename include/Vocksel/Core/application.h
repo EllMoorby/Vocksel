@@ -62,7 +62,7 @@ namespace Vocksel {
         std::unique_ptr<World> world_;
 
         //TEST
-        std::unique_ptr<Debug::LegCreature> debug_creature_;
+        std::unique_ptr<DebugUtils::LegCreature> debug_creature_;
         float new_vel[3] = {0.f,0.f,0.f};
         int vel_idx;
     };

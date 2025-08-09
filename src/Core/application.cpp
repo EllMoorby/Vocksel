@@ -31,7 +31,7 @@ Vocksel::Application::Application() {
 
     creature_ = std::make_unique<Creature>(glm::vec3(-3.f,8.f,0.f));
 
-    debug_creature_ = std::make_unique<Debug::LegCreature>();
+    debug_creature_ = std::make_unique<DebugUtils::LegCreature>();
 
 
 
@@ -48,6 +48,10 @@ void Vocksel::Application::initWindow() {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+#if DEBUG
+    glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, true);
+    std::cout << "Debug Mode" << std::endl;
+#endif
 
     // Create window
     window_ = glfwCreateWindow(Constants::SCREEN_WIDTH, Constants::SCREEN_HEIGHT, "Vocksel", nullptr, nullptr);
@@ -63,7 +67,7 @@ void Vocksel::Application::initWindow() {
     glfwSetCursorPosCallback(window_, mouseCallback);
     glfwSetWindowUserPointer(window_, this);
 
-#ifdef DEBUG
+#if DEBUG
     glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE); // For KHR_debug
 #endif
 
@@ -144,7 +148,7 @@ void Vocksel::Application::run() {
         glfwSwapBuffers(window_);
         glfwPollEvents();
 
-#ifdef DEBUG
+#if DEBUG
         GLenum err;
         while ((err = glGetError()) != GL_NO_ERROR) {
             std::cerr << "OpenGL error: " << err << std::endl;

@@ -4,7 +4,7 @@
 #include "Vocksel/Graphics/camera.h"
 
 namespace Vocksel {
-    namespace Debug {
+    namespace DebugUtils {
         class LegCreature {
             public:
             LegCreature();

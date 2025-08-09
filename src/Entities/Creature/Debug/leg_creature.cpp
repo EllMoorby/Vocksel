@@ -2,7 +2,7 @@
 
 #include "Vocksel/Core/engine_services.h"
 
-Vocksel::Debug::LegCreature::LegCreature(): segment(CreatureSegment(.1f, 0.f, position)) {
+Vocksel::DebugUtils::LegCreature::LegCreature(): segment(CreatureSegment(.1f, 0.f, position)) {
     segment.addLeg(glm::vec3(1.5f,-1.5f,1.f));
     segment.getLegs().back().addLegSegment(1.f);
     segment.getLegs().back().addLegSegment(1.f);
@@ -14,7 +14,7 @@ Vocksel::Debug::LegCreature::LegCreature(): segment(CreatureSegment(.1f, 0.f, po
 
 }
 
-void Vocksel::Debug::LegCreature::render(Camera camera, float aspect_ratio) {
+void Vocksel::DebugUtils::LegCreature::render(Camera camera, float aspect_ratio) {
     segment.render(EngineServices::resources().getShader("default"));
     glm::vec3 currentBase = segment.getPosition();
 
@@ -24,7 +24,7 @@ void Vocksel::Debug::LegCreature::render(Camera camera, float aspect_ratio) {
     }
 }
 
-void Vocksel::Debug::LegCreature::update(float delta_time) {
+void Vocksel::DebugUtils::LegCreature::update(float delta_time) {
     segment.setPosition(position);
     segment.getLegs().back().setOffset(offset);
     segment.getLegs().back().setTarget(segment.getLegs().back().getRestPosition());

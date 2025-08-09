@@ -2,7 +2,6 @@ cmake_minimum_required(VERSION 3.31)
 project(Vocksel LANGUAGES C CXX)
 
 set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_BUILD_TYPE Debug)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -static-libgcc -static-libstdc++")
@@ -95,7 +94,7 @@ add_executable(Vocksel
         src/Entities/Creature/leg_segment.cpp
         include/Vocksel/Core/Debug/debug_renderer.h
         src/Core/Debug/debug_renderer.cpp
-        include/Vocksel/Entities/Debug/LegCreature.h
+        include/Vocksel/Entities/Debug/leg_creature.h
         src/Entities/Creature/Debug/leg_creature.cpp
 )
 
@@ -108,9 +107,11 @@ add_custom_command(TARGET Vocksel POST_BUILD
         ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/assets
 )
 
-# Set debug mode.
-target_compile_definitions(Vocksel PRIVATE DEBUG)
-
+if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+    target_compile_definitions(Vocksel PRIVATE DEBUG=1)
+else ()
+    target_compile_definitions(Vocksel PRIVATE DEBUG=0)
+endif ()
 
 target_link_libraries(Vocksel
         PRIVATE
