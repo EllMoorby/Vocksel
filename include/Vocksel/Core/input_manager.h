@@ -15,7 +15,7 @@ namespace Vocksel {
         glm::vec3 getWASDVector();
         glm::vec3 getArrowVector();
 
-        void update(float delta_time);
+        void update();
 
         bool isKeyPressed(int key);
         bool isMouseFree();

@@ -1,5 +1,7 @@
 #include "Vocksel/Entities/player.h"
 
+#include "Vocksel/Core/engine_services.h"
+
 Vocksel::Player::Player(): world_() {
     updateVectors();
 }
@@ -33,7 +35,8 @@ void Vocksel::Player::setRotation(float yaw, float pitch) {
     updateVectors();
 }
 
-void Vocksel::Player::handleInput(InputManager &input, float deltaTime) {
+void Vocksel::Player::handleInput(float deltaTime) {
+    auto input = EngineServices::input();
     glm::vec3 movement = input.getWASDVector();
     glm::vec3 move_dir = flatfront_ * movement.z + right_ * movement.x;
 
@@ -131,8 +134,8 @@ bool Vocksel::Player::checkCollision(float x, float y, float z, const glm::vec3&
     return false;
 }
 
-void Vocksel::Player::update(InputManager &input_manager, float delta_time) {
-    handleInput(input_manager, delta_time);
+void Vocksel::Player::update(float delta_time) {
+    handleInput(delta_time);
     applyPhysics(delta_time);
     camera_.setPosition(position_ + camera_offset_);
 }

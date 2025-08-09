@@ -15,6 +15,12 @@ void Vocksel::EngineServices::init(GLFWwindow *window) {
     debug_renderer_->init();
 }
 
+void Vocksel::EngineServices::updateFrameData(float dt, float aspect) {
+    Frame::delta_time_ = dt;
+    Frame::aspect_ratio_ = aspect;
+    Frame::initialized_ = true;
+}
+
 
 Vocksel::EngineServices::~EngineServices() {
     cleanUp();

@@ -15,7 +15,7 @@ void Vocksel::DebugRenderer::init() {
     glBindVertexArray(0);
 }
 
-void Vocksel::DebugRenderer::drawLine(const glm::vec3 &start, const glm::vec3 &end, const glm::vec3 &color, Camera& camera, float aspect_ratio) {
+void Vocksel::DebugRenderer::drawLine(const glm::vec3 &start, const glm::vec3 &end, const glm::vec3 &color, Camera& camera) {
     float vertices[6] = {
         start.x, start.y, start.z,
         end.x, end.y, end.z
@@ -27,7 +27,7 @@ void Vocksel::DebugRenderer::drawLine(const glm::vec3 &start, const glm::vec3 &e
 
 
     lineShader.setMat4("view", camera.getViewMatrix());
-    lineShader.setMat4("projection",  camera.getProjectionMatrix(aspect_ratio));
+    lineShader.setMat4("projection",  camera.getProjectionMatrix(EngineServices::aspect_ratio()));
     lineShader.setVec3("color", color);
 
     glBindVertexArray(lineVAO);

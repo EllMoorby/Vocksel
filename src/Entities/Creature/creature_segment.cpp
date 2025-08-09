@@ -1,10 +1,10 @@
 #include "Vocksel/Entities/Creature/creature_segment.h"
 
-#include "Vocksel/Graphics/Mesh/mesh_object.h"
+#include "Vocksel/Graphics/Mesh/model_instance.h"
 
 Vocksel::CreatureSegment::CreatureSegment(float radius, float gap, glm::vec3 position)
     :  radius_(radius), position_(position), gap_(gap),
-        body_mesh_(MeshObject::create(position, "sphere", "stone", glm::vec3(radius))) {
+        body_mesh_(ModelInstance::create(position, "sphere", "stone", glm::vec3(radius))) {
 
     //Add Legs
      addLeg(glm::vec3(1.5f,-1.5f,1.f));
@@ -42,7 +42,7 @@ void Vocksel::CreatureSegment::setPosition(glm::vec3 position) {
 void Vocksel::CreatureSegment::render(Shader &shader) {
     body_mesh_->render(shader);
     for (auto& leg : legs_) {
-        leg.render();
+        leg.render(shader);
     }
 }
 

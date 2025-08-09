@@ -1,16 +1,16 @@
-#ifndef MESH_OBJECT_H
-#define MESH_OBJECT_H
+#ifndef MODEL_INSTANCE_H
+#define MODEL_INSTANCE_H
 #include <memory>
 
 #include "Vocksel/Graphics/shader.h"
 
 namespace Vocksel {
-    class MeshObject {
+    class ModelInstance {
     public:
-        MeshObject();
-        ~MeshObject() = default;
+        ModelInstance();
+        ~ModelInstance() = default;
 
-        static std::unique_ptr<MeshObject> create(const glm::vec3& pos, const char* model_name, const char* texture_name, const glm::vec3& scale = glm::vec3(1.0f));
+        static std::unique_ptr<ModelInstance> create(const glm::vec3& pos, const char* model_name, const char* texture_name, const glm::vec3& scale = glm::vec3(1.0f));
 
         void init(glm::vec3 pos, const char* model_name, const char* texture_name);
         void render(Shader& shader);
@@ -40,4 +40,4 @@ namespace Vocksel {
     };
 }
 
-#endif //MESH_OBJECT_H
+#endif //MODEL_INSTANCE_H

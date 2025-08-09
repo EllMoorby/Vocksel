@@ -1,16 +1,16 @@
-#include "Vocksel/Graphics/Mesh/mesh_object.h"
+#include "Vocksel/Graphics/Mesh/model_instance.h"
 
 #include "Vocksel/Core/engine_services.h"
 
 
-std::unique_ptr<Vocksel::MeshObject> Vocksel::MeshObject::create(const glm::vec3 &pos, const char *model_name, const char *texture_name, const glm::vec3 &scale) {
-    auto obj = std::make_unique<MeshObject>();
+std::unique_ptr<Vocksel::ModelInstance> Vocksel::ModelInstance::create(const glm::vec3 &pos, const char *model_name, const char *texture_name, const glm::vec3 &scale) {
+    auto obj = std::make_unique<ModelInstance>();
     obj->init(pos, model_name, texture_name);
     obj->scale_ = scale;
     return obj;
 }
 
-void Vocksel::MeshObject::init(glm::vec3 pos, const char *model_name, const char *texture_name) {
+void Vocksel::ModelInstance::init(glm::vec3 pos, const char *model_name, const char *texture_name) {
     position_ = pos;
     texture_name_ = texture_name;
     model_name_ = model_name;
@@ -23,7 +23,7 @@ void Vocksel::MeshObject::init(glm::vec3 pos, const char *model_name, const char
     initialized_ = true;
 }
 
-void Vocksel::MeshObject::render(Shader& shader) {
+void Vocksel::ModelInstance::render(Shader& shader) {
     if (!initialized_) return;
 
     glDisable(GL_CULL_FACE);
@@ -45,7 +45,7 @@ void Vocksel::MeshObject::render(Shader& shader) {
     glEnable(GL_CULL_FACE);
 }
 
-Vocksel::MeshObject::MeshObject(): position_(glm::vec3(0.f)) {
+Vocksel::ModelInstance::ModelInstance(): position_(glm::vec3(0.f)) {
 
 }
 

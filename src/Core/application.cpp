@@ -12,29 +12,11 @@
 Vocksel::Application::Application() {
     initWindow();
     initGL();
-
     EngineServices::init(window_);
-
     initGUI();
     initInput();
 
-    world_ = std::make_unique<World>();
-    world_->init();
-    player_.init(*world_);
-
-    player_.setPosition(world_->getSpawnPosition());
-
-    mesh_objects_.push_back(
-    MeshObject::create(glm::vec3(-3.0f, .0f, 0.f), "teapot", "stone", glm::vec3(1.f))
-);
-    mesh_objects_.back()->setRotation(100);
-
-    creature_ = std::make_unique<Creature>(glm::vec3(-3.f,8.f,0.f));
-
-    debug_creature_ = std::make_unique<DebugUtils::LegCreature>();
-
-
-
+    game_.init();
 }
 
 void Vocksel::Application::initWindow() {
@@ -67,7 +49,7 @@ void Vocksel::Application::initWindow() {
     glfwSetWindowUserPointer(window_, this);
 
 #if DEBUG
-    glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE); // For KHR_debug
+    glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
 #endif
 
 
@@ -104,8 +86,8 @@ void Vocksel::Application::initGUI() {
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO();
 
-    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
-    ImGui_ImplGlfw_InitForOpenGL(window_, true);          // Second param install_callback=true will install GLFW callbacks and chain to existing ones.
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+    ImGui_ImplGlfw_InitForOpenGL(window_, true);
     ImGui_ImplOpenGL3_Init("#version 430 core");
 
 }
@@ -175,17 +157,17 @@ void Vocksel::Application::run() {
     float second_count = 0.0f;
     last_frame_ = glfwGetTime();
     while (!glfwWindowShouldClose(window_)) {
-        glClearColor(clear_color_.r, clear_color_.g, clear_color_.b, clear_color_.a);
+        glClearColor(game_.getClearColor().r, game_.getClearColor().g, game_.getClearColor().b, game_.getClearColor().a);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         float current_frame = glfwGetTime();
-        delta_time_ = current_frame - last_frame_;
+        float delta_time = current_frame - last_frame_;
         last_frame_ = current_frame;
-        second_count += delta_time_;
+        second_count += delta_time;
 
         // Work out FPS
         if (second_count >= 1.0f) {
-            glfwSetWindowTitle(window_, std::format("Vocksel | {}", 1.0f/delta_time_).c_str());
+            glfwSetWindowTitle(window_, std::format("Vocksel | {}", 1.0f/delta_time).c_str());
             second_count = 0;
         }
 
@@ -193,11 +175,9 @@ void Vocksel::Application::run() {
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
-        updateObjects();
+        update(delta_time);
 
-        renderObjects();
-
-        updateGUI();
+        render();
 
         // Render ImGui
         ImGui::Render();
@@ -208,94 +188,19 @@ void Vocksel::Application::run() {
     }
 }
 
-void Vocksel::Application::updateObjects() {
-    EngineServices::input().update(delta_time_);
-    creature_->update(delta_time_);
-    player_.update(EngineServices::input(), delta_time_);
-    debug_creature_->update(delta_time_);
+void Vocksel::Application::update(float delta_time) {
+    EngineServices::updateFrameData(delta_time,aspect_ratio_);
+    EngineServices::input().update();
+
+    game_.update(delta_time);
+
 }
 
 
-void Vocksel::Application::renderObjects() {
+void Vocksel::Application::render() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    auto &basic_shader = EngineServices::resources().getShader("basic");
-    basic_shader.use();
-    basic_shader.setBool("showNormals", true);
-
-    auto& camera = player_.getCamera();
-    glm::mat4 view = camera.getViewMatrix();
-    glm::mat4 projection = camera.getProjectionMatrix(aspect_ratio_);
-
-    basic_shader.setMat4("view", view);
-    basic_shader.setMat4("projection", projection);
-
-    for (auto& obj : mesh_objects_) {
-        obj->render(basic_shader);
-    }
-    creature_->render(basic_shader);
-    debug_creature_->render(camera, aspect_ratio_);
-    world_->render(basic_shader);
-
-    auto* head = creature_->getHeadSegment().get();
-
-    for (auto& leg : head->getLegs()) {
-        glm::vec3 currentBase = head->getPosition();
-        for (auto& segment : leg.segments_) {
-            EngineServices::debug().drawLine(currentBase, segment.getTipPosition(), glm::vec3(1, 0, 0), camera, aspect_ratio_);
-            currentBase = segment.getTipPosition();
-        }
-    }
-
-
-    // Draw body segments legs
-    for (auto& bodySegment : creature_->getBodySegments()) {
-        for (auto& leg : bodySegment->getLegs()) {
-            glm::vec3 currentBase = bodySegment->getPosition();
-
-            for (auto& segment : leg.segments_) {
-                EngineServices::debug().drawLine(currentBase, segment.getTipPosition(), glm::vec3(0, 1, 0),camera, aspect_ratio_); // Different color for body legs
-                currentBase = segment.getTipPosition();
-            }
-        }
-    }
-}
-
-
-void Vocksel::Application::updateGUI() {
-    ImGui::Begin("Debug");
-    ImGui::SeparatorText("Player");
-    ImGui::Text("Player Position %.2f %.2f %.2f", player_.getPosition().x, player_.getPosition().y, player_.getPosition().z);
-    ImGui::SeparatorText("Creature");
-    ImGui::Text("Head Position %.2f %.2f %.2f", creature_->getPosition().x, creature_->getPosition().y, creature_->getPosition().z);
-
-    ImGui::SeparatorText("Debug Creature");
-    ImGui::SliderFloat("Pos X", &debug_creature_->position.x, -50.f, 50.f, "%.2f");
-    ImGui::SliderFloat("Pos Y", &debug_creature_->position.y, -50.f, 50.f, "%.2f");
-    ImGui::SliderFloat("Pos Z", &debug_creature_->position.z, -50.f, 50.f, "%.2f");
-
-    ImGui::NewLine();
-
-    ImGui::SliderFloat("Rest Pos X", &debug_creature_->offset.x, -50.f, 50.f, "%.2f");
-    ImGui::SliderFloat("Rest Pos Y", &debug_creature_->offset.y, -50.f, 50.f, "%.2f");
-    ImGui::SliderFloat("Rest Pos Z", &debug_creature_->offset.z, -50.f, 50.f, "%.2f");
-
-    ImGui::NewLine();
-
-    ImGui::InputFloat3("Add velocity to idx", new_vel, "%.2f");
-    ImGui::InputInt("IDX", &vel_idx, 1, 100);
-    if (ImGui::Button("Add velocity")) {
-        debug_creature_->segment.getLegs().back().setVelocity(glm::vec3(new_vel[0], new_vel[1], new_vel[2]) ,vel_idx);
-        std::cout << vel_idx << " " << new_vel<< std::endl;
-    }
-    ImGui::SameLine();
-    if (ImGui::Button("Add To All")) {
-        for (auto& vel : debug_creature_->segment.getLegs().back().velocities_) {
-            vel = glm::vec3(new_vel[0], new_vel[1], new_vel[2]);
-        }
-    }
-
-    ImGui::End();
+    game_.render();
+    game_.renderDebugGUI();
 }
 
 
@@ -324,7 +229,7 @@ void Vocksel::Application::mouseCallback(GLFWwindow *window_, double xpos, doubl
     app->lastx_mouse_ = xpos;
     app->lasty_mouse_ = ypos;
 
-    app->player_.handleMouseInput(xoffset, yoffset);
+    app->game_.handleMouseInput(xoffset, yoffset);
 }
 
 void Vocksel::Application::closeWindow() {

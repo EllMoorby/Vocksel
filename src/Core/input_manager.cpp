@@ -1,6 +1,8 @@
+#include "Vocksel/Core/engine_services.h"
 #include "Vocksel/Core/input_manager.h"
 
 #include <iostream>
+
 
 void Vocksel::InputManager::init(GLFWwindow *window) {
     window_ = window;
@@ -46,10 +48,10 @@ glm::vec3 Vocksel::InputManager::getArrowVector() {
 
 
 
-void Vocksel::InputManager::update(float delta_time) {
+void Vocksel::InputManager::update() {
     for (auto& [key, action] : key_actions_) {
         if (isKeyPressed(key)) {
-            action(delta_time);
+            action(EngineServices::deltaTime());
         }
     }
 }

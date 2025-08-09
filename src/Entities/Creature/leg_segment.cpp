@@ -3,7 +3,7 @@
 #include "glm/gtx/quaternion.hpp"
 #include "Vocksel/Core/engine_services.h"
 
-Vocksel::LegSegment::LegSegment(float length, glm::vec3 tip_position): length_(length), tip_position_(tip_position), tip_mesh_(MeshObject::create(tip_position, "sphere", "default", glm::vec3(0.1f, 0.1f, 0.1f))){
+Vocksel::LegSegment::LegSegment(float length, glm::vec3 tip_position): length_(length), tip_position_(tip_position), tip_mesh_(ModelInstance::create(tip_position, "sphere", "default", glm::vec3(0.1f, 0.1f, 0.1f))){
 
 }
 

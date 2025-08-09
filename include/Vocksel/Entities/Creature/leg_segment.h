@@ -1,7 +1,7 @@
 #ifndef LEG_SEGMENT_H
 #define LEG_SEGMENT_H
 #include "glm/vec3.hpp"
-#include "Vocksel/Graphics/Mesh/mesh_object.h"
+#include "Vocksel/Graphics/Mesh/model_instance.h"
 
 namespace Vocksel {
     class LegSegment {
@@ -26,7 +26,7 @@ namespace Vocksel {
         LegSegment& operator=(const LegSegment&) = delete;
 
         private:
-        std::unique_ptr<MeshObject> tip_mesh_;
+        std::unique_ptr<ModelInstance> tip_mesh_;
         float length_;
         glm::vec3 tip_position_;
     };

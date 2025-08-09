@@ -3,16 +3,16 @@
 #include "Vocksel/Core/engine_services.h"
 
 Vocksel::LegChain::LegChain(glm::vec3 root, glm::vec3 forward, glm::vec3 offset): root_(root), forward_(forward), offset_(offset),
-    root_mesh_(MeshObject::create(root,"cube","plank", glm::vec3(0.1f))),
-    rest_mesh_(MeshObject::create(root,"cube","wool", glm::vec3(0.1f))){
+    root_mesh_(ModelInstance::create(root,"cube","plank", glm::vec3(0.1f))),
+    rest_mesh_(ModelInstance::create(root,"cube","wool", glm::vec3(0.1f))){
     updateVectors();
 }
 
-void Vocksel::LegChain::render() {
+void Vocksel::LegChain::render(Shader &shader) {
     root_mesh_->setPosition(root_);
     rest_mesh_->setPosition(rest_position_);
-    root_mesh_->render(EngineServices::resources().getShader("default"));
-    rest_mesh_->render(EngineServices::resources().getShader("default"));
+    root_mesh_->render(shader);
+    rest_mesh_->render(shader);
     for (auto& segment : segments_) {
         segment.render();
     }

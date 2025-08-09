@@ -3,7 +3,7 @@
 #include <vector>
 
 #include "leg_chain.h"
-#include "Vocksel/Graphics/Mesh/mesh_object.h"
+#include "Vocksel/Graphics/Mesh/model_instance.h"
 #include "Vocksel/Graphics/shader.h"
 
 namespace Vocksel {
@@ -28,7 +28,7 @@ namespace Vocksel {
 
         void addLeg(glm::vec3 offset);
     private:
-        std::unique_ptr<MeshObject> body_mesh_;
+        std::unique_ptr<ModelInstance> body_mesh_;
         float radius_;
         float gap_;
 

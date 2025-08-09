@@ -19,7 +19,7 @@ void Vocksel::DebugUtils::LegCreature::render(Camera camera, float aspect_ratio)
     glm::vec3 currentBase = segment.getPosition();
 
     for (auto& leg_seg : segment.getLegs().back().segments_) {
-        EngineServices::debug().drawLine(currentBase, leg_seg.getTipPosition(), glm::vec3(0, 1, 0),camera, aspect_ratio); // Different color for body legs
+        EngineServices::debug().drawLine(currentBase, leg_seg.getTipPosition(), glm::vec3(0, 1, 0),camera); // Different color for body legs
         currentBase = leg_seg.getTipPosition();
     }
 }

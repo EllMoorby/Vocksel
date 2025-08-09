@@ -20,7 +20,7 @@ namespace Vocksel {
         LegChain& operator=(LegChain&&) noexcept = default;
 
         void update(float delta_time, glm::vec3 root, glm::vec3 forward);
-        void render();
+        void render(Shader &shader);
 
         void updateVectors();
 
@@ -48,8 +48,8 @@ namespace Vocksel {
     private:
         glm::vec3 root_ = glm::vec3(0.0f);
         glm::vec3 last_root_ = glm::vec3(0.0f);
-        std::unique_ptr<MeshObject> root_mesh_;
-        std::unique_ptr<MeshObject> rest_mesh_;
+        std::unique_ptr<ModelInstance> root_mesh_;
+        std::unique_ptr<ModelInstance> rest_mesh_;
 
 
         glm::vec3 forward_ = glm::vec3(0.0f);

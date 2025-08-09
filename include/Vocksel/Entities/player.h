@@ -13,8 +13,8 @@ namespace Vocksel {
         ~Player();
 
         void init(World& world);
-        void update(InputManager& input_manager, float delta_time);
-        void handleInput(InputManager& input, float deltaTime);
+        void update(float delta_time);
+        void handleInput(float deltaTime);
         void handleMouseInput(float xoffset, float yoffset);
         void applyPhysics(float deltaTime);
 

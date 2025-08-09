@@ -3,8 +3,7 @@
 
 #include <memory>
 
-#include "glad/glad.h"
-#include "Vocksel/Core/application.h"
+#include "Vocksel/Graphics/camera.h"
 #include "Vocksel/Graphics/shader.h"
 
 namespace Vocksel {
@@ -15,7 +14,7 @@ namespace Vocksel {
 
         void init();
 
-        void drawLine(const glm::vec3& start, const glm::vec3& end, const glm::vec3& color, Camera& camera, float aspect_ratio);
+        void drawLine(const glm::vec3& start, const glm::vec3& end, const glm::vec3& color, Camera& camera);
     private:
         GLuint lineVAO, lineVBO = 0;
         std::shared_ptr<Shader> lineShader;
