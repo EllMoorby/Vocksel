@@ -17,7 +17,8 @@ namespace Vocksel {
 
         void init();
 
-        void loadShader(std::string name, const char* vertexPath, const char* fragmentPath);
+        void loadShader(std::string name, const char* vertex_path, const char* fragment_path);
+        void loadShader(std::string name, const char* comp_path);
         Shader& getShader(const std::string& name);
 
         void loadTexture(std::string name, const char* path);

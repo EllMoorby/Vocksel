@@ -4,11 +4,11 @@
 
 #include "stb/stb_image.h"
 
-Vocksel::Texture::Texture(): texture_id_(0), width_(0), height_(0) {
+Vocksel::Texture::Texture(){
 
 }
 
-Vocksel::Texture::Texture(const char* path): texture_id_(0), width_(0), height_(0) {
+Vocksel::Texture::Texture(const char* path){
     loadTexture(path);
 }
 

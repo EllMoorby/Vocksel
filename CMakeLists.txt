@@ -28,7 +28,14 @@ FetchContent_Declare(
         GIT_REPOSITORY https://github.com/ocornut/imgui.git
         GIT_TAG v1.92.0
 )
-FetchContent_MakeAvailable(glfw glm imgui)
+
+# Fetch Tracy
+FetchContent_Declare(
+        tracy
+        GIT_REPOSITORY https://github.com/wolfpld/tracy.git
+)
+
+FetchContent_MakeAvailable(glfw glm imgui tracy)
 
 add_library(glad STATIC third_party/glad/glad.c)
 target_include_directories(glad PUBLIC include)
@@ -48,6 +55,18 @@ target_include_directories(imgui PUBLIC
 )
 target_compile_definitions(imgui PRIVATE IMGUI_IMPL_OPENGL_LOADER_GLAD)
 target_include_directories(imgui PRIVATE ${glfw_SOURCE_DIR}/include)
+
+# Add Tracy client library
+add_library(tracy_client STATIC
+        ${tracy_SOURCE_DIR}/public/TracyClient.cpp
+)
+target_include_directories(tracy_client PUBLIC
+        ${tracy_SOURCE_DIR}/public
+)
+target_compile_definitions(tracy_client PUBLIC
+        TRACY_ENABLE
+        TRACY_ON_DEMAND
+)
 
 find_package(OpenGL REQUIRED)
 
@@ -98,6 +117,15 @@ add_executable(Vocksel
         src/Entities/Creature/Debug/leg_creature.cpp
         include/Vocksel/Core/game.h
         src/Core/game.cpp
+        include/Vocksel/World/density_field.h
+        include/Vocksel/Graphics/texture_3d.h
+        include/Vocksel/Graphics/Mesh/compute_mesh.h
+        include/Vocksel/World/marching_cubes.h
+        src/Graphics/texture_3d.cpp
+        src/World/density_field.cpp
+        src/Graphics/Mesh/compute_mesh.cpp
+        src/World/marching_cubes.cpp
+        include/Vocksel/World/mc_lookup.h
 )
 
 # Copy assets directory to build
@@ -121,7 +149,13 @@ target_link_libraries(Vocksel
         glad
         glfw
         imgui
+        tracy_client
 )
+
+if(WIN32)
+    target_link_libraries(tracy_client PRIVATE ws2_32 dbghelp)
+endif()
+
 # Include directories
 target_include_directories(Vocksel
         PRIVATE
@@ -130,3 +164,8 @@ target_include_directories(Vocksel
         ${imgui_SOURCE_DIR}/include
         include
 )
+
+if(TRACY_ENABLE AND OPENGL_FOUND)
+    target_compile_definitions(tracy_client PUBLIC TRACY_OPENGL)
+    target_link_libraries(tracy_client PRIVATE OpenGL::GL)
+endif()

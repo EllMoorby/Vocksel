@@ -232,7 +232,6 @@ void Vocksel::Model::render(Shader &shader) {
     for (const auto& mesh : meshes_) {
 
         mesh->bind();
-
         glDrawElements(GL_TRIANGLES, mesh->getIndexCount(), GL_UNSIGNED_INT, 0);
         mesh->unbind();
     }

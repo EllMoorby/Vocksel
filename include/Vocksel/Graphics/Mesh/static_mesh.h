@@ -12,7 +12,7 @@ namespace Vocksel {
         void bind();
         void unbind();
         int getIndexCount() const;
-    private:
+    protected:
         GLuint VAO_, VBO_, EBO_;
         int index_count_;
     };

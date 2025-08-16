@@ -12,6 +12,7 @@ Vocksel::StaticMesh::StaticMesh(const float* vertices, int float_count, const ui
 
     glBindBuffer(GL_ARRAY_BUFFER, VBO_);
     glBufferData(GL_ARRAY_BUFFER, float_count * sizeof(float), vertices, GL_STATIC_DRAW);
+    
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO_);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, index_count * sizeof(uint32_t), indices, GL_STATIC_DRAW);
@@ -29,12 +30,6 @@ Vocksel::StaticMesh::StaticMesh(const float* vertices, int float_count, const ui
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-
-    // Error checking
-    GLenum err;
-    while ((err = glGetError()) != GL_NO_ERROR) {
-        std::cerr << "OpenGL error during mesh creation: " << err << std::endl;
-    }
 }
 
 
@@ -46,6 +41,7 @@ Vocksel::StaticMesh::~StaticMesh() {
 
 void Vocksel::StaticMesh::bind() {
     glBindVertexArray(VAO_);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO_);
 }
 
 void Vocksel::StaticMesh::unbind() {

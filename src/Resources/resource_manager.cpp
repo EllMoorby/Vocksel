@@ -13,6 +13,9 @@ void Vocksel::ResourceManager::init() {
     loadShader("default","assets/shaders/Core/basic.vs.glsl", "assets/shaders/Core/basic.fs.glsl");
     loadShader("normals","assets/shaders/Core/normals.vs.glsl", "assets/shaders/Core/normals.fs.glsl");
     loadShader("line","assets/shaders/Core/Debug/line.vs.glsl", "assets/shaders/Core/Debug/line.fs.glsl");
+    loadShader("world","assets/shaders/Core/World/world.vs.glsl", "assets/shaders/Core/World/world.fs.glsl");
+
+    loadShader("marching_cubes", "assets/shaders/Core/World/marching_cubes.comp.glsl");
 
     loadTexture("default", "assets/textures/blocks/default.png");
     loadTexture("stone", "assets/textures/blocks/stone.png");
@@ -26,9 +29,14 @@ void Vocksel::ResourceManager::init() {
 }
 
 
-void Vocksel::ResourceManager::loadShader(std::string name, const char *vertexPath, const char *fragmentPath) {
-    shaders_[name] = std::make_unique<Shader>(vertexPath, fragmentPath);
+void Vocksel::ResourceManager::loadShader(std::string name, const char *vertex_path, const char *fragment_path) {
+    shaders_[name] = std::make_unique<Shader>(vertex_path, fragment_path);
 }
+
+void Vocksel::ResourceManager::loadShader(std::string name, const char *comp_path) {
+    shaders_[name] = std::make_unique<Shader>(comp_path);
+}
+
 
 Vocksel::Shader& Vocksel::ResourceManager::getShader(const std::string &name) {
     if (!initialized_) throw std::runtime_error("ResourceManager not initialized");

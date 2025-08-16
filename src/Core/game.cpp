@@ -2,7 +2,7 @@
 
 #include "Vocksel/Core/engine_services.h"
 #include "imgui.h"
-
+#include "tracy/Tracy.hpp"
 
 Vocksel::Game::Game() {
 
@@ -21,9 +21,9 @@ void Vocksel::Game::init() {
 
 
 void Vocksel::Game::render() {
+    ZoneScoped;
     auto &basic_shader = EngineServices::resources().getShader("basic");
     basic_shader.use();
-    basic_shader.setBool("showNormals", true);
 
     auto& camera = player_.getCamera();
     glm::mat4 view = camera.getViewMatrix();
@@ -39,7 +39,13 @@ void Vocksel::Game::render() {
     for (auto& entity : entities_) {
         entity->render(basic_shader);
     }
-    world_->render(basic_shader);
+
+    auto& world_shader = EngineServices::resources().getShader("world");
+    world_shader.use();
+    world_shader.setMat4("view", view);
+    world_shader.setMat4("projection", projection);
+    world_->render(world_shader);
+
 
     // Temporary Leg Viewing
     for (auto& creature : entities_) {
@@ -67,9 +73,11 @@ void Vocksel::Game::render() {
     }
 
 
+
 }
 
 void Vocksel::Game::update(float delta_time) {
+    ZoneScoped;
     player_.update(delta_time);
     for (auto& entity : entities_) {
         entity->update(delta_time);
@@ -83,7 +91,7 @@ void Vocksel::Game::handleMouseInput(float xoffset, float yoffset) {
 void Vocksel::Game::renderDebugGUI() {
     ImGui::Begin("Debug");
 
-
+    ImGui::Text("X: %.2f | Y: %.2f | Z: %.2f", player_.getPosition().x, player_.getPosition().y, player_.getPosition().z);
     ImGui::End();
 }
 

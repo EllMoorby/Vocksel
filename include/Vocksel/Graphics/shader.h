@@ -12,20 +12,24 @@
 namespace Vocksel {
     class Shader {
     public:
-        Shader(const char* vertexPath, const char* fragmentPath);
+        Shader(const char* vertex_path, const char* fragment_path);
+        Shader(const char* compute_path);
         Shader();
         ~Shader();
 
         void use();
-        void init(const char* vertexPath, const char* fragmentPath);
+        void init(const char* vertex_path, const char* fragment_path);
+        void initCompute(const char* compute_path);
         void setMat4(const std::string& name, const glm::mat4& matrix) const;
         void setVec3(const std::string& name, const glm::vec3& vector) const;
         void setInt(const std::string& name, int value) const;
         void setBool(const std::string& name, bool value) const;
         void setFloat(const std::string& name, float value) const;
 
+        void dispatchCompute(uint32_t x, uint32_t y, uint32_t z);
+
     public:
-        GLuint ID_;
+        GLuint ID_ = 0;
     private:
         void checkCompileErrors(GLuint object, std::string type);
     };

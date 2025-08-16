@@ -7,6 +7,8 @@
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
 #include "Vocksel/Core/engine_services.h"
+#include "tracy/Tracy.hpp"
+#include "tracy/TracyOpenGL.hpp"
 
 
 Vocksel::Application::Application() {
@@ -78,7 +80,11 @@ void Vocksel::Application::initGL() {
         glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
         glDebugMessageCallback(glDebugOutput, nullptr);
         glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, GL_TRUE);
+        TracyGpuContext;
     }
+
+
+
 }
 
 void Vocksel::Application::initGUI() {
@@ -140,6 +146,7 @@ void APIENTRY Vocksel::Application::glDebugOutput(GLenum source,
     std::cout << std::endl;
 }
 
+
 void Vocksel::Application::initInput() {
     EngineServices::input().bindKey(GLFW_KEY_ESCAPE, [this] {
         closeWindow();
@@ -154,6 +161,7 @@ void Vocksel::Application::initInput() {
 
 
 void Vocksel::Application::run() {
+
     float second_count = 0.0f;
     last_frame_ = glfwGetTime();
     while (!glfwWindowShouldClose(window_)) {
@@ -179,12 +187,15 @@ void Vocksel::Application::run() {
 
         render();
 
+
         // Render ImGui
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
         glfwSwapBuffers(window_);
         glfwPollEvents();
+        TracyGpuCollect;
+        FrameMark;
     }
 }
 

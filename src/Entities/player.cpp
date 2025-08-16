@@ -111,26 +111,6 @@ void Vocksel::Player::applyPhysics(float deltaTime) {
 }
 
 bool Vocksel::Player::checkCollision(float x, float y, float z, const glm::vec3& size) {
-    float minX = x - size.x;
-    float maxX = x + size.x;
-    float minY = y;
-    float maxY = y + size.y;
-    float minZ = z - size.z;
-    float maxZ = z + size.z;
-
-    for (float bx = std::floor(minX); bx <= std::ceil(maxX); bx += 1.0f) {
-        for (float by = std::floor(minY); by <= std::ceil(maxY); by += 1.0f) {
-            for (float bz = std::floor(minZ); bz <= std::ceil(maxZ); bz += 1.0f) {
-                if (world_->getBlockAtWorldPos(bx, by, bz) != 0) {
-                    if (maxX > bx - 0.5f && minX < bx + 0.5f &&
-                        maxY > by - 0.5f && minY < by + 0.5f &&
-                        maxZ > bz - 0.5f && minZ < bz + 0.5f) {
-                        return true;
-                        }
-                }
-            }
-        }
-    }
     return false;
 }
 

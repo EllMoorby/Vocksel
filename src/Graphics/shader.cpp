@@ -2,13 +2,18 @@
 
 #include <filesystem>
 
-Vocksel::Shader::Shader(): ID_(0) {}
+Vocksel::Shader::Shader(){}
 
-Vocksel::Shader::Shader(const char *vertexPath, const char *fragmentPath): ID_(0) {
-    init(vertexPath, fragmentPath);
+Vocksel::Shader::Shader(const char *vertex_path, const char *fragment_path) {
+    init(vertex_path, fragment_path);
 }
 
-void Vocksel::Shader::init(const char *vertexPath, const char *fragmentPath) {
+Vocksel::Shader::Shader(const char *compute_path) {
+    initCompute(compute_path);
+}
+
+
+void Vocksel::Shader::init(const char *vertex_path, const char *fragment_path) {
     if (ID_ != 0) {
         std::cerr << "Shader already initialized. Ignoring init() call." << std::endl;
         return;
@@ -16,7 +21,7 @@ void Vocksel::Shader::init(const char *vertexPath, const char *fragmentPath) {
 
     // Otherwise initialise
     std::string vertex_code, fragment_code;
-    std::ifstream v_shader_file(vertexPath), f_shader_file(fragmentPath);
+    std::ifstream v_shader_file(vertex_path), f_shader_file(fragment_path);
 
     std::stringstream v_shader_stream, f_shader_stream;
 
@@ -53,6 +58,39 @@ void Vocksel::Shader::init(const char *vertexPath, const char *fragmentPath) {
     glDeleteShader(fragment);
 }
 
+void Vocksel::Shader::initCompute(const char *compute_path) {
+    if (ID_ != 0) {
+        std::cerr << "Shader already initialized. Ignoring init() call." << std::endl;
+        return;
+    }
+
+    std::string compute_code;
+    std::ifstream c_shader_file(compute_path);
+
+    std::stringstream c_shader_stream;
+
+    c_shader_stream << c_shader_file.rdbuf();
+
+    c_shader_file.close();
+
+    compute_code = c_shader_stream.str();
+
+    const char* compute_source = compute_code.c_str();
+
+    GLuint compute = glCreateShader(GL_COMPUTE_SHADER);
+    glShaderSource(compute, 1, &compute_source, nullptr);
+    glCompileShader(compute);
+    checkCompileErrors(compute, "COMPUTE");
+
+    ID_ = glCreateProgram();
+
+    glAttachShader(ID_, compute);
+    glLinkProgram(ID_);
+    checkCompileErrors(ID_, "PROGRAM");
+
+    glDeleteShader(compute);
+}
+
 void Vocksel::Shader::use() {
     glUseProgram(ID_);
 }
@@ -87,6 +125,7 @@ void Vocksel::Shader::checkCompileErrors(GLuint object, std::string type) {
         glGetShaderiv(object, GL_COMPILE_STATUS, &success);
     }
 
+
     if(!success)
     {
         if (object == ID_) {
@@ -97,6 +136,15 @@ void Vocksel::Shader::checkCompileErrors(GLuint object, std::string type) {
         std::cout << "ERROR::SHADER::" << type << "::COMPILATION_FAILED\n" << infoLog << std::endl;
     }
 }
+
+void Vocksel::Shader::dispatchCompute(uint32_t x, uint32_t y, uint32_t z) {
+    glUseProgram(ID_);
+    glDispatchCompute(x, y, z);
+    glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT |
+                GL_VERTEX_ATTRIB_ARRAY_BARRIER_BIT |
+                GL_ELEMENT_ARRAY_BARRIER_BIT);
+}
+
 
 Vocksel::Shader::~Shader() {
     if (ID_ != 0) {

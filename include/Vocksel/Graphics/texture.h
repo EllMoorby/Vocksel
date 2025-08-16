@@ -16,8 +16,8 @@ namespace Vocksel {
 
         void cleanUp();
         private:
-        int width_, height_;
-        GLuint texture_id_;
+        int width_ = 0, height_ = 0;
+        uint32_t texture_id_ = 0;
 
     };
 }
