@@ -1,6 +1,7 @@
 #include "Vocksel/World/chunk.h"
 
 #include "tracy/Tracy.hpp"
+#include "tracy/TracyOpenGL.hpp"
 #include "Vocksel/Core/engine_services.h"
 
 
@@ -33,22 +34,18 @@ void Vocksel::Chunk::generateMesh() {
 }
 
 void Vocksel::Chunk::render(Shader &shader) {
+    TracyGpuZone("Render Chunk");
     ZoneScoped;
-    shader.use();
-
 
     glm::mat4 model = glm::mat4(1.0f);
     model = glm::translate(model, glm::vec3(position_));
 
     shader.setMat4("model", model);
 
-
     compute_mesh_.bind();
-    {
-        ZoneScopedNC("Draw", 0xFF0000);
-        glDrawElements(GL_TRIANGLES, compute_mesh_.getIndexCount(), GL_UNSIGNED_INT, nullptr);
 
-    }
+    glDrawElements(GL_TRIANGLES, compute_mesh_.getIndexCount(), GL_UNSIGNED_INT, nullptr);
+
     compute_mesh_.unbind();
 }
 

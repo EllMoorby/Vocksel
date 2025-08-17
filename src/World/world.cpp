@@ -1,6 +1,7 @@
 #include "Vocksel/World/world.h"
 
 #include "tracy/Tracy.hpp"
+#include "tracy/TracyOpenGL.hpp"
 
 Vocksel::World::World(){
 
@@ -57,6 +58,9 @@ void Vocksel::World::setGenerationParams(float freq, int octaves, float lacunari
 
 void Vocksel::World::render(Shader &shader) {
     ZoneScoped;
+    TracyGpuZone("Render World");
+
+    shader.use();
     // Render chunks
     for (auto& chunk : chunks_) {
         chunk->render(shader);

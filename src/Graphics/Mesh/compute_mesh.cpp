@@ -3,6 +3,7 @@
 #include <iostream>
 
 #include "tracy/Tracy.hpp"
+#include "tracy/TracyOpenGL.hpp"
 #include "Vocksel/Core/constants.h"
 
 constexpr uint32_t MAX_VERTICES = Vocksel::Constants::CHUNK_SIZE *
@@ -21,7 +22,7 @@ Vocksel::ComputeMesh::ComputeMesh() {
 
     glGenBuffers(1, &counter_buffer_);
     glBindBuffer(GL_ATOMIC_COUNTER_BUFFER, counter_buffer_);
-    glBufferData(GL_ATOMIC_COUNTER_BUFFER, sizeof(uint32_t), nullptr, GL_DYNAMIC_DRAW);
+    glBufferData(GL_ATOMIC_COUNTER_BUFFER, sizeof(uint32_t), nullptr, GL_DYNAMIC_READ);
 
     glGenVertexArrays(1, &VAO_);
     glGenBuffers(1, &VBO_);
@@ -44,9 +45,11 @@ Vocksel::ComputeMesh::ComputeMesh() {
 
 void Vocksel::ComputeMesh::updateFromGPU() {
     ZoneScoped;
-    uint32_t tri_count = readTriangleCount();
-    uint32_t vertex_count = tri_count * 3;
-    uint32_t index_count = tri_count * 3;
+    TracyGpuZone("Update From GPU");
+
+    triangle_count_ = readTriangleCount();
+    uint32_t vertex_count = triangle_count_ * 3;
+    uint32_t index_count = triangle_count_ * 3;
 
     glBindBuffer(GL_COPY_READ_BUFFER, vertex_SSBO_);
     glBindBuffer(GL_COPY_WRITE_BUFFER, VBO_);
@@ -60,18 +63,14 @@ void Vocksel::ComputeMesh::updateFromGPU() {
 }
 
 void Vocksel::ComputeMesh::bind() {
-    ZoneScoped;
+    TracyGpuZone("Bind Mesh");
+
     glBindVertexArray(VAO_);
 
-    glBindBuffer(GL_ARRAY_BUFFER, VBO_);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO_);
 }
 
 void Vocksel::ComputeMesh::unbind() {
-    ZoneScoped;
     glBindVertexArray(0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
 

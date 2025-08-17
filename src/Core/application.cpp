@@ -72,6 +72,7 @@ void Vocksel::Application::initGL() {
     glFrontFace(GL_CCW);
 
 
+    TracyGpuContext;
     // https://learnopengl.com/In-Practice/Debugging
     int flags; glGetIntegerv(GL_CONTEXT_FLAGS, &flags);
     if (flags & GL_CONTEXT_FLAG_DEBUG_BIT)
@@ -80,7 +81,6 @@ void Vocksel::Application::initGL() {
         glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
         glDebugMessageCallback(glDebugOutput, nullptr);
         glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, GL_TRUE);
-        TracyGpuContext;
     }
 
 
@@ -161,12 +161,12 @@ void Vocksel::Application::initInput() {
 
 
 void Vocksel::Application::run() {
+    glClearColor(game_.getClearColor().r, game_.getClearColor().g, game_.getClearColor().b, game_.getClearColor().a);
 
     float second_count = 0.0f;
     last_frame_ = glfwGetTime();
     while (!glfwWindowShouldClose(window_)) {
-        glClearColor(game_.getClearColor().r, game_.getClearColor().g, game_.getClearColor().b, game_.getClearColor().a);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        ZoneScoped;
 
         float current_frame = glfwGetTime();
         float delta_time = current_frame - last_frame_;
@@ -179,6 +179,7 @@ void Vocksel::Application::run() {
             second_count = 0;
         }
 
+
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
@@ -187,19 +188,21 @@ void Vocksel::Application::run() {
 
         render();
 
-
         // Render ImGui
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
+
         glfwSwapBuffers(window_);
         glfwPollEvents();
-        TracyGpuCollect;
+
         FrameMark;
+        TracyGpuCollect;
     }
 }
 
 void Vocksel::Application::update(float delta_time) {
+
     EngineServices::updateFrameData(delta_time,aspect_ratio_);
     EngineServices::input().update();
 
@@ -209,6 +212,8 @@ void Vocksel::Application::update(float delta_time) {
 
 
 void Vocksel::Application::render() {
+    ZoneScoped;
+    TracyGpuZone("Main");
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     game_.render();
     game_.renderDebugGUI();

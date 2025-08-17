@@ -18,7 +18,7 @@ namespace Vocksel {
 
         void bind();
         void unbind();
-        int getIndexCount() const { return readTriangleCount() * 3; };
+        int getIndexCount() const { return triangle_count_ * 3; };
 
         private:
         uint32_t VAO_;
@@ -27,6 +27,7 @@ namespace Vocksel {
         uint32_t vertex_SSBO_;
         uint32_t index_SSBO_;
         uint32_t counter_buffer_;
+        int triangle_count_ = -1;
     };
 }
 
