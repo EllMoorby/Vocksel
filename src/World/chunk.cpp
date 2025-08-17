@@ -33,7 +33,6 @@ void Vocksel::Chunk::generateMesh() {
 }
 
 void Vocksel::Chunk::render(Shader &shader) {
-    glDisable(GL_CULL_FACE);
     ZoneScoped;
     shader.use();
 
@@ -46,12 +45,11 @@ void Vocksel::Chunk::render(Shader &shader) {
 
     compute_mesh_.bind();
     {
-        ZoneScoped;
+        ZoneScopedNC("Draw", 0xFF0000);
         glDrawElements(GL_TRIANGLES, compute_mesh_.getIndexCount(), GL_UNSIGNED_INT, nullptr);
 
     }
     compute_mesh_.unbind();
-    glEnable(GL_CULL_FACE);
 }
 
 
