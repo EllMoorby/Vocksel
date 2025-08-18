@@ -15,7 +15,8 @@ layout(std430, binding = 1) buffer index_buffer {
 layout(binding = 0, offset = 0) uniform atomic_uint triangle_count;
 
 uniform float isolevel;
-uniform int chunk_size;
+uniform int voxels_per_axis;
+uniform float voxel_size;
 
 // https://paulbourke.net/geometry/polygonise/
 const ivec3 corner_offsets[8] = ivec3[8](
@@ -53,9 +54,9 @@ vec3 interpolateVerts(vec4 v1, vec4 v2) {
 
 
 void main() {
-    if (gl_GlobalInvocationID.x >= (chunk_size - 1) ||
-        gl_GlobalInvocationID.y >= (chunk_size - 1) ||
-        gl_GlobalInvocationID.z >= (chunk_size - 1)) {
+    if (gl_GlobalInvocationID.x >= (voxels_per_axis - 1) ||
+        gl_GlobalInvocationID.y >= (voxels_per_axis - 1) ||
+        gl_GlobalInvocationID.z >= (voxels_per_axis - 1)) {
 
         return;
     }
@@ -64,7 +65,7 @@ void main() {
     vec4 cube_corners[8];
 
     for (int i = 0; i < 8; i++){
-        cube_corners[i] = vec4(cube_pos + corner_offsets[i], imageLoad(density_tex, (cube_pos + corner_offsets[i])).r );
+        cube_corners[i] = vec4((cube_pos + corner_offsets[i]) * voxel_size, imageLoad(density_tex, (cube_pos + corner_offsets[i])).r );
     }
 
     int cube_index = 0;

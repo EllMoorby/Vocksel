@@ -23,14 +23,14 @@ void Vocksel::World::init() {
 
 void Vocksel::World::generateWorld() {
     const int range = 1;
-    const glm::vec3 spawn_chunk = glm::floor(spawn_position_ / (float)Constants::CUBES_PER_CHUNK);
+    const glm::vec3 spawn_chunk = glm::floor(spawn_position_ / (float)Constants::CHUNK_SIZE);
 
     chunks_.clear();
     for (int z = -range; z <= range; z++) {
             for (int x = -range; x <= range; x++) {
                 glm::vec3 chunk_pos = spawn_chunk + glm::vec3(x, 0, z);
                 chunks_.emplace_back(
-                    std::make_unique<Chunk>(chunk_pos * (float)Constants::CUBES_PER_CHUNK)
+                    std::make_unique<Chunk>(chunk_pos * (float)Constants::CHUNK_SIZE)
                 );
                 chunks_.back()->generateTerrain(noise_);
                 chunks_.back()->generateMesh();

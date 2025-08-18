@@ -59,7 +59,8 @@ void Vocksel::MarchingCubes::computeMesh(const Texture3D &density_tex, ComputeMe
     compute_shader_.setInt("edge_table", 1);
     compute_shader_.setInt("tri_table", 2);
     compute_shader_.setFloat("isolevel", 0.0f);
-    compute_shader_.setInt("chunk_size", Constants::CHUNK_SIZE);
+    compute_shader_.setInt("voxels_per_axis", Constants::CUBES_PER_CHUNK + 1);
+    compute_shader_.setFloat("voxel_size", float(Constants::CHUNK_SIZE) / float(Constants::CUBES_PER_CHUNK));
 
     glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, output.getVertexSSBO());
     glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, output.getIndexSSBO());
@@ -69,7 +70,7 @@ void Vocksel::MarchingCubes::computeMesh(const Texture3D &density_tex, ComputeMe
     glBindBuffer(GL_ATOMIC_COUNTER_BUFFER, output.getCounterBuffer());
     glBufferSubData(GL_ATOMIC_COUNTER_BUFFER, 0, sizeof(uint32_t), &zero);
 
-    const int groups = (Constants::CHUNK_SIZE + 7) / 8;
+    const int groups = (Constants::CUBES_PER_CHUNK + 1 + 7) / 8;
     compute_shader_.dispatchCompute(groups, groups, groups);
 
     output.updateFromGPU();

@@ -6,16 +6,20 @@
 
 
 
-Vocksel::Chunk::Chunk(glm::vec3 position): position_(position), density_field_(glm::ivec3(Constants::CHUNK_SIZE), GL_R32F) {
+Vocksel::Chunk::Chunk(glm::vec3 position): position_(position), density_field_(glm::ivec3(Constants::CUBES_PER_CHUNK + 1), GL_R32F) {
 
 }
 
 void Vocksel::Chunk::generateTerrain(FastNoiseLite &noise) {
 
-    for (int z = 0; z < Constants::CHUNK_SIZE; z++) {
-        for (int y = 0; y < Constants::CHUNK_SIZE; y++) {
-            for (int x = 0; x < Constants::CHUNK_SIZE; x++) {
-                glm::vec3 world_pos = position_ + glm::vec3(x, y, z);
+    const float voxel_size = float(Constants::CHUNK_SIZE) / float(Constants::CUBES_PER_CHUNK);
+
+    for (int z = 0; z < int(Constants::CUBES_PER_CHUNK) + 1; z++) {
+        for (int y = 0; y < int(Constants::CUBES_PER_CHUNK) + 1; y++) {
+            for (int x = 0; x < int(Constants::CUBES_PER_CHUNK) + 1; x++) {
+                glm::vec3 local_pos_ws = glm::vec3(x, y, z) * voxel_size;
+                glm::vec3 world_pos = position_ + local_pos_ws;
+
                 float density = noise.GetNoise(world_pos.x * 10, world_pos.y * 10 , world_pos.z * 10);
 
 
