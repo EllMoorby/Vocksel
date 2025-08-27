@@ -32,11 +32,9 @@ namespace Vocksel {
     private:
         void initWindow();
         void initGL();
-        void initGUI();
         void initInput();
 
         void update(float delta_time);
-        void updateGUI();
         void render();
         void closeWindow();
         static void mouseCallback(GLFWwindow* window ,double xpos, double ypos);

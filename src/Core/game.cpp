@@ -17,6 +17,10 @@ void Vocksel::Game::init() {
 
     model_instances_.push_back(ModelInstance::create(glm::vec3(-3.0f, .0f, 0.f), "teapot", "stone", glm::vec3(1.f)));
     entities_.push_back(std::make_unique<Creature>(glm::vec3(-3.f,8.f,0.f)));
+
+    EngineServices::input().bindKey(GLFW_KEY_R, [this] {
+        world_->generateWorld();
+    });
 }
 
 
@@ -78,6 +82,7 @@ void Vocksel::Game::render() {
 
 void Vocksel::Game::update(float delta_time) {
     ZoneScoped;
+    world_->update();
     player_.update(delta_time);
     for (auto& entity : entities_) {
         entity->update(delta_time);
@@ -86,13 +91,6 @@ void Vocksel::Game::update(float delta_time) {
 
 void Vocksel::Game::handleMouseInput(float xoffset, float yoffset) {
     player_.handleMouseInput(xoffset, yoffset);
-}
-
-void Vocksel::Game::renderDebugGUI() {
-    ImGui::Begin("Debug");
-
-    ImGui::Text("X: %.2f | Y: %.2f | Z: %.2f", player_.getPosition().x, player_.getPosition().y, player_.getPosition().z);
-    ImGui::End();
 }
 
 

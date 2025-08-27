@@ -140,9 +140,9 @@ void Vocksel::Shader::checkCompileErrors(GLuint object, std::string type) {
 void Vocksel::Shader::dispatchCompute(uint32_t x, uint32_t y, uint32_t z) {
     glUseProgram(ID_);
     glDispatchCompute(x, y, z);
-    glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT |
-                GL_VERTEX_ATTRIB_ARRAY_BARRIER_BIT |
-                GL_ELEMENT_ARRAY_BARRIER_BIT);
+    glMemoryBarrier(GL_VERTEX_ATTRIB_ARRAY_BARRIER_BIT |
+            GL_ELEMENT_ARRAY_BARRIER_BIT |
+            GL_COMMAND_BARRIER_BIT);
 }
 
 

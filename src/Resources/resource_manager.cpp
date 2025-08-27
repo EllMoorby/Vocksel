@@ -17,6 +17,7 @@ void Vocksel::ResourceManager::init() {
 
     loadShader("marching_cubes", "assets/shaders/Core/World/marching_cubes.comp.glsl");
 
+
     loadTexture("default", "assets/textures/blocks/default.png");
     loadTexture("stone", "assets/textures/blocks/stone.png");
     loadTexture("grass", "assets/textures/blocks/grass.png");
@@ -50,6 +51,7 @@ Vocksel::Shader& Vocksel::ResourceManager::getShader(const std::string &name) {
 void Vocksel::ResourceManager::loadTexture(std::string name, const char *path) {
     textures_[name] = std::make_unique<Texture>(path);
 }
+
 
 Vocksel::Texture& Vocksel::ResourceManager::getTexture(const std::string &name) {
     if (!initialized_) throw std::runtime_error("ResourceManager not initialized");

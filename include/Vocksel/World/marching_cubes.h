@@ -16,7 +16,6 @@ namespace Vocksel {
         uint32_t edge_table_texture_ = 0;
         Shader& compute_shader_;
 
-
         void createLookupTextures();
         void createEdgeTableTexture();
         void createTriTableTexture();

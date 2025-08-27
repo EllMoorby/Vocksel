@@ -126,6 +126,8 @@ add_executable(Vocksel
         src/Graphics/Mesh/compute_mesh.cpp
         src/World/marching_cubes.cpp
         include/Vocksel/World/mc_lookup.h
+        include/Vocksel/Core/Debug/debug_gui.h
+        src/Core/Debug/debug_gui.cpp
 )
 
 # Copy assets directory to build

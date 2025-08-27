@@ -11,6 +11,8 @@ Vocksel::Chunk::Chunk(glm::vec3 position): position_(position), density_field_(g
 }
 
 void Vocksel::Chunk::generateTerrain(FastNoiseLite &noise) {
+    ZoneScoped;
+    TracyGpuZone("GenerateTerrain");
 
     const float voxel_size = float(Constants::CHUNK_SIZE) / float(Constants::CUBES_PER_CHUNK);
 
@@ -20,15 +22,17 @@ void Vocksel::Chunk::generateTerrain(FastNoiseLite &noise) {
                 glm::vec3 local_pos_ws = glm::vec3(x, y, z) * voxel_size;
                 glm::vec3 world_pos = position_ + local_pos_ws;
 
-                float density = noise.GetNoise(world_pos.x * 10, world_pos.y * 10 , world_pos.z * 10);
+                // Base terrain height using 2D noise
+                float base_height = noise.GetNoise(world_pos.x * 10.f, world_pos.z * 10.f) * 32.0f + 16.0f;
 
+                // Density based on height comparison
+                float density = world_pos.y - base_height;
 
                 density_field_.setVoxel(x, y, z, density);
             }
         }
     }
 
-    density_field_.uploadToGPU();
 }
 
 
@@ -48,7 +52,8 @@ void Vocksel::Chunk::render(Shader &shader) {
 
     compute_mesh_.bind();
 
-    glDrawElements(GL_TRIANGLES, compute_mesh_.getIndexCount(), GL_UNSIGNED_INT, nullptr);
+    glBindBuffer(GL_DRAW_INDIRECT_BUFFER, compute_mesh_.getIndirectBuffer());
+    glDrawArraysIndirect(GL_TRIANGLES, nullptr);
 
     compute_mesh_.unbind();
 }

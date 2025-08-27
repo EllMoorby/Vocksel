@@ -8,7 +8,21 @@ Vocksel::Player::Player(): world_() {
 
 void Vocksel::Player::init(World &world) {
     world_ = &world;
+    initDebug();
 }
+
+void Vocksel::Player::initDebug() {
+    EngineServices::debugGUI().addPanel("Player", [this]() {
+        ImGui::Text("Position: (%.2f, %.2f, %.2f)", position_.x, position_.y, position_.z);
+        ImGui::Text("Velocity: (%.2f, %.2f, %.2f)", velocity_.x, velocity_.y, velocity_.z);
+        ImGui::Text("Acceleration: (%.2f, %.2f, %.2f)", acceleration_.x, acceleration_.y, acceleration_.z);
+        ImGui::Separator();
+        ImGui::Text("Pitch: %.2f || Yaw: %.2f", pitch_, yaw_);
+        ImGui::Text("Camera Offset: (%.2f, %.2f, %.2f)", camera_offset_.x, camera_offset_.y, camera_offset_.z);
+        ImGui::Text("Size: (%.2f, %.2f, %.2f)", size_.x, size_.y, size_.z);
+    });
+}
+
 
 
 void Vocksel::Player::handleMouseInput(float xoffset, float yoffset) {

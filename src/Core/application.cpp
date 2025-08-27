@@ -3,9 +3,6 @@
 #define STB_IMAGE_IMPLEMENTATION
 
 #include "stb/stb_image.h"
-#include "imgui.h"
-#include "imgui_impl_glfw.h"
-#include "imgui_impl_opengl3.h"
 #include "Vocksel/Core/engine_services.h"
 #include "tracy/Tracy.hpp"
 #include "tracy/TracyOpenGL.hpp"
@@ -15,7 +12,6 @@ Vocksel::Application::Application() {
     initWindow();
     initGL();
     EngineServices::init(window_);
-    initGUI();
     initInput();
 
     game_.init();
@@ -50,10 +46,6 @@ void Vocksel::Application::initWindow() {
     glfwSetCursorPosCallback(window_, mouseCallback);
     glfwSetWindowUserPointer(window_, this);
 
-#if DEBUG
-    glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
-#endif
-
 
 }
 
@@ -87,16 +79,6 @@ void Vocksel::Application::initGL() {
 
 }
 
-void Vocksel::Application::initGUI() {
-    IMGUI_CHECKVERSION();
-    ImGui::CreateContext();
-    ImGuiIO& io = ImGui::GetIO();
-
-    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
-    ImGui_ImplGlfw_InitForOpenGL(window_, true);
-    ImGui_ImplOpenGL3_Init("#version 430 core");
-
-}
 
 // https://learnopengl.com/In-Practice/Debugging
 void APIENTRY Vocksel::Application::glDebugOutput(GLenum source,
@@ -167,7 +149,6 @@ void Vocksel::Application::run() {
     last_frame_ = glfwGetTime();
     while (!glfwWindowShouldClose(window_)) {
         ZoneScoped;
-
         float current_frame = glfwGetTime();
         float delta_time = current_frame - last_frame_;
         last_frame_ = current_frame;
@@ -180,21 +161,15 @@ void Vocksel::Application::run() {
         }
 
 
-        ImGui_ImplOpenGL3_NewFrame();
-        ImGui_ImplGlfw_NewFrame();
-        ImGui::NewFrame();
 
         update(delta_time);
 
         render();
 
-        // Render ImGui
-        ImGui::Render();
-        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
 
         glfwSwapBuffers(window_);
         glfwPollEvents();
+
 
         FrameMark;
         TracyGpuCollect;
@@ -202,21 +177,44 @@ void Vocksel::Application::run() {
 }
 
 void Vocksel::Application::update(float delta_time) {
+    TracyGpuZone("Update")
 
-    EngineServices::updateFrameData(delta_time,aspect_ratio_);
+    {
+        TracyGpuZone("frame data Update")
+        EngineServices::updateFrameData(delta_time,aspect_ratio_);
+
+    }
+
+{
+    TracyGpuZone("input Update")
     EngineServices::input().update();
 
-    game_.update(delta_time);
+}
+
+    {
+        TracyGpuZone("game Update")
+        game_.update(delta_time);
+    }
+
+
 
 }
 
 
 void Vocksel::Application::render() {
     ZoneScoped;
-    TracyGpuZone("Main");
+    TracyGpuZone("Render");
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    game_.render();
-    game_.renderDebugGUI();
+    {
+        TracyGpuZone("Game Render");
+        game_.render();
+    }
+
+    {
+        TracyGpuZone("Debug Render");
+        EngineServices::debugGUI().render();
+    }
+
 }
 
 
@@ -254,9 +252,6 @@ void Vocksel::Application::closeWindow() {
 
 
 void Vocksel::Application::cleanUp() {
-    ImGui_ImplOpenGL3_Shutdown();
-    ImGui_ImplGlfw_Shutdown();
-    ImGui::DestroyContext();
     glfwTerminate();
 }
 

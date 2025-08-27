@@ -8,11 +8,14 @@ layout(binding = 2) uniform isampler2D tri_table;
 layout(std430, binding = 0) buffer vertex_buffer {
     vec4 vertices[];
 };
-layout(std430, binding = 1) buffer index_buffer {
-    uint indices[];
-};
 
-layout(binding = 0, offset = 0) uniform atomic_uint triangle_count;
+
+layout(std430, binding = 3) buffer indirect_buffer {
+    uint count;
+    uint instanceCount;
+    uint first;
+    uint baseInstance;
+};
 
 uniform float isolevel;
 uniform int voxels_per_axis;
@@ -91,16 +94,11 @@ void main() {
         int a2 = cornerIndexAFromEdge[texelFetch(tri_table, ivec2(i + 2, cube_index), 0 ).r];
         int b2 = cornerIndexBFromEdge[texelFetch(tri_table, ivec2(i + 2, cube_index), 0 ).r];
 
-        uint triangle_idx = atomicCounterIncrement(triangle_count);
-        uint vertex_offset = triangle_idx * 3u;
+        uint vertex_offset = atomicAdd(count, 3u);
 
         vertices[vertex_offset + 0u] = vec4(interpolateVerts(cube_corners[a0], cube_corners[b0]),1.0);
         vertices[vertex_offset + 1u] = vec4(interpolateVerts(cube_corners[a1], cube_corners[b1]),1.0);
         vertices[vertex_offset + 2u] = vec4(interpolateVerts(cube_corners[a2], cube_corners[b2]),1.0);
-
-        indices[vertex_offset + 0u] = vertex_offset + 0u;
-        indices[vertex_offset + 1u] = vertex_offset + 1u;
-        indices[vertex_offset + 2u] = vertex_offset + 2u;
     }
 }
 

@@ -13,6 +13,7 @@ namespace Vocksel {
         ~Player();
 
         void init(World& world);
+        void initDebug();
         void update(float delta_time);
         void handleInput(float deltaTime);
         void handleMouseInput(float xoffset, float yoffset);

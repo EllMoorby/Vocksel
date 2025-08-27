@@ -2,6 +2,7 @@
 #define ENGINE_SERVICES_H
 #include "Vocksel/Resources/resource_manager.h"
 #include "input_manager.h"
+#include "Debug/debug_gui.h"
 #include "Debug/debug_renderer.h"
 #include "Vocksel/Resources/model_manager.h"
 
@@ -22,6 +23,11 @@ namespace Vocksel {
         static InputManager& input() {
             if (!input_manager_) throw std::runtime_error("InputManager not initialized");
             return *input_manager_;
+        }
+
+        static DebugGUI& debugGUI() {
+            if (!debug_gui_) throw std::runtime_error("DebguGUI not initialized");
+            return *debug_gui_;
         }
 
         static DebugRenderer& debug() {
@@ -47,6 +53,7 @@ namespace Vocksel {
             resource_manager_.reset();
             model_manager_.reset();
             debug_renderer_.reset();
+            debug_gui_.reset();
         }
 
     private:
@@ -54,6 +61,7 @@ namespace Vocksel {
         static std::unique_ptr<ResourceManager> resource_manager_;
         static std::unique_ptr<InputManager> input_manager_;
         static std::unique_ptr<DebugRenderer> debug_renderer_;
+        static std::unique_ptr<DebugGUI> debug_gui_;
 
         struct Frame {
             inline static float delta_time_ = 1.0f/60.0f;
