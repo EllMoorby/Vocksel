@@ -19,7 +19,7 @@ void Vocksel::Game::init() {
     entities_.push_back(std::make_unique<Creature>(glm::vec3(-3.f,8.f,0.f)));
 
     EngineServices::input().bindKey(GLFW_KEY_R, [this] {
-        world_->generateWorld();
+        world_->clearWorld();
     });
 }
 
@@ -82,7 +82,7 @@ void Vocksel::Game::render() {
 
 void Vocksel::Game::update(float delta_time) {
     ZoneScoped;
-    world_->update();
+    world_->update(player_.getPosition());
     player_.update(delta_time);
     for (auto& entity : entities_) {
         entity->update(delta_time);

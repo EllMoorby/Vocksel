@@ -1,5 +1,7 @@
 #include "Vocksel/World/world.h"
 
+#include <ranges>
+
 #include "tracy/Tracy.hpp"
 #include "tracy/TracyOpenGL.hpp"
 
@@ -19,7 +21,6 @@ void Vocksel::World::init() {
     noise_.SetFractalType(FastNoiseLite::FractalType_FBm);
     noise_.SetNoiseType(FastNoiseLite::NoiseType_OpenSimplex2);
     noise_.SetSeed(4);
-    generateWorld();
 }
 
 void Vocksel::World::initDebug() {
@@ -30,34 +31,40 @@ void Vocksel::World::initDebug() {
         ImGui::SliderFloat("Gain", &gain_, 0.0f, 1.f);
         if (ImGui::Button("Update")) {
             updateGenerationParams();
-            generateWorld();
+            clearWorld();
         }
     });
 }
 
 
-
-void Vocksel::World::generateWorld() {
+void Vocksel::World::updateChunksAroundPosition(glm::vec3 position) {
     TracyGpuZone("Generate World")
 
-    const int range = 2;
+    const int range = Constants::RENDER_DISTANCE;
     const int height = 3;
-    const glm::vec3 spawn_chunk = glm::floor(spawn_position_ / (float)Constants::CHUNK_SIZE);
+    const glm::ivec3 middle_chunk = glm::floor(position / (float)Constants::CHUNK_SIZE);
 
-    dirty_chunks_ = std::queue<Chunk*>();
-    chunks_.clear();
     for (int z = -range; z <= range; z++) {
         for (int y = -height; y <= height; y++) {
             for (int x = -range; x <= range; x++) {
-                glm::vec3 chunk_pos = spawn_chunk + glm::vec3(x, y, z);
-                chunks_.emplace_back(
-                    std::make_unique<Chunk>(chunk_pos * (float)Constants::CHUNK_SIZE)
-                );
-                dirty_chunks_.push(chunks_.back().get());
+                glm::ivec3 chunk_pos = middle_chunk + glm::ivec3(x, y, z);
+                if (!chunk_map_.contains(chunk_pos)) {
+                    auto chunk = std::make_unique<Chunk>(chunk_pos * (int)Constants::CHUNK_SIZE);
+                    dirty_chunks_.push(chunk.get());
+                    chunk_map_[chunk_pos] = std::move(chunk);
+                }
             }
         }
     }
+
 }
+
+void Vocksel::World::clearWorld() {
+    chunk_map_.clear();
+    dirty_chunks_ = std::queue<Chunk*>();
+}
+
+
 
 
 const glm::vec3 &Vocksel::World::getSpawnPosition() {
@@ -84,7 +91,9 @@ void Vocksel::World::updateGenerationParams() {
 }
 
 
-void Vocksel::World::update() {
+void Vocksel::World::update(glm::vec3 position) {
+    updateChunksAroundPosition(position);
+
     int num_processed = 0;
     while (num_processed < Constants::CHUNKS_PER_FRAME && !dirty_chunks_.empty()) {
 
@@ -104,7 +113,7 @@ void Vocksel::World::render(Shader &shader) {
 
     shader.use();
     // Render chunks
-    for (auto& chunk : chunks_) {
+    for (auto &chunk: chunk_map_ | std::views::values) {
         chunk->render(shader);
     }
 

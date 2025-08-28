@@ -8,7 +8,8 @@ namespace Vocksel::Constants {
 
     constexpr uint32_t CHUNK_SIZE = 16;
     constexpr uint32_t CUBES_PER_CHUNK = 16;
-    constexpr uint32_t CHUNKS_PER_FRAME = 5;
+    constexpr uint32_t CHUNKS_PER_FRAME = 10;
+    constexpr uint32_t RENDER_DISTANCE = 5;
 
     constexpr float MOVEMENT_SPEED = 12.f;
     constexpr float CAMERA_SENS = .1f;

@@ -24,6 +24,7 @@ namespace Vocksel {
 
         glm::vec3 getPosition() {return position_;}
         DensityField& getDensityField() {return density_field_;}
+        ComputeMesh& getComputeMesh() {return compute_mesh_;}
 
     private:
         glm::vec3 position_;

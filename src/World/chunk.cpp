@@ -16,22 +16,22 @@ void Vocksel::Chunk::generateTerrain(FastNoiseLite &noise) {
 
     const float voxel_size = float(Constants::CHUNK_SIZE) / float(Constants::CUBES_PER_CHUNK);
 
-    for (int z = 0; z < int(Constants::CUBES_PER_CHUNK) + 1; z++) {
-        for (int y = 0; y < int(Constants::CUBES_PER_CHUNK) + 1; y++) {
-            for (int x = 0; x < int(Constants::CUBES_PER_CHUNK) + 1; x++) {
+    for (int z = 0; z <= Constants::CUBES_PER_CHUNK; z++) {
+        for (int x = 0; x <= Constants::CUBES_PER_CHUNK; x++) {
+            glm::vec3 world = (position_ + glm::vec3(x, 0, z) * voxel_size);
+
+            float base_height = noise.GetNoise(world.x * 10.f, world.z * 10.f) * 32.0f + 16.0f;
+
+            for (int y = 0; y <= Constants::CUBES_PER_CHUNK; y++) {
                 glm::vec3 local_pos_ws = glm::vec3(x, y, z) * voxel_size;
                 glm::vec3 world_pos = position_ + local_pos_ws;
 
-                // Base terrain height using 2D noise
-                float base_height = noise.GetNoise(world_pos.x * 10.f, world_pos.z * 10.f) * 32.0f + 16.0f;
-
-                // Density based on height comparison
                 float density = world_pos.y - base_height;
-
                 density_field_.setVoxel(x, y, z, density);
             }
         }
     }
+
 
 }
 
@@ -45,10 +45,13 @@ void Vocksel::Chunk::render(Shader &shader) {
     TracyGpuZone("Render Chunk");
     ZoneScoped;
 
+
     glm::mat4 model = glm::mat4(1.0f);
     model = glm::translate(model, glm::vec3(position_));
 
     shader.setMat4("model", model);
+
+
 
     compute_mesh_.bind();
 
