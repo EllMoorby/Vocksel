@@ -19,6 +19,9 @@ void Vocksel::Shader::init(const char *vertex_path, const char *fragment_path) {
         return;
     }
 
+    if (vertex_path_.empty()) vertex_path_ = vertex_path;
+    if (fragment_path_.empty()) fragment_path_ = fragment_path;
+
     // Otherwise initialise
     std::string vertex_code, fragment_code;
     std::ifstream v_shader_file(vertex_path), f_shader_file(fragment_path);
@@ -63,6 +66,9 @@ void Vocksel::Shader::initCompute(const char *compute_path) {
         std::cerr << "Shader already initialized. Ignoring init() call." << std::endl;
         return;
     }
+
+
+    if (compute_path_.empty()) compute_path_ = compute_path;
 
     std::string compute_code;
     std::ifstream c_shader_file(compute_path);
@@ -140,15 +146,44 @@ void Vocksel::Shader::checkCompileErrors(GLuint object, std::string type) {
 void Vocksel::Shader::dispatchCompute(uint32_t x, uint32_t y, uint32_t z) {
     glUseProgram(ID_);
     glDispatchCompute(x, y, z);
-    glMemoryBarrier(GL_VERTEX_ATTRIB_ARRAY_BARRIER_BIT |
+    glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT | GL_VERTEX_ATTRIB_ARRAY_BARRIER_BIT |
             GL_ELEMENT_ARRAY_BARRIER_BIT |
             GL_COMMAND_BARRIER_BIT);
 }
 
+void Vocksel::Shader::reloadShader() {
+    cleanUpShader();
+    if (compute_path_.empty() && !vertex_path_.empty() && !fragment_path_.empty()) {
+        init(vertex_path_.c_str(), fragment_path_.c_str());
+        return;
+    }
+    if (!compute_path_.empty() && vertex_path_.empty() && fragment_path_.empty()){
+        initCompute(compute_path_.c_str());
+        return;
+    }
+
+
+
+    std::cerr << "Tried to reload a shader with no correct combination of saved paths" << std::endl;
+    throw std::runtime_error("Shader could not be reloaded");
+
+}
+void Vocksel::Shader::cleanUpShader() {
+    if (ID_ != 0) {
+        GLint current = 0;
+        glGetIntegerv(GL_CURRENT_PROGRAM, &current);
+        if ((GLuint)current == ID_) {
+            glUseProgram(0); // unbind before delete
+        }
+        glDeleteProgram(ID_);
+        ID_ = 0;
+    }
+}
 
 Vocksel::Shader::~Shader() {
-    if (ID_ != 0) {
-        glDeleteProgram(ID_);
-    }
+    cleanUpShader();
+    vertex_path_.clear();
+    fragment_path_.clear();
+    compute_path_.clear();
 }
 

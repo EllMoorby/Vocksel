@@ -26,12 +26,20 @@ namespace Vocksel {
         void setBool(const std::string& name, bool value) const;
         void setFloat(const std::string& name, float value) const;
 
+        void reloadShader();
+
+
         void dispatchCompute(uint32_t x, uint32_t y, uint32_t z);
 
     public:
         GLuint ID_ = 0;
     private:
+        void cleanUpShader();
         void checkCompileErrors(GLuint object, std::string type);
+    private:
+        std::string vertex_path_;
+        std::string fragment_path_;
+        std::string compute_path_;
     };
 }
 #endif //SHADER_H

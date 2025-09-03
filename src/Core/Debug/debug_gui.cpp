@@ -18,7 +18,9 @@ void Vocksel::DebugGUI::render() {
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
 
+
     ImGui::Begin("Debug");
+
 
 
 

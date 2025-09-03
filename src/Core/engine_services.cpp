@@ -8,15 +8,16 @@ std::unique_ptr<Vocksel::DebugGUI> Vocksel::EngineServices::debug_gui_;
 
 
 void Vocksel::EngineServices::init(GLFWwindow *window) {
+    debug_gui_ = std::make_unique<DebugGUI>();
     model_manager_ = std::make_unique<ModelManager>();
     resource_manager_ = std::make_unique<ResourceManager>();
     input_manager_ = std::make_unique<InputManager>();
     debug_renderer_ = std::make_unique<DebugRenderer>();
-    debug_gui_ = std::make_unique<DebugGUI>();
+
+    debug_gui_->init(window);
     resource_manager_->init();
     input_manager_->init(window);
     debug_renderer_->init();
-    debug_gui_->init(window);
 }
 
 void Vocksel::EngineServices::updateFrameData(float dt, float aspect) {

@@ -14,6 +14,10 @@ namespace Vocksel {
         void bind();
         void unbind();
 
+        int getWidth() const {return width_; }
+        int getHeight() const {return height_; }
+        uint32_t getID() const {return texture_id_;}
+
         void cleanUp();
         private:
         int width_ = 0, height_ = 0;

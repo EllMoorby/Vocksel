@@ -1,5 +1,7 @@
 #include "Vocksel/Resources/resource_manager.h"
 
+#include "Vocksel/Core/engine_services.h"
+
 Vocksel::ResourceManager::ResourceManager() {
 
 }
@@ -25,9 +27,82 @@ void Vocksel::ResourceManager::init() {
     loadTexture("wool", "assets/textures/blocks/wool.png");
 
 
+    initDebug();
 
     initialized_ = true;
 }
+
+void Vocksel::ResourceManager::initDebug() {
+    EngineServices::debugGUI().addPanel("Resource Manager", [this]() {
+        if (ImGui::TreeNode("Shaders")) {
+            if (ImGui::BeginTable("shader_table",3, ImGuiTableFlags_Borders)) {
+
+                ImGui::TableSetupColumn("ID");
+                ImGui::TableSetupColumn("Name");
+                ImGui::TableSetupColumn("");
+                ImGui::TableHeadersRow();
+
+                for (auto& [name, shader] : shaders_) {
+                    ImGui::TableNextRow();
+                    ImGui::PushID(name.c_str());
+
+                    ImGui::TableNextColumn();
+                    ImGui::Text("%i", shader->ID_);
+
+                    ImGui::TableNextColumn();
+                    ImGui::Text("%s", name.c_str());
+
+                    ImGui::TableNextColumn();
+                    if (ImGui::Button("Refresh")) {
+                        reloadShader(name);
+                    }
+                    ImGui::PopID();
+                }
+                ImGui::EndTable();
+            }
+            ImGui::TreePop();
+        }
+
+        if (ImGui::TreeNode("Textures")) {
+            if (ImGui::BeginTable("texture_table",5, ImGuiTableFlags_Borders)) {
+
+                ImGui::TableSetupColumn("ID");
+                ImGui::TableSetupColumn("Name");
+                ImGui::TableSetupColumn("Width");
+                ImGui::TableSetupColumn("Height");
+                ImGui::TableSetupColumn("Image");
+
+                ImGui::TableHeadersRow();
+
+                for (auto& [name, texture] : textures_) {
+                    ImGui::TableNextRow();
+                    ImGui::PushID(name.c_str());
+
+                    ImGui::TableNextColumn();
+                    ImGui::Text("%i", texture->getID());
+
+                    ImGui::TableNextColumn();
+                    ImGui::Text("%s", name.c_str());
+
+                    ImGui::TableNextColumn();
+                    ImGui::Text("%i", texture->getWidth());
+
+                    ImGui::TableNextColumn();
+                    ImGui::Text("%i", texture->getHeight());
+
+                    ImGui::TableNextColumn();
+                    ImGui::Image(texture->getID(), ImVec2(64, 64));
+
+                    ImGui::PopID();
+                }
+                ImGui::EndTable();
+            }
+            ImGui::TreePop();
+        }
+
+    });
+}
+
 
 
 void Vocksel::ResourceManager::loadShader(std::string name, const char *vertex_path, const char *fragment_path) {
@@ -37,6 +112,12 @@ void Vocksel::ResourceManager::loadShader(std::string name, const char *vertex_p
 void Vocksel::ResourceManager::loadShader(std::string name, const char *comp_path) {
     shaders_[name] = std::make_unique<Shader>(comp_path);
 }
+
+void Vocksel::ResourceManager::reloadShader(std::string name) {
+    Shader* shader = shaders_[name].get();
+    shader->reloadShader();
+}
+
 
 
 Vocksel::Shader& Vocksel::ResourceManager::getShader(const std::string &name) {

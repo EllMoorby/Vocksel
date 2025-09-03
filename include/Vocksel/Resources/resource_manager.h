@@ -19,6 +19,7 @@ namespace Vocksel {
 
         void loadShader(std::string name, const char* vertex_path, const char* fragment_path);
         void loadShader(std::string name, const char* comp_path);
+        void reloadShader(std::string name);
         Shader& getShader(const std::string& name);
 
         void loadTexture(std::string name, const char* path);
@@ -32,6 +33,10 @@ namespace Vocksel {
         // Prevent copying
         ResourceManager(const ResourceManager&) = delete;
         ResourceManager& operator=(const ResourceManager&) = delete;
+
+        private:
+        void initDebug();
+
         private:
         std::unordered_map<std::string, std::unique_ptr<Shader>> shaders_;
         std::unordered_map<std::string, std::unique_ptr<Texture>> textures_;
