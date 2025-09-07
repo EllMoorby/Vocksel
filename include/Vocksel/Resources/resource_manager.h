@@ -3,6 +3,7 @@
 #include <memory>
 #include <string>
 #include <unordered_map>
+#include <vector>
 
 #include "Vocksel/Graphics/texture.h"
 #include "Vocksel/Graphics/texture_atlas.h"
@@ -24,6 +25,7 @@ namespace Vocksel {
 
         void loadTexture(std::string name, const char* path);
         Texture& getTexture(const std::string& name);
+        std::vector<std::string> getTextureNames();
 
         void loadBlockAtlas(const std::string& path);
         TextureAtlas& getBlockAtlas();

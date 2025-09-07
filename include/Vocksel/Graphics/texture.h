@@ -16,12 +16,12 @@ namespace Vocksel {
 
         int getWidth() const {return width_; }
         int getHeight() const {return height_; }
-        uint32_t getID() const {return texture_id_;}
+        GLuint getID() const {return texture_id_;}
 
         void cleanUp();
         private:
         int width_ = 0, height_ = 0;
-        uint32_t texture_id_ = 0;
+        GLuint texture_id_ = 0;
 
     };
 }

@@ -1,9 +1,10 @@
 #include "Vocksel/World/world.h"
 
 #include <ranges>
-
+#if DEBUG
 #include "tracy/Tracy.hpp"
 #include "tracy/TracyOpenGL.hpp"
+#endif
 
 Vocksel::World::World(){
 
@@ -33,26 +34,36 @@ void Vocksel::World::initDebug() {
             updateGenerationParams();
             clearWorld();
         }
+
+        static glm::ivec3 load_world_at = glm::ivec3(0);
+
+        ImGui::InputInt3("Load world at position", glm::value_ptr(load_world_at));
+
+        if (ImGui::Button("Load")) {
+            updateChunksAroundPosition(load_world_at * (int)Constants::CHUNK_SIZE);
+        }
     });
 }
 
 
 void Vocksel::World::updateChunksAroundPosition(glm::vec3 position) {
-    TracyGpuZone("Generate World")
+    #if DEBUG
+        TracyGpuZone("Generate World")
+    #endif
 
     const int range = Constants::RENDER_DISTANCE;
-    const int height = 3;
-    const glm::ivec3 middle_chunk = glm::floor(position / (float)Constants::CHUNK_SIZE);
+    const int height = 1;
+    glm::vec3 chunk_pos_f = glm::floor(position / float(Constants::CHUNK_SIZE));
+    glm::ivec3 middle_chunk = glm::ivec3(chunk_pos_f);
 
     for (int z = -range; z <= range; z++) {
         for (int y = -height; y <= height; y++) {
             for (int x = -range; x <= range; x++) {
                 glm::ivec3 chunk_pos = middle_chunk + glm::ivec3(x, y, z);
                 if (!chunk_map_.contains(chunk_pos)) {
-                    auto chunk = std::make_unique<Chunk>(chunk_pos * (int)Constants::CHUNK_SIZE);
+                    auto chunk = std::make_unique<Chunk>(chunk_pos * int(Constants::CHUNK_SIZE));
                     dirty_chunks_.push(chunk.get());
-                    chunk_map_[chunk_pos] = std::move(chunk);
-                }
+                    chunk_map_[chunk_pos] = std::move(chunk);                }
             }
         }
     }
@@ -108,8 +119,11 @@ void Vocksel::World::update(glm::vec3 position) {
 
 
 void Vocksel::World::render(Shader &shader) {
-    ZoneScoped;
-    TracyGpuZone("Render World");
+    #if DEBUG
+        ZoneScoped;
+        TracyGpuZone("Render World");
+    #endif
+
 
     shader.use();
     // Render chunks

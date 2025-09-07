@@ -1,7 +1,8 @@
 #include "Vocksel/World/marching_cubes.h"
-
+#if DEBUG
 #include "tracy/Tracy.hpp"
 #include "tracy/TracyOpenGL.hpp"
+#endif
 #include "Vocksel/Core/engine_services.h"
 #include "Vocksel/World/mc_lookup.h"
 
@@ -44,8 +45,9 @@ void Vocksel::MarchingCubes::createTriTableTexture() {
 
 
 void Vocksel::MarchingCubes::computeMesh(const Texture3D &density_tex, ComputeMesh &output) {
+#if DEBUG
     TracyGpuZone("Compute mesh");
-
+#endif
 
 
     DrawElementsIndirectCommand cmd = {};

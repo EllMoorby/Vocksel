@@ -24,6 +24,8 @@ namespace Vocksel {
         Player& getPlayer() {return player_;}
 
         private:
+        void debugGUI();
+        private:
         Player player_;
         std::unique_ptr<World> world_;
         std::vector<std::unique_ptr<ModelInstance>> model_instances_;

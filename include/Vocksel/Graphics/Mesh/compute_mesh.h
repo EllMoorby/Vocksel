@@ -15,10 +15,11 @@ namespace Vocksel {
         void bind();
         void unbind();
 
+
         private:
-        uint32_t VAO_;
-        uint32_t vertex_SSBO_;
-        uint32_t indirect_buffer_;
+        uint32_t VAO_ = 0;
+        uint32_t vertex_SSBO_= 0;
+        uint32_t indirect_buffer_ = 0;
     };
 }
 

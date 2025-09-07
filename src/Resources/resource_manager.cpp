@@ -143,6 +143,16 @@ Vocksel::Texture& Vocksel::ResourceManager::getTexture(const std::string &name) 
     return *(it->second);
 }
 
+std::vector<std::string> Vocksel::ResourceManager::getTextureNames() {
+    if (!initialized_) throw std::runtime_error("ResourceManager not initialized");
+    std::vector<std::string> names;
+    for (auto& [name, texture] : textures_) {
+        names.push_back(name);
+    }
+    return names;
+}
+
+
 void Vocksel::ResourceManager::loadBlockAtlas(const std::string &path) {
     blocks_atlas_->loadFromFolder(path);
 }

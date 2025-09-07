@@ -21,6 +21,13 @@ struct IVec3Hash {
     }
 };
 
+struct IVec3Eq {
+    bool operator()(const glm::ivec3& a, const glm::ivec3& b) const noexcept {
+        return a.x == b.x && a.y == b.y && a.z == b.z;
+    }
+};
+
+
 
 namespace Vocksel {
     class World {
@@ -42,7 +49,7 @@ namespace Vocksel {
         void updateGenerationParams();
     private:
         glm::vec3 spawn_position_ = glm::vec3(0.0f);
-        std::unordered_map<glm::ivec3, std::unique_ptr<Chunk>, IVec3Hash> chunk_map_;
+        std::unordered_map<glm::ivec3, std::unique_ptr<Chunk>, IVec3Hash, IVec3Eq> chunk_map_;
         std::queue<Chunk*> dirty_chunks_;
 
         FastNoiseLite noise_;

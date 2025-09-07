@@ -2,12 +2,14 @@
 
 #include <iostream>
 #include <ostream>
-
+#if DEBUG
+#include "tracy/Tracy.hpp"
 #include "tracy/TracyOpenGL.hpp"
+#endif
+
 #include "Vocksel/Core/constants.h"
 
-Vocksel::DensityField::DensityField(glm::ivec3 size, uint32_t gpu_format): size_(size), texture_(nullptr, size, gpu_format), voxels_(size.x * size.y * size.z, 0.f) {
-
+Vocksel::DensityField::DensityField(glm::ivec3 size, uint32_t gpu_format): size_(size), texture_(), voxels_(size.x * size.y * size.z, 0.f) {
 }
 
 inline size_t Vocksel::DensityField::index(int x, int y, int z) const {
@@ -24,8 +26,13 @@ void Vocksel::DensityField::setVoxel(int x, int y, int z, float value) {
 
 
 void Vocksel::DensityField::uploadToGPU() {
+#if DEBUG
     TracyGpuZone("UploadToGPU");
+#endif
+    
     if (voxels_.empty()) return;
+
+    texture_.createIfNeeded(nullptr, size_);
 
     texture_.bind();
 

@@ -1,8 +1,5 @@
 #include "Vocksel/Resources/model_manager.h"
 
-Vocksel::ModelManager::ModelManager() {
-
-}
 
 void Vocksel::ModelManager::loadModel(const std::string &path, const std::string &name) {
     auto model = std::make_unique<Model>();
@@ -31,6 +28,15 @@ Vocksel::Model* Vocksel::ModelManager::getModel(const std::string &name) {
     }
     return nullptr;
 }
+
+std::vector<std::string> Vocksel::ModelManager::getModelNames() const {
+    std::vector<std::string> names;
+    for (const auto& model : models_) {
+        names.push_back(model.first);
+    }
+    return names;
+}
+
 
 
 void Vocksel::ModelManager::cleanUp() {

@@ -2,10 +2,14 @@
 #include <format>
 #define STB_IMAGE_IMPLEMENTATION
 
-#include "stb/stb_image.h"
-#include "Vocksel/Core/engine_services.h"
+#if DEBUG
 #include "tracy/Tracy.hpp"
 #include "tracy/TracyOpenGL.hpp"
+#endif
+
+#include "stb/stb_image.h"
+#include "Vocksel/Core/engine_services.h"
+
 
 
 Vocksel::Application::Application() {
@@ -28,9 +32,7 @@ void Vocksel::Application::initWindow() {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-#if DEBUG
     glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, true);
-#endif
 
     // Create window
     window_ = glfwCreateWindow(Constants::SCREEN_WIDTH, Constants::SCREEN_HEIGHT, "Vocksel", nullptr, nullptr);
@@ -51,11 +53,14 @@ void Vocksel::Application::initWindow() {
 
 
 void Vocksel::Application::initGL() {
+
+
     // Initialize GLAD
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
         std::cerr << "Failed to initialize GLAD" << std::endl;
         throw std::runtime_error("Failed to initialize GLAD");
     }
+
 
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_DEPTH_CLAMP);
@@ -64,16 +69,17 @@ void Vocksel::Application::initGL() {
     glFrontFace(GL_CCW);
 
 
+#if DEBUG
     TracyGpuContext;
+#endif
+
     // https://learnopengl.com/In-Practice/Debugging
-    int flags; glGetIntegerv(GL_CONTEXT_FLAGS, &flags);
-    if (flags & GL_CONTEXT_FLAG_DEBUG_BIT)
-    {
-        glEnable(GL_DEBUG_OUTPUT);
-        glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
-        glDebugMessageCallback(glDebugOutput, nullptr);
-        glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, GL_TRUE);
-    }
+
+    glEnable(GL_DEBUG_OUTPUT);
+    glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+    glDebugMessageCallback(glDebugOutput, nullptr);
+    glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, GL_TRUE);
+
 
 
 
@@ -148,7 +154,9 @@ void Vocksel::Application::run() {
     float second_count = 0.0f;
     last_frame_ = glfwGetTime();
     while (!glfwWindowShouldClose(window_)) {
+#if DEBUG
         ZoneScoped;
+#endif
         float current_frame = glfwGetTime();
         float delta_time = current_frame - last_frame_;
         last_frame_ = current_frame;
@@ -170,31 +178,31 @@ void Vocksel::Application::run() {
         glfwSwapBuffers(window_);
         glfwPollEvents();
 
-
+#if DEBUG
         FrameMark;
         TracyGpuCollect;
+#endif
     }
+
 }
 
 void Vocksel::Application::update(float delta_time) {
+#if DEBUG
     TracyGpuZone("Update")
+#endif
 
-    {
-        TracyGpuZone("frame data Update")
-        EngineServices::updateFrameData(delta_time,aspect_ratio_);
+    EngineServices::updateFrameData(delta_time,aspect_ratio_);
 
-    }
 
-{
-    TracyGpuZone("input Update")
+
+
     EngineServices::input().update();
 
-}
 
-    {
-        TracyGpuZone("game Update")
-        game_.update(delta_time);
-    }
+
+
+    game_.update(delta_time);
+
 
 
 
@@ -202,18 +210,16 @@ void Vocksel::Application::update(float delta_time) {
 
 
 void Vocksel::Application::render() {
+#if DEBUG
     ZoneScoped;
     TracyGpuZone("Render");
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    {
-        TracyGpuZone("Game Render");
-        game_.render();
-    }
+#endif
 
-    {
-        TracyGpuZone("Debug Render");
-        EngineServices::debugGUI().render();
-    }
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    game_.render();
+    EngineServices::debugGUI().render();
+
 
 }
 

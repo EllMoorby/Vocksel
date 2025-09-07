@@ -7,6 +7,14 @@ Vocksel::Texture3D::Texture3D(const float *data, glm::ivec3 size, uint32_t forma
     createFromData(data, size_, format_);
 }
 
+void Vocksel::Texture3D::createIfNeeded(const float *data, glm::ivec3 size, uint32_t format) {
+    if (texture_id_ != 0) {
+        return;
+    }
+    createFromData(data, size, format);
+}
+
+
 
 void Vocksel::Texture3D::createFromData(const float *data, glm::ivec3 size, uint32_t format) {
     if (texture_id_ != 0) {
@@ -36,6 +44,9 @@ void Vocksel::Texture3D::createFromData(const float *data, glm::ivec3 size, uint
 }
 
 void Vocksel::Texture3D::bind() {
+    if (texture_id_ == 0) {
+        return;
+    }
     glBindTexture(GL_TEXTURE_3D, texture_id_);
 }
 

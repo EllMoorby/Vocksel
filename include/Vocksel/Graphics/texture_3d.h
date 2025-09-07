@@ -6,9 +6,10 @@
 namespace Vocksel {
     class Texture3D {
         public:
+        Texture3D() :  size_(0), format_(0) {}
         Texture3D(const float *data, glm::ivec3 size, uint32_t format = GL_R32F);
         ~Texture3D();
-
+        void createIfNeeded(const float *data, glm::ivec3 size, uint32_t format = GL_R32F);
         void createFromData(const float *data, glm::ivec3 size, uint32_t format = GL_R32F);
         void bind();
         void unbind();

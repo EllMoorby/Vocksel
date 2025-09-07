@@ -4,12 +4,15 @@ project(Vocksel LANGUAGES C CXX)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -static-libgcc -static-libstdc++")
 
 if(MINGW)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -static-libgcc -static-libstdc++")
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static")
     set(CMAKE_FIND_LIBRARY_SUFFIXES ".a" ".lib" ${CMAKE_FIND_LIBRARY_SUFFIXES})
+
 endif()
+
+
 
 include(FetchContent)
 
@@ -34,13 +37,16 @@ FetchContent_Declare(
         GIT_TAG v1.92.0
 )
 
-# Fetch Tracy
-FetchContent_Declare(
-        tracy
-        GIT_REPOSITORY https://github.com/wolfpld/tracy.git
-)
+if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+    # Fetch Tracy
+    FetchContent_Declare(
+            tracy
+            GIT_REPOSITORY https://github.com/wolfpld/tracy.git
+    )
+    FetchContent_MakeAvailable(tracy)
+endif ()
 
-FetchContent_MakeAvailable(glfw glm imgui tracy)
+FetchContent_MakeAvailable(glfw glm imgui)
 
 add_library(glad STATIC third_party/glad/glad.c)
 target_include_directories(glad PUBLIC include)
@@ -61,17 +67,21 @@ target_include_directories(imgui PUBLIC
 target_compile_definitions(imgui PRIVATE IMGUI_IMPL_OPENGL_LOADER_GLAD)
 target_include_directories(imgui PRIVATE ${glfw_SOURCE_DIR}/include)
 
-# Add Tracy client library
-add_library(tracy_client STATIC
-        ${tracy_SOURCE_DIR}/public/TracyClient.cpp
-)
-target_include_directories(tracy_client PUBLIC
-        ${tracy_SOURCE_DIR}/public
-)
-target_compile_definitions(tracy_client PUBLIC
-        TRACY_ENABLE
-        TRACY_ON_DEMAND
-)
+if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+
+    # Add Tracy client library
+
+    add_library(tracy_client STATIC
+            ${tracy_SOURCE_DIR}/public/TracyClient.cpp
+    )
+    target_include_directories(tracy_client PUBLIC
+            ${tracy_SOURCE_DIR}/public
+    )
+    target_compile_definitions(tracy_client PUBLIC
+            TRACY_ENABLE
+            TRACY_ON_DEMAND
+    )
+endif ()
 
 find_package(OpenGL REQUIRED)
 
@@ -150,16 +160,26 @@ else ()
     target_compile_definitions(Vocksel PRIVATE DEBUG=0)
 endif ()
 
-target_link_libraries(Vocksel
-        PRIVATE
-        OpenGL::GL
-        glad
-        glfw
-        imgui
-        tracy_client
-)
+if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+    target_link_libraries(Vocksel
+            PRIVATE
+            OpenGL::GL
+            glad
+            glfw
+            imgui
+            tracy_client
+    )
+else ()
+    target_link_libraries(Vocksel
+            PRIVATE
+            OpenGL::GL
+            glad
+            glfw
+            imgui
+    )
+endif ()
 
-if(WIN32)
+if(WIN32 AND CMAKE_BUILD_TYPE STREQUAL "Debug")
     target_link_libraries(tracy_client PRIVATE ws2_32 dbghelp)
 endif()
 
@@ -172,7 +192,7 @@ target_include_directories(Vocksel
         include
 )
 
-if(TRACY_ENABLE AND OPENGL_FOUND)
+if(TRACY_ENABLE AND OPENGL_FOUND AND CMAKE_BUILD_TYPE STREQUAL "Debug")
     target_compile_definitions(tracy_client PUBLIC TRACY_OPENGL)
     target_link_libraries(tracy_client PRIVATE OpenGL::GL)
 endif()

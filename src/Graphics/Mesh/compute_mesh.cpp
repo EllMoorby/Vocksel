@@ -1,9 +1,6 @@
 #include "Vocksel/Graphics/Mesh/compute_mesh.h"
 
 #include <iostream>
-
-#include "tracy/Tracy.hpp"
-#include "tracy/TracyOpenGL.hpp"
 #include "Vocksel/Core/constants.h"
 
 constexpr uint32_t MAX_VERTICES = (Vocksel::Constants::CUBES_PER_CHUNK + 1) *
@@ -18,10 +15,23 @@ Vocksel::ComputeMesh::ComputeMesh() {
 
     glGenBuffers(1, &indirect_buffer_);
     glBindBuffer(GL_DRAW_INDIRECT_BUFFER, indirect_buffer_);
-    glBufferData(GL_DRAW_INDIRECT_BUFFER, sizeof(DrawElementsIndirectCommand), nullptr, GL_DYNAMIC_DRAW);
+
+    // Necessary for AMD systems (after 12 hours of debugging D:)
+    DrawElementsIndirectCommand cmd = {};
+    cmd.count = 0;
+    cmd.instanceCount = 1;
+    cmd.first = 0;
+    cmd.baseInstance = 0;
+    glBufferData(GL_DRAW_INDIRECT_BUFFER, sizeof(DrawElementsIndirectCommand), &cmd, GL_DYNAMIC_DRAW);
+
+
+    glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+    glBindBuffer(GL_DRAW_INDIRECT_BUFFER, 0);
+
 
     glGenVertexArrays(1, &VAO_);
     glBindVertexArray(VAO_);
+
 
     glBindBuffer(GL_ARRAY_BUFFER, vertex_SSBO_);
     glEnableVertexAttribArray(0);
