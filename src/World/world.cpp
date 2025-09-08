@@ -6,6 +6,8 @@
 #include "tracy/TracyOpenGL.hpp"
 #endif
 
+float Vocksel::World::isolevel = 0.f;
+
 Vocksel::World::World(){
 
 }
@@ -26,6 +28,7 @@ void Vocksel::World::init() {
 
 void Vocksel::World::initDebug() {
     EngineServices::debugGUI().addPanel("World", [this]() {
+        ImGui::SliderFloat("Isolevel", &isolevel, -1.0f, 1.0f,"%.2f");
         ImGui::SliderFloat("Frequency", &frequency_, 0.0f, .01f,"%.5f");
         ImGui::SliderInt("Octaves", &octaves_, 0, 10);
         ImGui::SliderFloat("Lacunarity", &lacunarity_, 0.0f, 5.f);
@@ -134,6 +137,7 @@ void Vocksel::World::render(Shader &shader) {
 }
 
 Vocksel::World::~World() {
+    MarchingCubes::cleanUp();
 }
 
 

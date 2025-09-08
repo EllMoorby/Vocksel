@@ -5,6 +5,12 @@
 #endif
 #include "Vocksel/Core/engine_services.h"
 #include "Vocksel/World/mc_lookup.h"
+#include "Vocksel/World/world.h"
+
+uint32_t Vocksel::MarchingCubes::edge_table_texture_ = 0;
+uint32_t Vocksel::MarchingCubes::tri_table_texture_ = 0;
+bool Vocksel::MarchingCubes::created_lookup_ = false;
+
 
 Vocksel::MarchingCubes::MarchingCubes(): compute_shader_(EngineServices::resources().getShader("marching_cubes")) {
     createLookupTextures();
@@ -13,8 +19,11 @@ Vocksel::MarchingCubes::MarchingCubes(): compute_shader_(EngineServices::resourc
 
 
 void Vocksel::MarchingCubes::createLookupTextures() {
-    createEdgeTableTexture();
-    createTriTableTexture();
+    if (!created_lookup_) {
+        createEdgeTableTexture();
+        createTriTableTexture();
+        created_lookup_ = true;
+    }
 }
 
 void Vocksel::MarchingCubes::createEdgeTableTexture() {
@@ -75,9 +84,10 @@ void Vocksel::MarchingCubes::computeMesh(const Texture3D &density_tex, ComputeMe
     compute_shader_.use();
     compute_shader_.setInt("edge_table", 1);
     compute_shader_.setInt("tri_table", 2);
-    compute_shader_.setFloat("isolevel", 0.0f);
+    compute_shader_.setFloat("isolevel", World::isolevel);
     compute_shader_.setInt("voxels_per_axis", Constants::CUBES_PER_CHUNK + 1);
     compute_shader_.setFloat("voxel_size", float(Constants::CHUNK_SIZE) / float(Constants::CUBES_PER_CHUNK));
+
 
 
     glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, output.getVertexSSBO());
@@ -92,9 +102,18 @@ void Vocksel::MarchingCubes::computeMesh(const Texture3D &density_tex, ComputeMe
 
 }
 
+void Vocksel::MarchingCubes::cleanUp() {
+    if (created_lookup_) {
+        glDeleteTextures(1, &edge_table_texture_);
+        glDeleteTextures(1, &tri_table_texture_);
+        edge_table_texture_ = 0;
+        tri_table_texture_ = 0;
+        created_lookup_ = false;
+    }
+}
+
 Vocksel::MarchingCubes::~MarchingCubes() {
-    glDeleteTextures(1, &edge_table_texture_);
-    glDeleteTextures(1, &tri_table_texture_);
+
 }
 
 

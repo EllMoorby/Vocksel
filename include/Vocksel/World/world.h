@@ -44,6 +44,8 @@ namespace Vocksel {
 
         const glm::vec3& getSpawnPosition();
         void setSpawnPosition(glm::vec3 position);
+    public:
+        static float isolevel;
     private:
         void initDebug();
         void updateGenerationParams();

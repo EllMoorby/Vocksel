@@ -10,15 +10,17 @@ namespace Vocksel {
         MarchingCubes();
         ~MarchingCubes();
         void computeMesh(const Texture3D& density_tex, ComputeMesh& output);
+        static void cleanUp();
 
         private:
-        uint32_t tri_table_texture_ = 0;
-        uint32_t edge_table_texture_ = 0;
+        static uint32_t tri_table_texture_;
+        static uint32_t edge_table_texture_;
+        static bool created_lookup_;
         Shader& compute_shader_;
 
         void createLookupTextures();
-        void createEdgeTableTexture();
-        void createTriTableTexture();
+        static void createEdgeTableTexture();
+        static void createTriTableTexture();
 
 
     };

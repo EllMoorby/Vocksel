@@ -30,7 +30,8 @@ void Vocksel::Chunk::generateTerrain(FastNoiseLite &noise) {
                 glm::vec3 local_pos_ws = glm::vec3(x, y, z) * voxel_size;
                 glm::vec3 world_pos = position_ + local_pos_ws;
 
-                float density = (world_pos.y - base_height);
+                float raw_density = (world_pos.y - base_height);
+                float density = std::tanh(raw_density * 0.1f); // Adjust 0.1f for sharper transition
                 density_field_.setVoxel(x, y, z, density);
             }
         }
