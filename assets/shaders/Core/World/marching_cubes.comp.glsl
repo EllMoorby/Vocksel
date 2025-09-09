@@ -1,12 +1,17 @@
 #version 430 core
 layout (local_size_x = 8, local_size_y = 8, local_size_z = 8) in;
 
+struct Vertex {
+    vec4 position;
+    vec3 normal;
+};
+
 layout(binding = 0, r32f) uniform readonly image3D density_tex;
 layout(binding = 1) uniform usampler1D edge_table;
 layout(binding = 2) uniform isampler2D tri_table;
 
 layout(std430, binding = 0) buffer vertex_buffer {
-    vec4 vertices[];
+    Vertex vertices[];
 };
 
 
@@ -96,9 +101,17 @@ void main() {
 
         uint vertex_offset = atomicAdd(count, 3u);
 
-        vertices[vertex_offset + 0u] = vec4(interpolateVerts(cube_corners[a0], cube_corners[b0]),1.0);
-        vertices[vertex_offset + 1u] = vec4(interpolateVerts(cube_corners[a1], cube_corners[b1]),1.0);
-        vertices[vertex_offset + 2u] = vec4(interpolateVerts(cube_corners[a2], cube_corners[b2]),1.0);
+        vec3 pos0 = interpolateVerts(cube_corners[a0], cube_corners[b0]);
+        vec3 pos1 = interpolateVerts(cube_corners[a1], cube_corners[b1]);
+        vec3 pos2 = interpolateVerts(cube_corners[a2], cube_corners[b2]);
+
+        vec3 edge1 = pos1 - pos0;
+        vec3 edge2 = pos2 - pos0;
+        vec3 face_normal = normalize(cross(edge1, edge2));
+
+        vertices[vertex_offset + 0u] = Vertex(vec4(pos0, 1.0), face_normal);
+        vertices[vertex_offset + 1u] = Vertex(vec4(pos1, 1.0), face_normal);
+        vertices[vertex_offset + 2u] = Vertex(vec4(pos2, 1.0), face_normal);
     }
 }
 

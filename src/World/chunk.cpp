@@ -56,7 +56,6 @@ void Vocksel::Chunk::render(Shader &shader) {
 
     shader.setMat4("model", model);
 
-
     compute_mesh_.bind();
 
     glBindBuffer(GL_DRAW_INDIRECT_BUFFER, compute_mesh_.getIndirectBuffer());
@@ -65,7 +64,6 @@ void Vocksel::Chunk::render(Shader &shader) {
 
     compute_mesh_.unbind();
 }
-
 
 
 

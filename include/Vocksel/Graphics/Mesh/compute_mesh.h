@@ -1,9 +1,17 @@
 #ifndef COMPUTE_MESH_H
 #define COMPUTE_MESH_H
 #include "glad/glad.h"
+#include "glm/glm.hpp"
 #include <cstdint>
 
 namespace Vocksel {
+
+    struct Vertex {
+        glm::vec4 position;
+        glm::vec3 normal;
+        float padding;
+    };
+
     class ComputeMesh {
         public:
         ComputeMesh();

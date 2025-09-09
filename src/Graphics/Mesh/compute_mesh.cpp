@@ -11,10 +11,11 @@ constexpr uint32_t MAX_VERTICES = (Vocksel::Constants::CUBES_PER_CHUNK + 1) *
 Vocksel::ComputeMesh::ComputeMesh() {
     glGenBuffers(1, &vertex_SSBO_);
     glBindBuffer(GL_SHADER_STORAGE_BUFFER, vertex_SSBO_);
-    glBufferData(GL_SHADER_STORAGE_BUFFER, MAX_VERTICES * sizeof(float) * 4, nullptr, GL_DYNAMIC_COPY);
+    glBufferData(GL_SHADER_STORAGE_BUFFER, MAX_VERTICES * sizeof(Vertex), nullptr, GL_DYNAMIC_COPY);
 
     glGenBuffers(1, &indirect_buffer_);
     glBindBuffer(GL_DRAW_INDIRECT_BUFFER, indirect_buffer_);
+
 
     // Necessary for AMD systems (after 12 hours of debugging D:)
     DrawElementsIndirectCommand cmd = {};
@@ -34,8 +35,13 @@ Vocksel::ComputeMesh::ComputeMesh() {
 
 
     glBindBuffer(GL_ARRAY_BUFFER, vertex_SSBO_);
+
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, position));
+
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, normal));
+
 
     glBindVertexArray(0);
 }

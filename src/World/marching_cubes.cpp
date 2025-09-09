@@ -68,8 +68,6 @@ void Vocksel::MarchingCubes::computeMesh(const Texture3D &density_tex, ComputeMe
     glBindBuffer(GL_DRAW_INDIRECT_BUFFER, output.getIndirectBuffer());
     glBufferSubData(GL_DRAW_INDIRECT_BUFFER, 0, sizeof(DrawElementsIndirectCommand), &cmd);
 
-
-
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_3D, density_tex.getId());
 
