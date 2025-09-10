@@ -52,7 +52,6 @@ void Vocksel::MarchingCubes::createTriTableTexture() {
 }
 
 
-
 void Vocksel::MarchingCubes::computeMesh(const Texture3D &density_tex, ComputeMesh &output) {
 #if DEBUG
     TracyGpuZone("Compute mesh");
@@ -86,18 +85,12 @@ void Vocksel::MarchingCubes::computeMesh(const Texture3D &density_tex, ComputeMe
     compute_shader_.setInt("voxels_per_axis", Constants::CUBES_PER_CHUNK + 1);
     compute_shader_.setFloat("voxel_size", float(Constants::CHUNK_SIZE) / float(Constants::CUBES_PER_CHUNK));
 
-
-
     glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, output.getVertexSSBO());
     glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, output.getIndirectBuffer());
-
-
 
     const int groups = (Constants::CUBES_PER_CHUNK + 7) / 8;
 
     compute_shader_.dispatchCompute(groups, groups, groups);
-
-
 }
 
 void Vocksel::MarchingCubes::cleanUp() {

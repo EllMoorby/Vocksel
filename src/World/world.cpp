@@ -38,6 +38,8 @@ void Vocksel::World::initDebug() {
             clearWorld();
         }
 
+        ImGui::Separator();
+
         static glm::ivec3 load_world_at = glm::ivec3(0);
 
         ImGui::InputInt3("Load world at position", glm::value_ptr(load_world_at));
@@ -45,6 +47,23 @@ void Vocksel::World::initDebug() {
         if (ImGui::Button("Load")) {
             updateChunksAroundPosition(load_world_at * (int)Constants::CHUNK_SIZE);
         }
+
+        ImGui::Separator();
+
+        ImGui::InputFloat3("Light position", glm::value_ptr(light_pos_));
+        ImGui::ColorEdit3("Light Color", glm::value_ptr(light_color_));
+        ImGui::ColorEdit3("Ambient Color", glm::value_ptr(ambient_color_));
+
+        ImGui::Spacing();
+
+        ImGui::ColorEdit3("Grass Color", glm::value_ptr(grass_color_));
+        ImGui::ColorEdit3("Dirt Color", glm::value_ptr(dirt_color_));
+        ImGui::ColorEdit3("Rock Color", glm::value_ptr(rock_color_));
+
+        ImGui::Spacing();
+
+        ImGui::SliderFloat("Snow Height", &snow_height_, -100.f, 100.f);
+        ImGui::SliderFloat("Snow Transition", &snow_transition_, 0.f, 15.f);
     });
 }
 
@@ -129,6 +148,16 @@ void Vocksel::World::render(Shader &shader) {
 
 
     shader.use();
+    shader.setVec3("lightPos", light_pos_);
+    shader.setVec3("lightColor", light_color_);
+    shader.setVec3("ambientColor", ambient_color_);
+    shader.setVec3("grassColor", grass_color_);
+    shader.setVec3("dirtColor", dirt_color_);
+    shader.setVec3("rockColor", rock_color_);
+
+    shader.setFloat("snowHeight", snow_height_);
+    shader.setFloat("snowTransition", snow_transition_);
+
     // Render chunks
     for (auto &chunk: chunk_map_ | std::views::values) {
         chunk->render(shader);

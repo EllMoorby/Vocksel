@@ -56,10 +56,21 @@ namespace Vocksel {
 
         FastNoiseLite noise_;
 
-        float frequency_ = .001f;
+        float frequency_ = .0007f;
         int octaves_ = 5;
         float lacunarity_ = 2.0f;
         float gain_ = .5f;
+
+        glm::vec3 light_pos_ = glm::vec3(100.0, 200.0, 100.0);
+        glm::vec3 light_color_ = glm::vec3(1.0, 1.0, 1.0);
+        glm::vec3 ambient_color_ = glm::vec3(0.2, 0.2, 0.2);
+
+        glm::vec3 grass_color_ = glm::vec3(0.2, 0.6, 0.1);
+        glm::vec3 dirt_color_ = glm::vec3(0.5, 0.4, 0.2);
+        glm::vec3 rock_color_ = glm::vec3(0.4, 0.4, 0.4);
+
+        float snow_height_ = -9.f;
+        float snow_transition_ = 4.f;
     };
 }
 #endif //WORLD_H

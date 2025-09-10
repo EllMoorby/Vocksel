@@ -3,34 +3,40 @@ out vec4 FragColor;
 
 in vec3 vNormal;
 in vec3 vPos;
+in float vWorldHeight;
 
+uniform vec3 lightPos;
+uniform vec3 lightColor;
+uniform vec3 ambientColor;
 
-uniform vec3 lightPos = vec3(100.0, 200.0, 100.0);
-uniform vec3 lightColor = vec3(1.0, 1.0, 1.0);
-uniform vec3 ambientColor = vec3(0.2, 0.2, 0.2);
+uniform vec3 grassColor;
+uniform vec3 dirtColor;
+uniform vec3 rockColor;
+
+uniform float snowHeight;
+uniform float snowTransition;
+
 
 void main() {
     vec3 normal = normalize(vNormal);
 
     float slope = abs(normal.y);
 
-    vec3 grassColor = vec3(0.2, 0.6, 0.1);
-    vec3 dirtColor = vec3(0.5, 0.4, 0.2);
-    vec3 rockColor = vec3(0.4, 0.4, 0.4);
-    vec3 snowColor = vec3(0.9, 0.9, 0.9);
+    vec3 snowColor = vec3(1.0, 1.0, 1.0);
+
+    float snowIntensity = smoothstep(snowHeight, snowHeight + snowTransition, vWorldHeight);
+
+    vec3 snowBlendedColor = mix(grassColor, snowColor, snowIntensity);
 
     vec3 terrainColor;
     if (slope > 0.8) {
-        terrainColor = grassColor;
+        terrainColor = snowBlendedColor;
     } else if (slope > 0.5) {
         float t = (slope - 0.5) / 0.4;
-        terrainColor = mix(dirtColor, grassColor, t);
-    } else if (slope > 0.3) {
+        terrainColor = mix(dirtColor, snowBlendedColor, t);
+    } else {
         float t = (slope - 0.3) / 0.3;
         terrainColor = mix(rockColor, dirtColor, t);
-    } else {
-        float t = slope / 0.3;
-        terrainColor = mix(snowColor, rockColor, t);
     }
 
     vec3 lightDir = normalize(lightPos - vPos);
