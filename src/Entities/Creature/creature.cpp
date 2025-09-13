@@ -2,6 +2,7 @@
 #include "Vocksel/Entities/Creature/creature.h"
 #include "glm/gtx/quaternion.hpp"
 #include "glm/gtx/rotate_vector.hpp"
+#include "tracy/Tracy.hpp"
 #include "Vocksel/Core/engine_services.h"
 
 Vocksel::Creature::Creature(glm::vec3 position): position_(position) {
@@ -53,6 +54,9 @@ void Vocksel::Creature::setDesiredMovement(glm::vec3 dir) {
 }
 
 void Vocksel::Creature::update(float delta_time) {
+#if DEBUG
+    ZoneScopedN("Creature Update");
+#endif
     setDesiredMovement(EngineServices::input().getArrowVector());
 
     movement_ = glm::mix(movement_, desired_movement_, acceleration_ * delta_time);

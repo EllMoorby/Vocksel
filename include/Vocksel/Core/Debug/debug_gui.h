@@ -8,18 +8,17 @@
 #include "imgui_impl_opengl3.h"
 
 namespace Vocksel {
-    class DebugGUI {
-        public:
-        ~DebugGUI();
-        void init(GLFWwindow *window);
+class DebugGUI {
+public:
+    ~DebugGUI();
 
-        void addPanel(const std::string& name, std::function<void()> callback) {panels_.emplace_back(name, callback);}
+    void init(GLFWwindow *window);
+    void addPanel(const std::string& name, std::function<void()> callback) {panels_.emplace_back(name, callback);}
+    void render();
 
-        void render();
-
-    private:
-        std::vector<std::pair<std::string, std::function<void()>>> panels_;
-    };
+private:
+    std::vector<std::pair<std::string, std::function<void()>>> panels_;
+};
 }
 
 #endif //DEBUG_GUI_H

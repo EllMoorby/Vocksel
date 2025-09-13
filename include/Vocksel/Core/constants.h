@@ -6,8 +6,8 @@ namespace Vocksel::Constants {
     constexpr uint32_t SCREEN_WIDTH = 1920;
     constexpr uint32_t SCREEN_HEIGHT = 1080;
 
-    constexpr uint32_t CHUNK_SIZE = 32;
-    constexpr uint32_t CUBES_PER_CHUNK = 16;
+    constexpr uint32_t CHUNK_SIZE = 16;
+    constexpr uint32_t CUBES_PER_CHUNK = 8;
     constexpr uint32_t CHUNKS_PER_FRAME = 2;
     constexpr uint32_t RENDER_DISTANCE = 3;
 

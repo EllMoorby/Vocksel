@@ -74,7 +74,7 @@ void Vocksel::World::updateChunksAroundPosition(glm::vec3 position) {
     #endif
 
     const int range = Constants::RENDER_DISTANCE;
-    const int height = 1;
+    const int height = 3;
     glm::vec3 chunk_pos_f = glm::floor(position / float(Constants::CHUNK_SIZE));
     glm::ivec3 middle_chunk = glm::ivec3(chunk_pos_f);
 
@@ -85,11 +85,11 @@ void Vocksel::World::updateChunksAroundPosition(glm::vec3 position) {
                 if (!chunk_map_.contains(chunk_pos)) {
                     auto chunk = std::make_unique<Chunk>(chunk_pos * int(Constants::CHUNK_SIZE));
                     dirty_chunks_.push(chunk.get());
-                    chunk_map_[chunk_pos] = std::move(chunk);                }
+                    chunk_map_[chunk_pos] = std::move(chunk);
+                }
             }
         }
     }
-
 }
 
 void Vocksel::World::clearWorld() {
@@ -125,6 +125,9 @@ void Vocksel::World::updateGenerationParams() {
 
 
 void Vocksel::World::update(glm::vec3 position) {
+#if DEBUG
+    ZoneScopedN("World Update");
+#endif
     updateChunksAroundPosition(position);
 
     int num_processed = 0;

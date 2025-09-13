@@ -149,14 +149,16 @@ void Vocksel::Application::initInput() {
 
 
 void Vocksel::Application::run() {
+
     glClearColor(game_.getClearColor().r, game_.getClearColor().g, game_.getClearColor().b, game_.getClearColor().a);
 
     float second_count = 0.0f;
     last_frame_ = glfwGetTime();
     while (!glfwWindowShouldClose(window_)) {
 #if DEBUG
-        ZoneScoped;
+        ZoneScopedN("Application Run");
 #endif
+
         float current_frame = glfwGetTime();
         float delta_time = current_frame - last_frame_;
         last_frame_ = current_frame;
@@ -174,9 +176,14 @@ void Vocksel::Application::run() {
 
         render();
 
+        {
+#if DEBUG
+            ZoneScopedN("Swap Buffers");
+#endif
+            glfwSwapBuffers(window_);
+            glfwPollEvents();
+        }
 
-        glfwSwapBuffers(window_);
-        glfwPollEvents();
 
 #if DEBUG
         FrameMark;

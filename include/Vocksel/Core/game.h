@@ -29,7 +29,6 @@ namespace Vocksel {
         Player player_;
         std::unique_ptr<World> world_;
         std::vector<std::unique_ptr<ModelInstance>> model_instances_;
-        std::vector<std::unique_ptr<Creature>> entities_;
         glm::vec4 clear_color_ = glm::vec4(0.2f, 0.3f, 0.3f, 1.0f);
     };
 }

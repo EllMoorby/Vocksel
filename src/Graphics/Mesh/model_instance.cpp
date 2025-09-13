@@ -1,5 +1,6 @@
 #include "Vocksel/Graphics/Mesh/model_instance.h"
 
+#include "tracy/Tracy.hpp"
 #include "Vocksel/Core/engine_services.h"
 
 
@@ -24,6 +25,9 @@ void Vocksel::ModelInstance::init(glm::vec3 pos, const char *model_name, const c
 }
 
 void Vocksel::ModelInstance::render(Shader& shader) {
+#if DEBUG
+    ZoneScopedN("Render Object");
+#endif
     if (!initialized_) return;
 
     glDisable(GL_CULL_FACE);
