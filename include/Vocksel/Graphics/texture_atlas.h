@@ -1,11 +1,10 @@
 #ifndef TEXTURE_ATLAS_H
 #define TEXTURE_ATLAS_H
 
-#include "glad/glad.h"
-
 #include <string>
 #include <unordered_map>
 
+#include "glad/glad.h"
 #include "glm/glm.hpp"
 
 namespace Vocksel {

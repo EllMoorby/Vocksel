@@ -27,7 +27,6 @@ class Creature {
     return body_segments_;
   }
 
-
  private:
   void updateHeadPosition();
   void updateSegmentPositions();

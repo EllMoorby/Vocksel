@@ -33,7 +33,6 @@ class LegChain {
   glm::vec3 getOffset() const { return offset_; }
   glm::vec3 getRestPosition() const { return rest_position_; }
 
-
   std::vector<LegSegment> segments_;
   std::vector<glm::vec3> velocities_;
 

@@ -13,7 +13,8 @@ class DebugGUI {
   ~DebugGUI();
 
   void init(GLFWwindow *window);
-  void addPanel(const std::string &name, const std::function<void()>& callback) {
+  void addPanel(const std::string &name,
+                const std::function<void()> &callback) {
     panels_.emplace_back(name, callback);
   }
   void render();

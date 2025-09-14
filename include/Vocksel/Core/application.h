@@ -3,12 +3,13 @@
 
 #include "glad/glad.h"
 #include <GLFW/glfw3.h>
+
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <iostream>
 #include <vector>
 
-#include "../Entities/Creature/creature.h"
+#include "Vocksel/Entities/Creature/creature.h"
 #include "Vocksel/Entities/Debug/leg_creature.h"
 #include "Vocksel/Entities/player.h"
 #include "Vocksel/Graphics/Mesh/model_instance.h"
@@ -17,9 +18,9 @@
 #include "Vocksel/Resources/resource_manager.h"
 #include "Vocksel/World/chunk.h"
 #include "Vocksel/World/world.h"
-#include "constants.h"
-#include "game.h"
-#include "input_manager.h"
+#include "Vocksel/Core/constants.h"
+#include "Vocksel/Core/game.h"
+#include "Vocksel/Core/input_manager.h"
 
 namespace Vocksel {
 class Application {

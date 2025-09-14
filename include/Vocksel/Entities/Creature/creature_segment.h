@@ -28,7 +28,6 @@ class CreatureSegment {
   glm::vec3 getPosition() const { return position_; }
   glm::vec3 getDirection() const { return direction_; }
 
-
  private:
   std::unique_ptr<ModelInstance> body_mesh_;
   float radius_;
