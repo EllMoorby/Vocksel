@@ -12,7 +12,8 @@ uint32_t Vocksel::MarchingCubes::tri_table_texture_ = 0;
 bool Vocksel::MarchingCubes::created_lookup_ = false;
 
 Vocksel::MarchingCubes::MarchingCubes()
-    : compute_shader_(EngineServices::resources().getShader("marching_cubes")) {
+    : compute_shader_(
+          EngineServices::resources().get<Shader>("marching_cubes")) {
   createLookupTextures();
 }
 

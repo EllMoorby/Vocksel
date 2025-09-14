@@ -32,7 +32,11 @@ static glm::vec3 calculateFaceNormal(const glm::vec3& v0, const glm::vec3& v1,
   return normal / len;  // Same as normalize() but we already have length
 }
 
-Vocksel::Model::Model() = default;
+Vocksel::Model::Model(const std::string& path) {
+  if (!path.empty()) {
+    loadFromFile(path);
+  }
+}
 
 void Vocksel::Model::addMesh(std::unique_ptr<StaticMesh> mesh) {
   meshes_.push_back(std::move(mesh));
@@ -224,6 +228,17 @@ void Vocksel::Model::render(Shader& shader) {
     glDrawElements(GL_TRIANGLES, mesh->getIndexCount(), GL_UNSIGNED_INT, 0);
     mesh->unbind();
   }
+}
+
+bool Vocksel::Model::createModelFromData(const std::string& name,
+                                         const float* vertices,
+                                         size_t vertexCount,
+                                         const uint32_t* indices,
+                                         size_t indexCount, int vertexStride) {
+  auto mesh = std::make_unique<StaticMesh>(vertices, vertexCount, indices,
+                                           indexCount, vertexStride);
+  addMesh(std::move(mesh));
+  return true;
 }
 
 void Vocksel::Model::setTransformMatrix(const glm::mat4& transform) {

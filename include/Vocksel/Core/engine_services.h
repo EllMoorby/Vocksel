@@ -2,9 +2,8 @@
 #define ENGINE_SERVICES_H
 #include "Debug/debug_gui.h"
 #include "Debug/debug_renderer.h"
-#include "Vocksel/Resources/model_manager.h"
-#include "Vocksel/Resources/resource_manager.h"
 #include "Vocksel/Core/input_manager.h"
+#include "Vocksel/Resources/resource_manager.h"
 
 namespace Vocksel {
 class EngineServices {
@@ -12,11 +11,6 @@ class EngineServices {
   ~EngineServices();
   static void init(GLFWwindow* window);
 
-  static ModelManager& models() {
-    if (!model_manager_)
-      throw std::runtime_error("ModelManager not initialized");
-    return *model_manager_;
-  }
   static ResourceManager& resources() {
     if (!resource_manager_)
       throw std::runtime_error("ResourceManager not initialized");
@@ -56,13 +50,11 @@ class EngineServices {
   static void cleanUp() {
     input_manager_.reset();
     resource_manager_.reset();
-    model_manager_.reset();
     debug_renderer_.reset();
     debug_gui_.reset();
   }
 
  private:
-  static std::unique_ptr<ModelManager> model_manager_;
   static std::unique_ptr<ResourceManager> resource_manager_;
   static std::unique_ptr<InputManager> input_manager_;
   static std::unique_ptr<DebugRenderer> debug_renderer_;

@@ -9,7 +9,7 @@
 namespace Vocksel {
 class Model {
  public:
-  Model();
+  Model(const std::string& path = "");
   ~Model();
 
   void render(Shader& shader);
@@ -18,6 +18,9 @@ class Model {
   void cleanUp();
 
   bool loadFromFile(std::string path);
+  bool createModelFromData(const std::string& name, const float* vertices,
+                           size_t vertexCount, const uint32_t* indices,
+                           size_t indexCount, int vertexStride);
 
  private:
   std::vector<std::unique_ptr<StaticMesh>> meshes_;

@@ -18,10 +18,10 @@ void Vocksel::ModelInstance::init(glm::vec3 pos, const char *model_name,
   texture_name_ = texture_name;
   model_name_ = model_name;
 
-  if (!EngineServices::models().getModel(model_name_)) {
+  if (!EngineServices::resources().tryGet<Model>(model_name_)) {
     std::string model_path =
         std::string("assets/models/") + model_name_ + ".obj";
-    EngineServices::models().loadModel(model_path, model_name_);
+    EngineServices::resources().load<Model>(model_name_, model_path);
   }
 
   initialized_ = true;
@@ -39,14 +39,15 @@ void Vocksel::ModelInstance::render(Shader &shader) {
   model = glm::scale(model, scale_);
   model = glm::rotate(model, glm::radians(rotation_angle_), rotation_axis_);
 
-  Texture &texture = EngineServices::resources().getTexture(texture_name_);
+  Texture &texture = EngineServices::resources().get<Texture>(texture_name_);
   glActiveTexture(GL_TEXTURE0);
   texture.bind();
   shader.setInt("texture_diffuse", 0);
 
-  if (auto *sphere_model = EngineServices::models().getModel(model_name_)) {
-    sphere_model->setTransformMatrix(model);
-    sphere_model->render(shader);
+  if (auto *current_model =
+          EngineServices::resources().tryGet<Model>(model_name_)) {
+    current_model->setTransformMatrix(model);
+    current_model->render(shader);
   }
   glEnable(GL_CULL_FACE);
 }

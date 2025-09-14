@@ -1,6 +1,5 @@
 #include "Vocksel/Graphics/texture_atlas.h"
 
-#include "glad/glad.h"
 #include <GLFW/glfw3.h>
 
 #include <algorithm>
@@ -8,10 +7,15 @@
 #include <iostream>
 #include <vector>
 
+#include "glad/glad.h"
 #include "stb/stb_image.h"
 
-Vocksel::TextureAtlas::TextureAtlas(int tile_size)
-    : atlas_texture_(0), tile_size_(tile_size), atlas_size_(0) {}
+Vocksel::TextureAtlas::TextureAtlas(int tile_size, const std::string& path)
+    : atlas_texture_(0), tile_size_(tile_size), atlas_size_(0) {
+  if (!path.empty()) {
+    loadFromFolder(path);
+  }
+}
 
 void Vocksel::TextureAtlas::loadFromFolder(const std::string& path) {
   if (!glfwGetCurrentContext()) {

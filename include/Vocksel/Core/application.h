@@ -14,7 +14,6 @@
 #include "Vocksel/Graphics/Mesh/model_instance.h"
 #include "Vocksel/Graphics/camera.h"
 #include "Vocksel/Graphics/shader.h"
-#include "Vocksel/Resources/model_manager.h"
 #include "Vocksel/Resources/resource_manager.h"
 #include "Vocksel/World/chunk.h"
 #include "Vocksel/World/world.h"

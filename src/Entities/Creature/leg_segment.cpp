@@ -11,7 +11,7 @@ Vocksel::LegSegment::LegSegment(float length, glm::vec3 tip_position)
 
 void Vocksel::LegSegment::render() {
   tip_mesh_->setPosition(tip_position_);
-  tip_mesh_->render(EngineServices::resources().getShader("default"));
+  tip_mesh_->render(EngineServices::resources().get<Shader>("default"));
 }
 
 Vocksel::LegSegment::~LegSegment() = default;

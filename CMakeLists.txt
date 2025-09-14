@@ -105,8 +105,6 @@ add_executable(Vocksel
         src/Core/input_manager.cpp
         include/Vocksel/Resources/resource_manager.h
         src/Resources/resource_manager.cpp
-        src/Resources/model_manager.cpp
-        include/Vocksel/Resources/model_manager.h
         src/Graphics/Mesh/model.cpp
         include/Vocksel/Graphics/Mesh/model.h
         include/Vocksel/Graphics/texture.h

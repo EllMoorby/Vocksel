@@ -57,7 +57,6 @@ void Vocksel::InputManager::update() {
 int Vocksel::InputManager::getMouseMode() { return mouse_mode_; }
 
 void Vocksel::InputManager::setMouseMode(int mode) {
-  // TODO: Add raw motion mode
   mouse_mode_ = mode;
   glfwSetInputMode(window_, GLFW_CURSOR, mode);
 }

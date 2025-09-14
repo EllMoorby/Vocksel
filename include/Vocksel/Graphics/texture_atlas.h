@@ -11,7 +11,7 @@
 namespace Vocksel {
 class TextureAtlas {
  public:
-  TextureAtlas(int tile_size);
+  TextureAtlas(int tile_size, const std::string& path = "");
   ~TextureAtlas();
 
   void loadFromFolder(const std::string& path);

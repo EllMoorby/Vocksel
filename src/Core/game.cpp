@@ -27,7 +27,7 @@ void Vocksel::Game::debugGUI() {
   EngineServices::debugGUI().addPanel("Game", [this]() {
     static int model_index = 0;
     std::vector<std::string> model_names =
-        EngineServices::models().getModelNames();
+        EngineServices::resources().getNames<Model>();
 
     if (ImGui::BeginCombo("Model", model_names[model_index].c_str())) {
       for (int i = 0; i < model_names.size(); i++) {
@@ -44,7 +44,7 @@ void Vocksel::Game::debugGUI() {
 
     static int texture_index = 0;
     std::vector<std::string> texture_names =
-        EngineServices::resources().getTextureNames();
+        EngineServices::resources().getNames<Texture>();
 
     if (ImGui::BeginCombo("Texture", texture_names[texture_index].c_str())) {
       for (int i = 0; i < texture_names.size(); i++) {
@@ -77,7 +77,7 @@ void Vocksel::Game::render() {
 #if DEBUG
   ZoneScopedN("Game Render");
 #endif
-  auto& basic_shader = EngineServices::resources().getShader("basic");
+  auto& basic_shader = EngineServices::resources().get<Shader>("default");
   basic_shader.use();
 
   auto& camera = player_.getCamera();
@@ -92,7 +92,7 @@ void Vocksel::Game::render() {
     obj->render(basic_shader);
   }
 
-  auto& world_shader = EngineServices::resources().getShader("world");
+  auto& world_shader = EngineServices::resources().get<Shader>("world");
   world_shader.use();
   world_shader.setMat4("view", view);
   world_shader.setMat4("projection", projection);

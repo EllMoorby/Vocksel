@@ -15,7 +15,7 @@ Vocksel::DebugUtils::LegCreature::LegCreature()
 
 void Vocksel::DebugUtils::LegCreature::render(Camera camera,
                                               float aspect_ratio) {
-  segment.render(EngineServices::resources().getShader("default"));
+  segment.render(EngineServices::resources().get<Shader>("default"));
   glm::vec3 currentBase = segment.getPosition();
 
   for (auto& leg_seg : segment.getLegs().back().segments_) {

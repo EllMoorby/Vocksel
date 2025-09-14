@@ -21,7 +21,7 @@ void Vocksel::DebugRenderer::drawLine(const glm::vec3 &start,
                                       const glm::vec3 &color, Camera &camera) {
   float vertices[6] = {start.x, start.y, start.z, end.x, end.y, end.z};
 
-  auto &lineShader = EngineServices::resources().getShader("line");
+  auto &lineShader = EngineServices::resources().get<Shader>("line");
   lineShader.use();
 
   lineShader.setMat4("view", camera.getViewMatrix());
