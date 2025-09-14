@@ -5,47 +5,46 @@
 #include <unordered_map>
 #include <vector>
 
+#include "Vocksel/Graphics/shader.h"
 #include "Vocksel/Graphics/texture.h"
 #include "Vocksel/Graphics/texture_atlas.h"
-#include "Vocksel/Graphics/shader.h"
 
 namespace Vocksel {
 
-    class ResourceManager {
-        public:
-        ResourceManager();
-        ~ResourceManager();
+class ResourceManager {
+ public:
+  ResourceManager();
+  ~ResourceManager();
 
-        void init();
+  // Prevent copying
+  ResourceManager(const ResourceManager&) = delete;
+  ResourceManager& operator=(const ResourceManager&) = delete;
 
-        void loadShader(std::string name, const char* vertex_path, const char* fragment_path);
-        void loadShader(std::string name, const char* comp_path);
-        void reloadShader(std::string name);
-        Shader& getShader(const std::string& name);
+  void init();
 
-        void loadTexture(std::string name, const char* path);
-        Texture& getTexture(const std::string& name);
-        std::vector<std::string> getTextureNames();
+  void loadShader(std::string name, const char* vertex_path,
+                  const char* fragment_path);
+  void loadShader(std::string name, const char* comp_path);
+  void loadTexture(std::string name, const char* path);
+  void loadBlockAtlas(const std::string& path);
+  void reloadShader(std::string name);
+  void cleanUp();
 
-        void loadBlockAtlas(const std::string& path);
-        TextureAtlas& getBlockAtlas();
+  Shader& getShader(const std::string& name);
+  Texture& getTexture(const std::string& name);
+  std::vector<std::string> getTextureNames();
+  TextureAtlas& getBlockAtlas();
 
-        void cleanUp();
+ private:
+  void initDebug();
 
-        // Prevent copying
-        ResourceManager(const ResourceManager&) = delete;
-        ResourceManager& operator=(const ResourceManager&) = delete;
+ private:
+  std::unordered_map<std::string, std::unique_ptr<Shader>> shaders_;
+  std::unordered_map<std::string, std::unique_ptr<Texture>> textures_;
+  std::unique_ptr<TextureAtlas> blocks_atlas_;
 
-        private:
-        void initDebug();
+  bool initialized_ = false;
+};
+}  // namespace Vocksel
 
-        private:
-        std::unordered_map<std::string, std::unique_ptr<Shader>> shaders_;
-        std::unordered_map<std::string, std::unique_ptr<Texture>> textures_;
-        std::unique_ptr<TextureAtlas> blocks_atlas_;
-        bool initialized_ = false;
-
-    };
-}
-
-#endif //RESOURCE__MANAGER_H
+#endif  // RESOURCE__MANAGER_H

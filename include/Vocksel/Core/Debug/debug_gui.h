@@ -9,16 +9,18 @@
 
 namespace Vocksel {
 class DebugGUI {
-public:
-    ~DebugGUI();
+ public:
+  ~DebugGUI();
 
-    void init(GLFWwindow *window);
-    void addPanel(const std::string& name, std::function<void()> callback) {panels_.emplace_back(name, callback);}
-    void render();
+  void init(GLFWwindow *window);
+  void addPanel(const std::string &name, const std::function<void()>& callback) {
+    panels_.emplace_back(name, callback);
+  }
+  void render();
 
-private:
-    std::vector<std::pair<std::string, std::function<void()>>> panels_;
+ private:
+  std::vector<std::pair<std::string, std::function<void()>>> panels_;
 };
-}
+}  // namespace Vocksel
 
-#endif //DEBUG_GUI_H
+#endif  // DEBUG_GUI_H

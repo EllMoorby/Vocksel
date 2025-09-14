@@ -6,20 +6,23 @@
 #include "Vocksel/Graphics/Mesh/model.h"
 
 namespace Vocksel {
-    class ModelManager {
-        public:
-        ~ModelManager();
+class ModelManager {
+ public:
+  ~ModelManager();
 
-        void loadModel(const std::string& path, const std::string& name);
-        bool createModelFromData(const std::string& name, const float* vertices, size_t vertexCount, const uint32_t* indices, size_t indexCount, int vertexStride);
-        Model* getModel(const std::string& name);
-        std::vector<std::string> getModelNames() const;
+  void loadModel(const std::string& path, const std::string& name);
+  void cleanUp();
 
-        void cleanUp();
-        private:
-        std::unordered_map<std::string, std::unique_ptr<Model>> models_;
+  bool createModelFromData(const std::string& name, const float* vertices,
+                           size_t vertexCount, const uint32_t* indices,
+                           size_t indexCount, int vertexStride);
 
-    };
-}
+  Model* getModel(const std::string& name);
+  std::vector<std::string> getModelNames() const;
 
-#endif //MODEL_MANAGER_H
+ private:
+  std::unordered_map<std::string, std::unique_ptr<Model>> models_;
+};
+}  // namespace Vocksel
+
+#endif  // MODEL_MANAGER_H

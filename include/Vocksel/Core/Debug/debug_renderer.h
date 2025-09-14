@@ -7,18 +7,19 @@
 #include "Vocksel/Graphics/shader.h"
 
 namespace Vocksel {
-    class DebugRenderer {
-    public:
-        DebugRenderer();
-        ~DebugRenderer();
+class DebugRenderer {
+ public:
+  DebugRenderer();
+  ~DebugRenderer();
 
-        void init();
+  void init();
+  void drawLine(const glm::vec3 &start, const glm::vec3 &end,
+                const glm::vec3 &color, Camera &camera);
 
-        void drawLine(const glm::vec3& start, const glm::vec3& end, const glm::vec3& color, Camera& camera);
-    private:
-        GLuint lineVAO, lineVBO = 0;
-        std::shared_ptr<Shader> lineShader;
-    };
-}
+ private:
+  GLuint lineVAO = 0, lineVBO = 0;
+  std::shared_ptr<Shader> lineShader;
+};
+}  // namespace Vocksel
 
-#endif //DEBUG_RENDERER_H
+#endif  // DEBUG_RENDERER_H

@@ -3,30 +3,34 @@
 #include <functional>
 #include <unordered_map>
 
-#include "Vocksel/Graphics/camera.h"
+#include "glad/glad.h"
 #include "GLFW/glfw3.h"
+#include "Vocksel/Graphics/camera.h"
 
 namespace Vocksel {
-    class InputManager {
-        public:
-        void init(GLFWwindow* window);
-        void bindKey(int key, std::function<void()> action);
-        void bindKey(int key, std::function<void(float)> callback);
-        glm::vec3 getWASDVector();
-        glm::vec3 getArrowVector();
+class InputManager {
+ public:
+  void init(GLFWwindow* window);
+  void update();
+  void bindKey(int key, std::function<void()> action);
+  void bindKey(int key, std::function<void(float)> callback);
+  void setMouseMode(int mode);
 
-        void update();
+  glm::vec3 getWASDVector();
+  glm::vec3 getArrowVector();
 
-        bool isKeyPressed(int key);
-        bool isMouseFree();
-        void setMouseMode(int mode);
-        int getMouseMode();
-        private:
-        int mouse_mode_ = GLFW_CURSOR_DISABLED;
-        GLFWwindow* window_ = nullptr;
-        std::unordered_map<int, std::function<void(float)>> key_actions_;
-        std::unordered_map<int, std::pair<bool, std::function<void()>>> key_release_actions_;
-    };
-}
+  bool isKeyPressed(int key);
+  bool isMouseFree();
 
-#endif //INPUT_MANAGER_H
+  int getMouseMode();
+
+ private:
+  int mouse_mode_ = GLFW_CURSOR_DISABLED;
+  GLFWwindow* window_ = nullptr;
+  std::unordered_map<int, std::function<void(float)>> key_actions_;
+  std::unordered_map<int, std::pair<bool, std::function<void()>>>
+      key_release_actions_;
+};
+}  // namespace Vocksel
+
+#endif  // INPUT_MANAGER_H

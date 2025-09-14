@@ -3,26 +3,26 @@
 #include <memory>
 #include <string>
 
-#include "Vocksel/Graphics/shader.h"
 #include "Vocksel/Graphics/Mesh/static_mesh.h"
+#include "Vocksel/Graphics/shader.h"
 
 namespace Vocksel {
-    class Model {
-        public:
-        Model();
-        ~Model();
+class Model {
+ public:
+  Model();
+  ~Model();
 
-        bool loadFromFile(std::string path);
-        void addMesh(std::unique_ptr<StaticMesh> mesh);
+  void render(Shader& shader);
+  void setTransformMatrix(const glm::mat4& transform);
+  void addMesh(std::unique_ptr<StaticMesh> mesh);
+  void cleanUp();
 
-        void render(Shader& shader);
-        void setTransformMatrix(const glm::mat4& transform);
+  bool loadFromFile(std::string path);
 
-        void cleanUp();
-        private:
-        std::vector<std::unique_ptr<StaticMesh>> meshes_;
-        glm::mat4 transform_ = glm::mat4(1.0f);
-    };
-}
+ private:
+  std::vector<std::unique_ptr<StaticMesh>> meshes_;
+  glm::mat4 transform_ = glm::mat4(1.0f);
+};
+}  // namespace Vocksel
 
-#endif //MODEL_H
+#endif  // MODEL_H
