@@ -1,7 +1,9 @@
 #include "Vocksel/Entities/player.h"
 
 #include "Vocksel/Core/engine_services.h"
-#include "tracy/Tracy.hpp"
+#if DEBUG
+    #include "tracy/Tracy.hpp"
+#endif
 
 Vocksel::Player::Player() : world_() { updateVectors(); }
 

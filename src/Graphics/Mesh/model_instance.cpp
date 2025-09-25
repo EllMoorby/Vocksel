@@ -1,7 +1,9 @@
 #include "Vocksel/Graphics/Mesh/model_instance.h"
 
 #include "Vocksel/Core/engine_services.h"
+#if DEBUG
 #include "tracy/Tracy.hpp"
+#endif
 
 std::unique_ptr<Vocksel::ModelInstance> Vocksel::ModelInstance::create(
     const glm::vec3 &pos, const char *model_name, const char *texture_name,

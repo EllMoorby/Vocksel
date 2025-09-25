@@ -264,6 +264,9 @@ void Vocksel::Application::closeWindow() {
   glfwSetWindowShouldClose(window_, GLFW_TRUE);
 }
 
-void Vocksel::Application::cleanUp() { glfwTerminate(); }
+void Vocksel::Application::cleanUp() { 
+    EngineServices::cleanUp();
+    glfwTerminate();
+}
 
 Vocksel::Application::~Application() { cleanUp(); }

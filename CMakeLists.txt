@@ -151,6 +151,13 @@ add_custom_command(TARGET Vocksel POST_BUILD
         ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/assets
 )
 
+if(CMAKE_HOST_WIN32)
+    # On Windows, set working directory to binary output directory
+    set_target_properties(Vocksel PROPERTIES
+        VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}"
+    )
+endif()
+
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
     target_compile_definitions(Vocksel PRIVATE DEBUG=1)
 else ()

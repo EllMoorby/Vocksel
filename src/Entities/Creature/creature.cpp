@@ -4,7 +4,9 @@
 #include "Vocksel/Core/engine_services.h"
 #include "glm/gtx/quaternion.hpp"
 #include "glm/gtx/rotate_vector.hpp"
+#if DEBUG
 #include "tracy/Tracy.hpp"
+#endif
 
 Vocksel::Creature::Creature(glm::vec3 position) : position_(position) {
   head_segment_ = std::make_unique<CreatureSegment>(.1f, 0.f, position_);
