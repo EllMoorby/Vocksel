@@ -58,4 +58,4 @@ cmake --build build --config Release
 
 ## License
 
-This project is released under the MIT License. See LICENSE for details.
+This project is released under the MIT License. See [LICENSE](LICENSE.md) for details.
