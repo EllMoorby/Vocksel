@@ -45,6 +45,11 @@ cmake --build build --config Release
 
 ## Screenshots
 
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/623aee4d-6113-4d8d-883d-10caaa1ca988" width="400"/>
+  <img src="https://github.com/user-attachments/assets/c53d7404-0c23-4aa0-8ffb-8bec95c1c2fe" width="400"/>
+</p>
+
 
 ---
 
