@@ -22,6 +22,11 @@ FetchContent_Declare(
         GIT_TAG 3.3.8
 )
 
+set(GLFW_BUILD_EXAMPLES OFF CACHE INTERNAL "Don't build GLFW examples")
+set(GLFW_BUILD_TESTS OFF CACHE INTERNAL "Don't build GLFW tests")
+set(GLFW_BUILD_DOCS OFF CACHE INTERNAL "Don't build GLFW docs")
+set(GLFW_INSTALL OFF CACHE INTERNAL "Don't generate GLFW install target")
+
 # Fetch and configure GLM (OpenGL Mathematics)
 FetchContent_Declare(
         glm
@@ -142,13 +147,16 @@ add_executable(Vocksel
         src/Core/Debug/debug_gui.cpp
 )
 
-# Copy assets directory to build
+foreach(CONFIG_TYPE IN ITEMS Debug Release RelWithDebInfo MinSizeRel)
+    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_${CONFIG_TYPE} ${CMAKE_BINARY_DIR}/bin/${CONFIG_TYPE})
+endforeach()
+
 add_custom_command(TARGET Vocksel POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E remove_directory
-        ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/assets
-        COMMAND ${CMAKE_COMMAND} -E copy_directory
-        ${CMAKE_SOURCE_DIR}/assets
-        ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/assets
+    COMMAND ${CMAKE_COMMAND} -E remove_directory
+            $<TARGET_FILE_DIR:Vocksel>/assets
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+            ${CMAKE_SOURCE_DIR}/assets
+            $<TARGET_FILE_DIR:Vocksel>/assets
 )
 
 if(CMAKE_HOST_WIN32)
