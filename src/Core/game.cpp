@@ -15,9 +15,6 @@ void Vocksel::Game::init() {
 
   player_.setPosition(world_->getSpawnPosition());
 
-  model_instances_.push_back(ModelInstance::create(
-      glm::vec3(-3.0f, .0f, 0.f), "teapot", "stone", glm::vec3(1.f)));
-
   EngineServices::input().bindKey(GLFW_KEY_R, [this] { world_->clearWorld(); });
 
   debugGUI();
