@@ -63,6 +63,16 @@ cd build/bin/Release
 
 ---
 
+## Controls
+- **WASD:** Move camera
+- **Mouse:** Look around
+- **Space:** Move Up
+- **CTRL:** Move Down
+- **R:** Regenerate World
+- **Enter:** Unlock Mouse
+- **ESC:** Exit
+
+---
 ## Roadmap / Future Work
 - Expanding entities
 - Improve marching cubes performance
