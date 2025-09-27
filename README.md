@@ -41,6 +41,16 @@ cd Vocksel
 cmake -B build -S . -G "Visual Studio 17 2022"
 cmake --build build --config Release
 ```
+
+### Running
+
+```powershell
+# Navigate to the built executable
+cd build/bin/Release
+
+# Run the application
+.\Vocksel.exe
+```
 ---
 
 ## Screenshots
