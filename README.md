@@ -36,7 +36,7 @@ No manual setup is required.
 
 ### Build
 ```powershell
-git clone https://github.com/yourusername/vocksel.git
+git clone https://github.com/EllMoorby/Vocksel
 cd Vocksel
 cmake -B build -S . -G "Visual Studio 17 2022"
 cmake --build build --config Release
