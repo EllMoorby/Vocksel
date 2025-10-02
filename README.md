@@ -9,6 +9,7 @@ It is a small voxel-style engine prototype with custom rendering, terrain, and d
 - Rendering with **OpenGL 4.3**
 - Custom shader + texture management
 - Entity & world system (chunks, density fields, marching cubes)
+- Compute Shaders
 - Integration of **Dear ImGui** for debug UI
 - Debugging support with **Tracy profiler**
 
