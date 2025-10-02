@@ -5,15 +5,20 @@
 
 #include "Vocksel/Core/engine_services.h"
 
-void Vocksel::InputManager::init(GLFWwindow* window) { window_ = window; }
+std::unordered_map<int, std::function<void()>> Vocksel::InputManager::key_press_actions_;
+std::unordered_map<int, std::function<void()>> Vocksel::InputManager::key_actions_;
 
-void Vocksel::InputManager::bindKey(int key,
-                                    std::function<void(float)> callback) {
-  key_actions_[key] = std::move(callback);
+void Vocksel::InputManager::init(GLFWwindow* window){
+  window_ = window;
+  glfwSetKeyCallback(window_, keyCallback);
 }
 
 void Vocksel::InputManager::bindKey(int key, std::function<void()> action) {
-  key_actions_[key] = [action](float) { action(); };
+  key_actions_[key] = [action]() { action(); };
+}
+
+void Vocksel::InputManager::bindKeyPress(int key, std::function<void()> action) {
+  key_press_actions_[key] = [action]() { action(); };
 }
 
 glm::vec3 Vocksel::InputManager::getWASDVector() {
@@ -46,19 +51,28 @@ glm::vec3 Vocksel::InputManager::getArrowVector() {
   return movement;
 }
 
-void Vocksel::InputManager::update() {
-  for (auto& [key, action] : key_actions_) {
-    if (isKeyPressed(key)) {
-      action(EngineServices::deltaTime());
-    }
-  }
-}
-
 int Vocksel::InputManager::getMouseMode() { return mouse_mode_; }
 
 void Vocksel::InputManager::setMouseMode(int mode) {
   mouse_mode_ = mode;
   glfwSetInputMode(window_, GLFW_CURSOR, mode);
+}
+
+void Vocksel::InputManager::keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+  if (action == GLFW_PRESS) {
+    auto it = key_press_actions_.find(key);
+    if (it != key_press_actions_.end()) {
+      it->second();
+    }
+  }
+
+  auto normal_it = key_actions_.find(key);
+  if (normal_it != key_actions_.end()) {
+    if (action == GLFW_PRESS || action == GLFW_REPEAT) {
+      normal_it->second();
+    }
+  }
+
 }
 
 bool Vocksel::InputManager::isMouseFree() {

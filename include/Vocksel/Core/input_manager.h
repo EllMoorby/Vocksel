@@ -11,10 +11,11 @@ namespace Vocksel {
 class InputManager {
  public:
   void init(GLFWwindow* window);
-  void update();
   void bindKey(int key, std::function<void()> action);
-  void bindKey(int key, std::function<void(float)> callback);
+  void bindKeyPress(int key, std::function<void()> action);
+
   void setMouseMode(int mode);
+  static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
 
   glm::vec3 getWASDVector();
   glm::vec3 getArrowVector();
@@ -27,9 +28,8 @@ class InputManager {
  private:
   int mouse_mode_ = GLFW_CURSOR_DISABLED;
   GLFWwindow* window_ = nullptr;
-  std::unordered_map<int, std::function<void(float)>> key_actions_;
-  std::unordered_map<int, std::pair<bool, std::function<void()>>>
-      key_release_actions_;
+  static std::unordered_map<int, std::function<void()>> key_actions_;
+  static std::unordered_map<int, std::function<void()>> key_press_actions_;
 };
 }  // namespace Vocksel
 

@@ -158,7 +158,7 @@ void APIENTRY Vocksel::Application::glDebugOutput(
 void Vocksel::Application::initInput() {
   EngineServices::input().bindKey(GLFW_KEY_ESCAPE, [this] { closeWindow(); });
 
-  EngineServices::input().bindKey(GLFW_KEY_ENTER, [this] {
+  EngineServices::input().bindKeyPress(GLFW_KEY_ENTER, [this] {
     EngineServices::input().setMouseMode(
         EngineServices::input().getMouseMode() == GLFW_CURSOR_DISABLED
             ? GLFW_CURSOR_NORMAL
@@ -213,9 +213,7 @@ void Vocksel::Application::update(float delta_time) {
   TracyGpuZone("Update")
 #endif
 
-      EngineServices::updateFrameData(delta_time, aspect_ratio_);
-
-  EngineServices::input().update();
+  EngineServices::updateFrameData(delta_time, aspect_ratio_);
 
   game_.update(delta_time);
 }
