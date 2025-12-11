@@ -26,6 +26,8 @@ void Vocksel::Game::debugGUI() {
     std::vector<std::string> model_names =
         EngineServices::resources().getNames<Model>();
 
+    if (model_names.empty()) return;
+
     if (ImGui::BeginCombo("Model", model_names[model_index].c_str())) {
       for (int i = 0; i < model_names.size(); i++) {
         bool is_selected = (model_index == i);

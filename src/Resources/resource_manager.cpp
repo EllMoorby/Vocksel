@@ -29,6 +29,10 @@ void Vocksel::ResourceManager::init() {
   load<Texture>("plank", "assets/textures/blocks/plank.png");
   load<Texture>("wool", "assets/textures/blocks/wool.png");
 
+  load<Model>("cube", "assets/models/cube.obj");
+  load<Model>("sphere", "assets/models/sphere.obj");
+  load<Model>("teapot", "assets/models/teapot.obj");
+
   initDebug();
 
   initialized_ = true;
